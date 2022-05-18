@@ -1,0 +1,6 @@
+{
+  "db": "C:/Users/lierm/IdeaProjects/LogFileETL/resources/export/db/trainingdata_2022-05-15.db",
+  "features":  ["PR 1", "PR 3", "cmd", "First Command Start", "First Command Finished", "response time"],
+  "y": "response time",
+  "models": ["LR", "Ridge", "Lasso", "ElasticNet","SGD", "MLP", "KNN", "AdaLR", "AdaDT", "DT"]
+}
