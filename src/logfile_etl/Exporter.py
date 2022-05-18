@@ -1,7 +1,5 @@
 import datetime
 import logging
-import os
-import sqlite3
 from pathlib import Path
 import platform
 
@@ -32,6 +30,9 @@ class Exporter:
         today = datetime.datetime.now().strftime("%Y-%m-%d")
         file_name = "trainingdata_{}.csv".format(today)
         save_path = Path(csv_config["folder"]) / file_name
+
+        Path(csv_config["folder"]).mkdir(parents=True, exist_ok=True)
+
         df.to_csv(save_path, sep=";")
 
     def to_db(self, data: dict):
