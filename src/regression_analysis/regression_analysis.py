@@ -1,8 +1,11 @@
 import sys
+from datetime import datetime
+from pathlib import Path
 from typing import List, Any
 
 import typer
 import pandas as pd
+from joblib import dump
 from sklearn.model_selection import train_test_split, cross_val_score
 
 from src.regression_analysis.configuration_handler import ConfigurationHandler
@@ -35,6 +38,7 @@ class RegressionAnalysis:
             config_handler.get_features()
         )
         self.__y_column_name = config_handler.get_y_column_name()
+        self.__export_path = config_handler.get_model_save_path()
 
     def load_data(self):
         for extractor in self.__features_extractors:
@@ -106,14 +110,22 @@ class RegressionAnalysis:
                 "%s: Accuracy: %0.2f (+/- %0.2f)"
                 % (name, cv_results.mean(), cv_results.std() * 2)
             )
+            today = datetime.now().strftime("%Y-%m-%d")
+            log_file_name = "{}_statistics_{}.txt".format(name, today)
+            dump_file_name = "{}_model_{}.joblib".format(name, today)
+            path_to_dump_file = Path(self.__export_path) / dump_file_name
+            path_to_log_file = Path(self.__export_path) / log_file_name
+            print("dump file ", path_to_dump_file)
+            dump(model, path_to_dump_file)
+            log_file = open(path_to_log_file, "w")
+            log_file.write("{name}: Accuracy: {mean:.0%} (+/- {std:.0%})".format(name=name, mean=cv_results.mean(),
+                                                                                   std=cv_results.std() * 2))
+            log_file.close()
+
         print("====")
 
         # for model in self.__models:
         #     model.fit()
-
-    # def save_models(self):
-    #     for model in self.__models:
-    #         model.save()
 
 
 def main(config_file_path: str = "resources/config/analysis_config.json"):

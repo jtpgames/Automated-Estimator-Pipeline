@@ -163,3 +163,4 @@ cython_debug/
 # own directory structure
 resources/export/*
 resources/logfiles/*
+resources/models/*

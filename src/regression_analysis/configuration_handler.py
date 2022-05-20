@@ -7,6 +7,7 @@ import json
 
 class ConfigurationHandler:
     def __init__(self, config_file_path: str):
+        self.__model_save_path = None
         self.__y = None
         self.__models = None
         self.__db_path = None
@@ -22,6 +23,7 @@ class ConfigurationHandler:
             self.__features = config["features"]
             self.__models = config["models"]
             self.__y = config["y"]
+            self.__model_save_path = config["model_save_path"]
 
         self.__log_config()
 
@@ -43,3 +45,6 @@ class ConfigurationHandler:
 
     def get_y_column_name(self):
         return self.__y
+
+    def get_model_save_path(self):
+        return self.__model_save_path
