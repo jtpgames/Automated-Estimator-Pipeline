@@ -1,7 +1,7 @@
 # Setup
 
 The path of the src folder has to be on the PYTHONPATH environment variable. To add folder to the
-run ```export PYTHONPATH=${PYTHONPATH}:{src_folder}} ```
+run ```export PYTHONPATH=${PYTHONPATH}:{logfile_analysis_root} ```
 
 # Structure
 
