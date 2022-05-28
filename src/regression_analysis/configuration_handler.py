@@ -34,11 +34,26 @@ class ConfigurationHandler:
         Path(self.__db_path).parent.mkdir(parents=True, exist_ok=True)
         return "sqlite:///" + self.__db_path
 
+    # def __log_config(self):
+    #     logging.info("Configuration successfully loaded")
+    #     logging.info("db path: {}".format(self.__db_path))
+    #     logging.info("features: {}".format(self.__features))
+    #     logging.info("models: {}".format(self.__models))
+
     def __log_config(self):
-        logging.info("Configuration successfully loaded")
+        logging.info(
+            "################################################################"
+        )
+        logging.info(
+            "################ Configuration successfully loaded #############"
+        )
+        logging.info(
+            "################################################################\n"
+        )
         logging.info("db path: {}".format(self.__db_path))
         logging.info("features: {}".format(self.__features))
-        logging.info("models: {}".format(self.__models))
+        logging.info("y column: {}".format(self.__y))
+        logging.info("models: {}\n".format(self.__models))
 
     def get_models(self):
         return self.__models
