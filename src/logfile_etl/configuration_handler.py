@@ -7,13 +7,13 @@ import json
 
 class ConfigurationHandler:
     def __init__(self, config_file_path: str):
-        self.__force = None
-        self.__extractors = None
+        self.__force = False
+        self.__extractors = []
         self.__csv_config = None
         self.__db_config = None
-        self.__export_methods = None
-        self.__processed_logfile_dir = None
-        self.__unprocessed_logfile_dir = None
+        self.__export_methods = []
+        self.__processed_logfile_dir = ""
+        self.__unprocessed_logfile_dir = ""
         self.__config_file_path = config_file_path
 
     def load_config(self):
@@ -31,8 +31,6 @@ class ConfigurationHandler:
             self.__force = config["force"]
 
         self.__log_config()
-
-    # TODO only return valid objects and then logging when config is loaded
 
     def get_unprocessed_logfile_dir(self):
         return Path(self.__unprocessed_logfile_dir)
@@ -56,12 +54,29 @@ class ConfigurationHandler:
         return self.__force
 
     def __log_config(self):
-        logging.info("Configuration successfully loaded")
+        logging.info(
+            "################################################################"
+        )
+        logging.info(
+            "################ Configuration successfully loaded #############"
+        )
+        logging.info(
+            "################################################################\n"
+        )
         logging.info(
             "Directory for unprocessed logfile: {}".format(
                 self.__unprocessed_logfile_dir
             )
         )
         logging.info(
-            "Directory for processed logfile: {}".format(self.__processed_logfile_dir)
+            "Directory for processed logfile: {}".format(
+                self.__processed_logfile_dir
+            )
         )
+        logging.info("Loaded export methods: {}".format(self.__export_methods))
+        logging.info(
+            "Loaded feature extractors by column name: {}".format(
+                self.__extractors
+            )
+        )
+        logging.info("Force parameter is set to: {}\n".format(self.__force))
