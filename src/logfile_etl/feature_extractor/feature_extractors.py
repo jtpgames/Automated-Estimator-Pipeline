@@ -11,6 +11,8 @@ from src.logfile_etl.feature_extractor.first_parallel_request_finished_extractor
 from src.logfile_etl.feature_extractor.fist_parallel_request_start_extractor import (
     FirstParallelRequestStartExtractor,
 )
+from src.logfile_etl.feature_extractor.list_parallel_requests_finished import ListParallelRequestsFinished
+from src.logfile_etl.feature_extractor.list_parallel_requests_start import ListParallelRequestsStart
 from src.logfile_etl.feature_extractor.number_parallel_requests_start_extractor import (
     ParallelRequestsOne,
 )
@@ -34,6 +36,9 @@ possible_feature_extractors: List[AbstractFeatureExtractor] = [
     TimestampExtractor(),
     FirstParallelRequestStartExtractor(),
     FirstParallelRequestFinishedExtractor(),
+    ListParallelRequestsStart(),
+    ListParallelRequestsFinished()
+
 ]
 
 

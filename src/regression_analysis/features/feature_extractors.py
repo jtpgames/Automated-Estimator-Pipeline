@@ -10,6 +10,10 @@ from src.regression_analysis.features.first_parallel_command_finished_extractor 
 from src.regression_analysis.features.first_parallel_commands_start_extractor import (
     FirstCommandStartExtractor,
 )
+from src.regression_analysis.features.list_parallel_command_finished_extractor import \
+    ListParallelRequestsFinished
+from src.regression_analysis.features.list_parallel_command_start_extractor import \
+    ListParallelRequestsStart
 from src.regression_analysis.features.number_parallel_requests_start_extractor import (
     PROneExtractor,
 )
@@ -28,11 +32,13 @@ possible_extractors: List[AbstractFeatureExtractor] = [
     FirstCommandStartExtractor(),
     FirstCommandEndExtractor(),
     ResponseTimeExtractor(),
+    ListParallelRequestsFinished(),
+    ListParallelRequestsStart()
 ]
 
 
 def get_feature_extractors_by_name(
-    extractor_names: List[str],
+        extractor_names: List[str],
 ) -> List[AbstractFeatureExtractor]:
     feature_extractors = []
     for extractor_name in extractor_names:

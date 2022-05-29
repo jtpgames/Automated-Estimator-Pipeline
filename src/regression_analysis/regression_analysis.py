@@ -122,23 +122,6 @@ class RegressionAnalysis:
             x_scaled, y, test_size=0.2, random_state=42
         )
 
-        # logging.info(
-        #     "Shapes: X_train: {} y_train: {}".format(
-        #         x_train.shape,
-        #         y_train.shape
-        #     )
-        # )
-        # logging.info(
-        #     "Shapes: X_test: {} y_test: {}".format(x_test.shape, y_test.shape)
-        # )
-        # logging.info("X_train")
-        # logging.info("-------")
-        # logging.info(x_train)
-        # logging.info("-------")
-        # logging.info("X_test")
-        # logging.info("-------")
-        # logging.info(x_test)
-
         logging.info("====")
         logging.info("== Evaluating each model in turn ==")
         results = []

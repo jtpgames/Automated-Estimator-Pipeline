@@ -40,12 +40,14 @@ class MergedLogProcessor:
         logging.info("Start extracting features of merged logfiles")
 
         logging.info("Extractors: {}".format(self.__feature_extractors))
-        logfiles_to_convert = glob.glob(join(self.__reading_directory, "Merged_*.log"))
+        logfiles_to_convert = glob.glob(
+            join(self.__reading_directory, "Merged_*.log")
+        )
 
         # remove duplicates trick
         logfiles_to_convert = sorted(set(logfiles_to_convert))
 
-        logging.info("Logs to process: " + str(logfiles_to_convert))
+        logging.info("Logs to process: {}".format(str(logfiles_to_convert)))
         for path in logfiles_to_convert:
             logging.info("processing {}".format(path))
             self.__extract_features(path)
@@ -61,7 +63,9 @@ class MergedLogProcessor:
                 entry_counter = entry_counter + 1
                 if entry_counter % 20000 == 0:
                     logging.info("Processed {} entries".format(entry_counter))
-                tid, timestamp = MergedLogProcessor.__get_thread_id_and_timestamp(line)
+                tid, timestamp = MergedLogProcessor.__get_thread_id_and_timestamp(
+                    line
+                )
                 if "CMD-START" in line:
                     self.__process_start_line(line, tid, timestamp)
                 if "CMD-END" in line:
@@ -121,7 +125,7 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker.reset()
 
     def save_features_to_db(self):
-        self.__exporter.export(self.__data)
+        self.__exporter.export(self.__data, self.__parallel_commands_tracker.get_command_mapping())
 
     @staticmethod
     def __extract_command_name(line: str):

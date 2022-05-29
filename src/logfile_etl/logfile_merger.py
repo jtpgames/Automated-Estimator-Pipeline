@@ -28,10 +28,10 @@ class LogMerger:
 
     def __aggregate(self, group: str, similar_logfile_paths: list):
         target_path = join(self.__reading_directory, "Merged_%s.log" % group)
-        logging.info("Merging %s" % similar_logfile_paths)
+        logging.info("Merging {}".format(similar_logfile_paths))
         result_file = LogMerger.__merge(*similar_logfile_paths)
-        logging.info("Merged %i log entries" % len(result_file))
-        logging.info("Writing to ", target_path)
+        logging.info("Merged {} log entries".format(len(result_file)))
+        logging.info("Writing to {}".format(target_path))
         with open(target_path, mode="w", encoding="latin-1") as targetFile:
             counter = 0
             for line in result_file:

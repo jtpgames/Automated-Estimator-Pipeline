@@ -13,19 +13,26 @@ class Exporter:
         self.__config_handler = config_handler
 
     # TODO make user directories exist
-    def export(self, data: dict):
+    def export(self, data: dict, mapping: dict):
         logging.info("Start exporting extracted features")
         logging.info(
-            "Export methods: {}".format(self.__config_handler.get_export_methods())
+            "Export methods: {}".format(
+                self.__config_handler.get_export_methods()
+            )
+        )
+        df_data = pd.DataFrame(data)
+        df_mapping = pd.DataFrame.from_dict(
+            mapping,
+            orient="index",
+            columns=["mapping"]
         )
         for entry in self.__config_handler.get_export_methods():
             if entry == "db":
-                self.to_db(data)
+                self.to_db(df_data, df_mapping)
             if entry == "csv":
-                self.to_csv(data)
+                self.to_csv(df_data, df_mapping)
 
-    def to_csv(self, data: dict):
-        df = pd.DataFrame(data)
+    def to_csv(self, df_data: pd.DataFrame, df_mapping: pd.DataFrame):
         csv_config = self.__config_handler.get_csv_config()
         today = datetime.datetime.now().strftime("%Y-%m-%d")
         file_name = "trainingdata_{}.csv".format(today)
@@ -33,10 +40,10 @@ class Exporter:
 
         Path(csv_config["folder"]).mkdir(parents=True, exist_ok=True)
 
-        df.to_csv(save_path, sep=";")
+        df_data.to_csv(save_path, sep=";")
+        df_mapping.to_csv(save_path, sep=";")
 
-    def to_db(self, data: dict):
-        df = pd.DataFrame(data)
+    def to_db(self, df_data: pd.DataFrame, df_mapping: pd.DataFrame):
         db_config = self.__config_handler.get_db_config()
         today = datetime.datetime.now().strftime("%Y-%m-%d")
         file_name = "trainingdata_{}.db".format(today)
@@ -54,4 +61,9 @@ class Exporter:
             db_url = "sqlite:////" + file_path.absolute().as_posix()
 
         con = create_engine(db_url)
-        df.to_sql("gs_training_data", con=con, if_exists="replace")
+        df_data.to_sql("gs_training_data", con=con, if_exists="replace")
+        df_mapping.to_sql(
+            "gs_training_cmd_mapping",
+            con=con,
+            if_exists="replace"
+        )

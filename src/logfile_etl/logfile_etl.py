@@ -45,8 +45,8 @@ def extract_features(
     feature_extractor.save_features_to_db()
 
 
-@app.callback(invoke_without_command=True)
-def run_etl_process(config_file_path: str = "resources/config/etl_config.json"):
+@app.command()
+def run(config_file_path: str = "resources/config/etl_config.json"):
     config_handler = ConfigurationHandler(config_file_path)
     config_handler.load_config()
 

@@ -8,7 +8,7 @@ from src.regression_analysis.features.abstract_feature_extractor import (
 
 class FirstCommandEndExtractor(AbstractFeatureExtractor):
     def get_column_name(self) -> str:
-        return "First Command End"
+        return "First Command Finished"
 
     def get_df(self, db, names_mapping) -> pd.DataFrame:
         df = self.load_df_column_from_db(db)
