@@ -15,14 +15,14 @@ if __name__ == "__main__":
     model_folder = resource_folder / "models"
 
     etl_config = {
-        "unprocessed_logfiles": str(unprocessed_folder.absolute()),
-        "processed_logfiles": str(processed_folder.absolute()),
+        "unprocessed_logfiles": unprocessed_folder.as_posix(),
+        "processed_logfiles": processed_folder.as_posix(),
         "export_methods": ["db", "csv"],
         "db": {
-            "folder": str(db_folder.absolute())
+            "folder": db_folder.as_posix()
         },
         "csv": {
-            "folder": str(csv_folder.absolute())
+            "folder": csv_folder.as_posix()
         },
         "extractors": [
             "Timestamp", "PR 1", "PR 2", "PR 3", "cmd", "response time",
@@ -33,13 +33,13 @@ if __name__ == "__main__":
     }
 
     analysis_config = {
-        "db": str(db_file.absolute()),
+        "db": db_file.as_posix(),
         "features": ["PR 1", "PR 3", "cmd", "First Command Start",
                      "First Command Finished", "response time"],
         "y": "response time",
         "models": ["LR", "Ridge", "Lasso", "ElasticNet", "SGD", "MLP", "KNN",
                    "AdaLR", "AdaDT", "DT"],
-        "model_save_path": str(model_folder.absolute())
+        "model_save_path": model_folder.as_posix()
     }
 
     analysis_config_file_path = resource_folder / "config" / "analysis_config.json"
