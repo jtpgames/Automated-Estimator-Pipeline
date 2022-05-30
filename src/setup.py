@@ -5,8 +5,8 @@ from datetime import datetime
 if __name__ == "__main__":
     parent_dir = pathlib.Path().absolute().parent
     resource_folder = parent_dir / "resources"
-    unprocessed_folder = resource_folder / "unprocessed"
-    processed_folder = resource_folder / "processed"
+    unprocessed_folder = resource_folder / "logfiles" / "unprocessed"
+    processed_folder = resource_folder / "logfiles" / "processed"
     db_folder = resource_folder / "export" / "db"
     csv_folder = resource_folder / "export" / "csv"
     today = datetime.now().strftime("%Y-%m-%d")
