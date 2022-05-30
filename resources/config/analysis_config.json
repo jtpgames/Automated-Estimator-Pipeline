@@ -1,7 +1,7 @@
 {
   "db": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db/trainingdata_2022-05-29.db",
-  "features":  ["List parallel requests finished", "List parallel requests start","PR 1", "PR 3", "cmd", "response time"],
+  "features":  ["PR 1", "PR 3", "cmd", "response time"],
   "y": "response time",
-  "models": ["LR"],
+  "models": ["LR", "DT"],
   "model_save_path": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/models"
 }

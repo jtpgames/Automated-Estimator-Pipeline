@@ -14,15 +14,11 @@ class ListParallelRequestsStart(AbstractFeatureExtractor):
 
     def get_df(self, db, names_mapping) -> pd.DataFrame:
         df = self.load_df_column_from_db(db)
-        preprocessed_df = pd.DataFrame(df[self.get_column_name()].apply(
-            self.__apply_func,
-            args=(names_mapping,)
-        ))
-        df2 = pd.json_normalize(preprocessed_df[self.get_column_name()])
-        df2 = df2.fillna(0)
-        df2.astype(short, copy=False)
-        print(df2.head())
-        return df2
+        df.add_prefix("list_start_")
+        df.join(pd.DataFrame(df.pop(self.get_column_name()).values.tolist()))
+        df.fillna(0)
+        print(df)
+        return df.astype(short, copy=False)
 
     def __apply_func(self, row, names_mapping):
         command_dict = json.loads(row)

@@ -35,13 +35,15 @@ class Exporter:
     def to_csv(self, df_data: pd.DataFrame, df_mapping: pd.DataFrame):
         csv_config = self.__config_handler.get_csv_config()
         today = datetime.datetime.now().strftime("%Y-%m-%d")
-        file_name = "trainingdata_{}.csv".format(today)
-        save_path = Path(csv_config["folder"]) / file_name
+        data_file_name = "training_data_{}.csv".format(today)
+        mapping_file_name = "training_mapping_{}.csv".format(today)
+        data_save_path = Path(csv_config["folder"]) / data_file_name
+        mapping_save_path = Path(csv_config["folder"]) / mapping_file_name
 
         Path(csv_config["folder"]).mkdir(parents=True, exist_ok=True)
 
-        df_data.to_csv(save_path, sep=";")
-        df_mapping.to_csv(save_path, sep=";")
+        df_data.to_csv(data_save_path, sep=";")
+        df_mapping.to_csv(mapping_save_path, sep=";")
 
     def to_db(self, df_data: pd.DataFrame, df_mapping: pd.DataFrame):
         db_config = self.__config_handler.get_db_config()

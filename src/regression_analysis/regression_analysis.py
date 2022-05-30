@@ -113,13 +113,13 @@ class RegressionAnalysis:
         logging.info("-------")
         logging.info("unscaled")
         logging.info(self.__df)
-        x_scaled = StandardScaler().fit_transform(self.__df)
-        logging.info("scaled")
-        logging.info(x_scaled.mean(axis=0))
-        logging.info(x_scaled.std(axis=0))
+        # x_scaled = StandardScaler().fit_transform(self.__df)
+        # logging.info("scaled")
+        # logging.info(x_scaled.mean(axis=0))
+        # logging.info(x_scaled.std(axis=0))
 
         x_train, x_test, y_train, y_test = train_test_split(
-            x_scaled, y, test_size=0.2, random_state=42
+            self.__df, y, test_size=0.2, random_state=42
         )
 
         logging.info("====")
