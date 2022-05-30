@@ -32,7 +32,7 @@ class LogfileConverter:
         files_matching_no_converter = [
             file for file in files if file not in converted_files
         ]
-        logging.info("Files without explicit converter: ", files_matching_no_converter)
+        logging.info("Files without explicit converter: {}".format(files_matching_no_converter))
         self.copy_files_with_no_matching_converter(files_matching_no_converter)
 
     def copy_files_with_no_matching_converter(self, unconverted_files):
