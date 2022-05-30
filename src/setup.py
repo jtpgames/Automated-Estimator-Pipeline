@@ -50,10 +50,10 @@ if __name__ == "__main__":
     os.makedirs(configuration_folder.as_posix(), exist_ok=True)
 
 
-    with open(analysis_config_file_path, 'x') as fp:
+    with open(analysis_config_file_path, 'w+') as fp:
         json.dump(analysis_config, fp)
 
-    with open(etl_config_file_path, 'x') as fp:
+    with open(etl_config_file_path, 'w+') as fp:
         json.dump(etl_config, fp)
 
     print("Configuration files created in: {}".format(configuration_folder))

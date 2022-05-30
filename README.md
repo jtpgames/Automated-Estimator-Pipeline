@@ -3,6 +3,8 @@
 The path of the src folder has to be on the PYTHONPATH environment variable. To add folder to the
 run ```export PYTHONPATH=${PYTHONPATH}:{logfile_analysis_root} ```
 
+Run the ```./src/setup.py``` in the src folder to setup the resource folder structure.
+
 # Structure
 
 The project contains two packages. One package to execute an etl process for logfiles and one package to create machine
