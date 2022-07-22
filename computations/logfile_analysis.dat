@@ -1,0 +1,301 @@
+
+Modules based on Lua: Version 8.4.6  2020-09-26 13:31 -05:00
+    by Robert McLay mclay@tacc.utexas.edu
+
+module [options] sub-command [args ...]
+
+Help sub-commands:
+------------------
+  help                              prints this message
+  help                module [...]  print help message from module(s)
+
+Loading/Unloading sub-commands:
+-------------------------------
+  load | add          module [...]  load module(s)
+  try-load | try-add  module [...]  Add module(s), do not complain if not
+                                    found
+  del | unload        module [...]  Remove module(s), do not complain if not
+                                    found
+  swap | sw | switch  m1 m2         unload m1 and load m2
+  purge                             unload all modules
+  refresh                           reload aliases from current list of
+                                    modules.
+  update                            reload all currently loaded modules.
+
+Listing / Searching sub-commands:
+---------------------------------
+  list                              List loaded modules
+  list                s1 s2 ...     List loaded modules that match the
+                                    pattern
+  avail | av                        List available modules
+  avail | av          string        List available modules that contain
+                                    "string".
+  spider                            List all possible modules
+  spider              module        List all possible version of that module
+                                    file
+  spider              string        List all module that contain the
+                                    "string".
+  spider              name/version  Detailed information about that version
+                                    of the module.
+  whatis              module        Print whatis information about module
+  keyword | key       string        Search all name and whatis that contain
+                                    "string".
+
+Searching with Lmod:
+--------------------
+  All searching (spider, list, avail, keyword) support regular expressions:
+  
+
+  -r spider           '^p'          Finds all the modules that start with
+                                    `p' or `P'
+  -r spider           mpi           Finds all modules that have "mpi" in
+                                    their name.
+  -r spider           'mpi$         Finds all modules that end with "mpi" in
+                                    their name.
+
+Handling a collection of modules:
+--------------------------------
+  save | s                          Save the current list of modules to a
+                                    user defined "default" collection.
+  save | s            name          Save the current list of modules to
+                                    "name" collection.
+  reset                             The same as "restore system"
+  restore | r                       Restore modules from the user's
+                                    "default" or system default.
+  restore | r         name          Restore modules from "name" collection.
+  restore             system        Restore module state to system defaults.
+  savelist                          List of saved collections.
+  describe | mcc      name          Describe the contents of a module
+                                    collection.
+  disable             name          Disable (i.e. remove) a collection.
+
+Deprecated commands:
+--------------------
+  getdefault          [name]        load name collection of modules or
+                                    user's "default" if no name given.
+                                    ===> Use "restore" instead <====
+  setdefault          [name]        Save current list of modules to name if
+                                    given, otherwise save as the default
+                                    list for you the user.
+                                    ===> Use "save" instead. <====
+
+Miscellaneous sub-commands:
+---------------------------
+  is-loaded           modulefile    return a true status if module is loaded
+  is-avail            modulefile    return a true status if module can be
+                                    loaded
+  show                modulefile    show the commands in the module file.
+  use [-a]            path          Prepend or Append path to MODULEPATH.
+  unuse               path          remove path from MODULEPATH.
+  tablelist                         output list of active modules as a lua
+                                    table.
+
+Important Environment Variables:
+--------------------------------
+  LMOD_COLORIZE                     If defined to be "YES" then Lmod prints
+                                    properties and warning in color.
+
+    --------------------------------------------------------------------------
+
+Lmod Web Sites
+
+  Documentation:    http://lmod.readthedocs.org
+  Github:           https://github.com/TACC/Lmod
+  Sourceforge:      https://lmod.sf.net
+  TACC Homepage:    https://www.tacc.utexas.edu/research-development/tacc-projects/lmod
+
+  To report a bug please read http://lmod.readthedocs.io/en/latest/075_bug_reporting.html
+    --------------------------------------------------------------------------
+
+
+
+2022-07-22 14:20:38,209 INFO ################################################################
+2022-07-22 14:20:38,210 INFO ################ Configuration successfully loaded #############
+2022-07-22 14:20:38,210 INFO ################################################################
+
+2022-07-22 14:20:38,210 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-16.db
+2022-07-22 14:20:38,210 INFO features: ['PR 1', 'PR 3', 'cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
+2022-07-22 14:20:38,210 INFO y column: response time
+2022-07-22 14:20:38,210 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
+
+2022-07-22 14:20:38,214 INFO number feature extractors: 6
+2022-07-22 14:20:38,214 INFO Loading values of extractor: PR 1
+2022-07-22 14:20:49,346 INFO (5213877, 1)
+2022-07-22 14:20:49,346 INFO Loading values of extractor: PR 3
+2022-07-22 14:20:58,525 INFO (5213877, 2)
+2022-07-22 14:20:58,525 INFO Loading values of extractor: cmd
+2022-07-22 14:21:11,047 INFO (5213877, 3)
+2022-07-22 14:21:11,047 INFO Loading values of extractor: List parallel requests start
+2022-07-22 14:22:20,904 INFO (5213877, 306)
+2022-07-22 14:22:20,906 INFO Loading values of extractor: List parallel requests finished
+2022-07-22 14:23:28,658 INFO (5213877, 609)
+2022-07-22 14:23:28,658 INFO Loading values of extractor: response time
+2022-07-22 14:23:38,737 INFO (5213877, 610)
+2022-07-22 14:23:54,772 INFO memory consumption: 3201320622
+2022-07-22 14:23:54,786 INFO -------
+2022-07-22 14:23:54,786 INFO unscaled
+2022-07-22 14:23:54,786 INFO          PR 1  PR 3  cmd  0_x  1_x  ...  298_y  299_y  300_y  301_y  302_y
+0           0     0    1    0    0  ...      0      0      0      0      0
+1           1     1    1    0    1  ...      0      0      0      0      0
+2           2     0    2    0    0  ...      0      0      0      0      0
+3           4     1    3    0    0  ...      0      0      0      0      0
+4           3     0    1    0    0  ...      0      0      0      0      0
+...       ...   ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
+5213872     2     1    6    0    0  ...      0      0      0      0      0
+5213873     1     0    1    0    0  ...      0      0      0      0      0
+5213874     1     0    2    0    0  ...      0      0      0      0      0
+5213875     2     1    5    0    0  ...      0      0      0      0      0
+5213876     1     0    4    0    0  ...      0      0      0      0      0
+
+[5213877 rows x 609 columns]
+2022-07-22 14:24:21,741 INFO ====
+2022-07-22 14:24:21,741 INFO == Evaluating each model in turn ==
+2022-07-22 14:26:38,784 INFO == X_test ==
+2022-07-22 14:26:38,786 INFO          PR 1  PR 3  cmd  0_x  1_x  ...  298_y  299_y  300_y  301_y  302_y
+3942379     0     0    4    0    0  ...      0      0      0      0      0
+2345653     0     0   64    0    0  ...      0      0      0      0      0
+1808994     0     0    4    0    0  ...      0      0      0      0      0
+2005282     0     0    5    0    0  ...      0      0      0      0      0
+697829      0     0   10    0    0  ...      0      0      0      0      0
+...       ...   ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
+3054798     0     0   93    0    0  ...      0      0      0      0      0
+1632943     0     1   10    0    0  ...      0      0      0      0      0
+1192300     0     0  132    0    0  ...      0      0      0      0      0
+718408      1     1    5    0    0  ...      0      0      0      0      0
+3088547     1     0   64    0    0  ...      0      0      0      0      0
+
+[1042776 rows x 609 columns]
+2022-07-22 14:26:38,983 INFO == Predictions ==
+2022-07-22 14:26:42,306 INFO [ 38.60771329  35.87455918  38.60771329 ...  32.77698451 109.33118523
+  35.24944611]
+2022-07-22 14:26:42,307 INFO == y_test ==
+2022-07-22 14:26:42,307 INFO 3942379    47
+2345653    31
+1808994    78
+2005282    46
+697829     78
+           ..
+3054798    16
+1632943    93
+1192300    16
+718408     47
+3088547     0
+Name: response time, Length: 1042776, dtype: int16
+2022-07-22 14:26:42,308 INFO ====
+2022-07-22 14:26:42,334 INFO Mean absolute error: 48.906
+2022-07-22 14:26:42,334 INFO Mean squared error: 17817.75
+2022-07-22 14:26:42,335 INFO Coefficient of determination: 68.13%
+2022-07-22 14:26:42,426 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/LR_model_2022-07-22.joblib
+2022-07-22 14:27:45,065 INFO == X_test ==
+2022-07-22 14:27:45,065 INFO          PR 1  PR 3  cmd  0_x  1_x  ...  298_y  299_y  300_y  301_y  302_y
+3942379     0     0    4    0    0  ...      0      0      0      0      0
+2345653     0     0   64    0    0  ...      0      0      0      0      0
+1808994     0     0    4    0    0  ...      0      0      0      0      0
+2005282     0     0    5    0    0  ...      0      0      0      0      0
+697829      0     0   10    0    0  ...      0      0      0      0      0
+...       ...   ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
+3054798     0     0   93    0    0  ...      0      0      0      0      0
+1632943     0     1   10    0    0  ...      0      0      0      0      0
+1192300     0     0  132    0    0  ...      0      0      0      0      0
+718408      1     1    5    0    0  ...      0      0      0      0      0
+3088547     1     0   64    0    0  ...      0      0      0      0      0
+
+[1042776 rows x 609 columns]
+2022-07-22 14:27:45,245 INFO == Predictions ==
+2022-07-22 14:27:48,556 INFO [ 38.61454751  35.87937285  38.61454751 ...  32.77950824 109.33634606
+  35.2422592 ]
+2022-07-22 14:27:48,556 INFO == y_test ==
+2022-07-22 14:27:48,556 INFO 3942379    47
+2345653    31
+1808994    78
+2005282    46
+697829     78
+           ..
+3054798    16
+1632943    93
+1192300    16
+718408     47
+3088547     0
+Name: response time, Length: 1042776, dtype: int16
+2022-07-22 14:27:48,558 INFO ====
+2022-07-22 14:27:48,577 INFO Mean absolute error: 48.900
+2022-07-22 14:27:48,578 INFO Mean squared error: 17958.00
+2022-07-22 14:27:48,578 INFO Coefficient of determination: 67.88%
+2022-07-22 14:27:48,578 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/Ridge_model_2022-07-22.joblib
+2022-07-22 14:29:16,125 INFO == X_test ==
+2022-07-22 14:29:16,125 INFO          PR 1  PR 3  cmd  0_x  1_x  ...  298_y  299_y  300_y  301_y  302_y
+3942379     0     0    4    0    0  ...      0      0      0      0      0
+2345653     0     0   64    0    0  ...      0      0      0      0      0
+1808994     0     0    4    0    0  ...      0      0      0      0      0
+2005282     0     0    5    0    0  ...      0      0      0      0      0
+697829      0     0   10    0    0  ...      0      0      0      0      0
+...       ...   ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
+3054798     0     0   93    0    0  ...      0      0      0      0      0
+1632943     0     1   10    0    0  ...      0      0      0      0      0
+1192300     0     0  132    0    0  ...      0      0      0      0      0
+718408      1     1    5    0    0  ...      0      0      0      0      0
+3088547     1     0   64    0    0  ...      0      0      0      0      0
+
+[1042776 rows x 609 columns]
+2022-07-22 14:29:16,303 INFO == Predictions ==
+2022-07-22 14:29:19,622 INFO [ 39.37103414  36.66153069  39.37103414 ...  33.59076012 113.87613163
+  22.73634965]
+2022-07-22 14:29:19,622 INFO == y_test ==
+2022-07-22 14:29:19,622 INFO 3942379    47
+2345653    31
+1808994    78
+2005282    46
+697829     78
+           ..
+3054798    16
+1632943    93
+1192300    16
+718408     47
+3088547     0
+Name: response time, Length: 1042776, dtype: int16
+2022-07-22 14:29:19,625 INFO ====
+2022-07-22 14:29:19,644 INFO Mean absolute error: 47.384
+2022-07-22 14:29:19,644 INFO Mean squared error: 19175.25
+2022-07-22 14:29:19,644 INFO Coefficient of determination: 65.70%
+2022-07-22 14:29:19,644 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/Lasso_model_2022-07-22.joblib
+2022-07-22 14:35:26,244 INFO == X_test ==
+2022-07-22 14:35:26,244 INFO          PR 1  PR 3  cmd  0_x  1_x  ...  298_y  299_y  300_y  301_y  302_y
+3942379     0     0    4    0    0  ...      0      0      0      0      0
+2345653     0     0   64    0    0  ...      0      0      0      0      0
+1808994     0     0    4    0    0  ...      0      0      0      0      0
+2005282     0     0    5    0    0  ...      0      0      0      0      0
+697829      0     0   10    0    0  ...      0      0      0      0      0
+...       ...   ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
+3054798     0     0   93    0    0  ...      0      0      0      0      0
+1632943     0     1   10    0    0  ...      0      0      0      0      0
+1192300     0     0  132    0    0  ...      0      0      0      0      0
+718408      1     1    5    0    0  ...      0      0      0      0      0
+3088547     1     0   64    0    0  ...      0      0      0      0      0
+
+[1042776 rows x 609 columns]
+2022-07-22 14:35:26,399 INFO == Predictions ==
+2022-07-22 14:35:28,672 INFO [ 66.71491981  23.05510472  66.71491981 ...  24.45475113 182.13062071
+  24.92857143]
+2022-07-22 14:35:28,673 INFO == y_test ==
+2022-07-22 14:35:28,673 INFO 3942379    47
+2345653    31
+1808994    78
+2005282    46
+697829     78
+           ..
+3054798    16
+1632943    93
+1192300    16
+718408     47
+3088547     0
+Name: response time, Length: 1042776, dtype: int16
+2022-07-22 14:35:28,674 INFO ====
+2022-07-22 14:35:28,692 INFO Mean absolute error: 34.978
+2022-07-22 14:35:28,692 INFO Mean squared error: 10476.50
+2022-07-22 14:35:28,692 INFO Coefficient of determination: 81.26%
+2022-07-22 14:35:28,692 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/DT_model_2022-07-22.joblib
+2022-07-22 14:35:28,768 INFO save cmd names mapping
+2022-07-22 14:35:28,770 INFO ====
+
+Finished.
+
