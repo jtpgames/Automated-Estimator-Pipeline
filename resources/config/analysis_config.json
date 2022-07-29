@@ -1,7 +1,19 @@
 {
-  "db": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db/trainingdata_2022-05-29.db",
-  "features":  ["PR 1", "PR 3", "cmd", "response time"],
-  "y": "response time",
-  "models": ["LR", "DT"],
-  "model_save_path": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/models"
+    "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-16.db",
+    "features": [
+        "PR 1",
+        "PR 3",
+        "cmd",
+        "List parallel requests start",
+        "List parallel requests finished",
+        "response time"
+    ],
+    "y": "response time",
+    "models": [
+        "LR",
+        "Ridge",
+        "Lasso",
+        "DT"
+    ],
+    "model_save_path": "/scratch/tmp/a_lier03/logfile_analysis/resources/models"
 }
