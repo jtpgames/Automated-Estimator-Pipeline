@@ -34,7 +34,7 @@ class ListParallelRequestsStart(AbstractFeatureExtractor):
 
         metadata_obj = MetaData()
         data = Table(
-            'test_table', metadata_obj,
+            'gs_training_data', metadata_obj,
             Column('index', Integer, primary_key=True),
             Column('List parallel requests start', JSONEncodedDict),
         )

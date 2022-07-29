@@ -1,6 +1,7 @@
 from src.logfile_etl.feature_extractor.abstract_feature_extractor import \
     AbstractFeatureExtractor
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
+import datetime
 
 
 class ArriveTimeExtractor(AbstractFeatureExtractor):
@@ -13,7 +14,5 @@ class ArriveTimeExtractor(AbstractFeatureExtractor):
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):
-        received_at = parallel_commands_tracker[tid]["receivedAt"].strftime(
-            "%H:%M:%S.%f"
-        )
-        return int(received_at.hour) * self.intervals_per_hour + int(received_at.minute) // self.minutes_per_interval
+        #received_at = datetime.datetime.strptime(parallel_commands_tracker[tid]["receivedAt"], "%Y-%m-%d %H:%M:%S")
+        return int(parallel_commands_tracker[tid]["receivedAt"].hour) * self.intervals_per_hour + int(parallel_commands_tracker[tid]["receivedAt"].minute) // self.minutes_per_interval

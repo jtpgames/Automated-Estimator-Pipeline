@@ -1,8 +1,7 @@
 {
-    "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-16.db",
+    "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db",
     "features": [
-        "PR 1",
-        "PR 3",
+        "arrive time",
         "cmd",
         "List parallel requests start",
         "List parallel requests finished",

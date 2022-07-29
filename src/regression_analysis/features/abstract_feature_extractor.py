@@ -17,7 +17,7 @@ class AbstractFeatureExtractor(ABC):
     def load_df_column_from_db(self, db) -> pd.DataFrame:
         # gs_training_data name of the training table
         return pd.read_sql_table(
-            "test_table", db.connection(), columns=[self.get_column_name()]
+            "gs_training_data", db.connection(), columns=[self.get_column_name()]
         )
 
     def get_cmd_int(self, cmd, names_mapping):
