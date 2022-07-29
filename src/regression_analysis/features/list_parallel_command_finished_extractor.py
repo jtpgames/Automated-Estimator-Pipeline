@@ -37,7 +37,7 @@ class ListParallelRequestsFinished(AbstractFeatureExtractor):
         data = Table(
             'test_table', metadata_obj,
             Column('index', Integer, primary_key=True),
-            Column('List_parallel_requests_finished', JSONEncodedDict),
+            Column('List parallel requests finished', JSONEncodedDict),
         )
         names_mapping = Table(
             'gs_training_cmd_mapping', metadata_obj,

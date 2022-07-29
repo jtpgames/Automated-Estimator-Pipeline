@@ -1,15 +1,26 @@
 {
-  "unprocessed_logfiles": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed/",
-  "processed_logfiles": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed/",
-  "export_methods": ["db", "csv"],
-  "db": {
-    "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db/"
-  },
-  "csv": {
-    "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/csv/"
-  },
-  "extractors": [
-    "Timestamp", "PR 1", "PR 2", "PR 3", "cmd", "response time", "First Command Start", "First Command Finished", "List parallel requests start", "List parallel requests finished", "arrive time"
-  ],
-  "force": "True"
+    "unprocessed_logfiles": "/scratch/tmp/a_lier03/logfile_analysis/resources/logfiles/unprocessed",
+    "processed_logfiles": "/scratch/tmp/a_lier03/logfile_analysis/resources/logfiles/processed",
+    "export_methods": [
+        "db"
+    ],
+    "db": {
+        "folder": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db"
+    },
+    "csv": {
+        "folder": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/csv"
+    },
+    "extractors": [
+        "Timestamp",
+        "PR 1",
+        "PR 2",
+        "PR 3",
+        "cmd",
+        "response time",
+        "First Command Start",
+        "First Command Finished",
+        "List parallel requests start",
+        "List parallel requests finished"
+    ],
+    "force": "True"
 }

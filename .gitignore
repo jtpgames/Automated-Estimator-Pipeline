@@ -164,3 +164,8 @@ cython_debug/
 resources/export/*
 resources/logfiles/*
 resources/models/*
+resources/config/analysis_config.json
+resources/config/etl_config.json
+
+start_computation.sh
+
