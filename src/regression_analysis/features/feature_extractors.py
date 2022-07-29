@@ -3,6 +3,8 @@ from typing import List
 from src.regression_analysis.features.abstract_feature_extractor import (
     AbstractFeatureExtractor,
 )
+from src.regression_analysis.features.arrive_time_extractor import \
+    ArriveTimeExtractor
 from src.regression_analysis.features.cmd_extractor import CMDExtractor
 from src.regression_analysis.features.first_parallel_command_finished_extractor import (
     FirstCommandEndExtractor,
@@ -33,7 +35,8 @@ possible_extractors: List[AbstractFeatureExtractor] = [
     FirstCommandEndExtractor(),
     ResponseTimeExtractor(),
     ListParallelRequestsFinished(),
-    ListParallelRequestsStart()
+    ListParallelRequestsStart(),
+    ArriveTimeExtractor()
 ]
 
 
