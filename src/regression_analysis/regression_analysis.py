@@ -9,7 +9,8 @@ import typer
 import pandas as pd
 from joblib import dump, load
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.model_selection import train_test_split, cross_val_score, \
+    GridSearchCV
 
 from sklearn import decomposition, datasets, tree
 from sklearn.pipeline import Pipeline
@@ -82,7 +83,7 @@ class RegressionAnalysis:
                 )
 
             logging.info(self.__df.shape)
-        
+
         self.__remove_outliers()
         logging.info("memory consumption: {}".format(sys.getsizeof(self.__df)))
 
@@ -118,15 +119,21 @@ class RegressionAnalysis:
         logging.info(self.__df)
 
         std_slc = StandardScaler()
-        pcd = decomposition.PCA()
+        pca = decomposition.PCA()
         dec_tree = tree.DecisionTreeClassifier()
-        pipe = Pipeline(steps)[('std_cla', std_cla), ('pca', pca),('dec_tree', dec_tree)]
+        pipe = Pipeline(
+            steps=[('std_slc', std_slc), ('pca', pca), ('dec_tree', dec_tree)]
+        )
 
-        n_components = list(range(1,X.shape[1]+1,1))
+        n_components = list(range(1, self.__df.shape[1] + 1, 1))
         criterion = ['gini', 'entropy']
-        max_depth = [2,4,6,8,10,12]
+        max_depth = [2, 4, 6, 8, 10, 12]
 
-        parameters = dict(pca__n_components=n_components,dec_tree__criterion=criterion, dec_tree__max_depth=max_depth)
+        parameters = dict(
+            pca__n_components=n_components,
+            dec_tree__criterion=criterion,
+            dec_tree__max_depth=max_depth
+        )
         clf_GS = GridSearchCV(pipe, parameters)
 
         x_train, x_test, y_train, y_test = train_test_split(
@@ -134,10 +141,21 @@ class RegressionAnalysis:
         )
         clf_GS.fit(x_train, y_train)
 
-        print('Best Criterion:', clf_GS.best_estimator_.get_params()['dec_tree__criterion'])
-        print('Best max_depth:', clf_GS.best_estimator_.get_params()['dec_tree__max_depth'])
-        print('Best Number Of Components:', clf_GS.best_estimator_.get_params()['pca__n_components'])
-        print(); print(clf_GS.best_estimator_.get_params()['dec_tree'])
+        print(
+            'Best Criterion:',
+            clf_GS.best_estimator_.get_params()['dec_tree__criterion']
+        )
+        print(
+            'Best max_depth:',
+            clf_GS.best_estimator_.get_params()['dec_tree__max_depth']
+        )
+        print(
+            'Best Number Of Components:',
+            clf_GS.best_estimator_.get_params()['pca__n_components']
+        )
+        print()
+
+        print(clf_GS.best_estimator_.get_params()['dec_tree'])
 
         clf_GS.score(x_test, y_test)
         # y = self.__df.pop(self.__y_column_name)
