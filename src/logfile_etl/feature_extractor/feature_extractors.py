@@ -4,6 +4,8 @@ from typing import List
 from src.logfile_etl.feature_extractor.abstract_feature_extractor import (
     AbstractFeatureExtractor,
 )
+from src.logfile_etl.feature_extractor.arrive_time_extractor import \
+    ArriveTimeExtractor
 from src.logfile_etl.feature_extractor.cmd_extractor import CMDExtractor
 from src.logfile_etl.feature_extractor.first_parallel_request_finished_extractor import (
     FirstParallelRequestFinishedExtractor,
@@ -37,8 +39,8 @@ possible_feature_extractors: List[AbstractFeatureExtractor] = [
     FirstParallelRequestStartExtractor(),
     FirstParallelRequestFinishedExtractor(),
     ListParallelRequestsStart(),
-    ListParallelRequestsFinished()
-
+    ListParallelRequestsFinished(),
+    ArriveTimeExtractor()
 ]
 
 

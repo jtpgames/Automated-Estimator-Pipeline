@@ -1,0 +1,9 @@
+apiVersion: helm.openshift.io/v1beta1
+kind: HelmChartRepository
+metadata:
+  name: SonarQube
+spec:
+  connectionConfig:
+    url: https://SonarSource.github.io/helm-chart-sonarqube
+
+

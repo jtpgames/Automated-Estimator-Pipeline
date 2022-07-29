@@ -1,0 +1,18 @@
+{
+  "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-16.db",
+  "features": [
+    "cmd",
+    "List parallel requests start",
+    "List parallel requests finished",
+    "arrive time",
+    "response time"
+  ],
+  "y": "response time",
+  "models": [
+    "LR",
+    "Ridge",
+    "Lasso",
+    "DT"
+  ],
+  "model_save_path": "/scratch/tmp/a_lier03/logfile_analysis/resources/models"
+}
