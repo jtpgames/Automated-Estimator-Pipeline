@@ -113,191 +113,40 @@ Lmod Web Sites
 
 
 
-2022-07-29 12:59:41,725 INFO ################################################################
-2022-07-29 12:59:41,725 INFO ################ Configuration successfully loaded #############
-2022-07-29 12:59:41,725 INFO ################################################################
+2022-07-29 14:44:10,396 INFO ################################################################
+2022-07-29 14:44:10,397 INFO ################ Configuration successfully loaded #############
+2022-07-29 14:44:10,397 INFO ################################################################
 
-2022-07-29 12:59:41,725 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
-2022-07-29 12:59:41,725 INFO features: ['arrive time', 'cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
-2022-07-29 12:59:41,725 INFO y column: response time
-2022-07-29 12:59:41,725 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
+2022-07-29 14:44:10,397 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-07-29 14:44:10,397 INFO features: ['cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
+2022-07-29 14:44:10,397 INFO y column: response time
+2022-07-29 14:44:10,397 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
 
-2022-07-29 12:59:41,725 INFO number feature extractors: 5
-2022-07-29 12:59:41,725 INFO Loading values of extractor: arrive time
-2022-07-29 12:59:51,306 INFO (5213877, 1)
-2022-07-29 12:59:51,306 INFO Loading values of extractor: cmd
-2022-07-29 13:00:02,562 INFO (5213877, 2)
-2022-07-29 13:00:02,563 INFO Loading values of extractor: List parallel requests start
-2022-07-29 13:01:12,078 INFO (5213877, 305)
-2022-07-29 13:01:12,082 INFO Loading values of extractor: List parallel requests finished
-2022-07-29 13:02:18,794 INFO (5213877, 608)
-2022-07-29 13:02:18,797 INFO Loading values of extractor: response time
-2022-07-29 13:02:28,067 INFO (5213877, 609)
-2022-07-29 13:02:43,638 INFO memory consumption: 3190892868
-2022-07-29 13:02:43,643 INFO -------
-2022-07-29 13:02:43,643 INFO unscaled
-2022-07-29 13:02:43,643 INFO          arrive time  cmd  0_x  1_x  2_x  ...  298_y  299_y  300_y  301_y  302_y
-0                  0    1    0    0    0  ...      0      0      0      0      0
-1                  0    1    0    1    0  ...      0      0      0      0      0
-2                  0    2    0    0    1  ...      0      0      0      0      0
-3                  0    3    0    0    1  ...      0      0      0      0      0
-4                  0    1    0    0    1  ...      0      0      0      0      0
-...              ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
-5213872           95    6    0    0    0  ...      0      0      0      0      0
-5213873           95    1    0    0    0  ...      0      0      0      0      0
-5213874           95    2    0    0    0  ...      0      0      0      0      0
-5213875           95    5    0    0    0  ...      0      0      0      0      0
-5213876           95    4    0    0    0  ...      0      0      0      0      0
+2022-07-29 14:44:10,401 INFO number feature extractors: 4
+2022-07-29 14:44:10,402 INFO Loading values of extractor: cmd
+2022-07-29 14:44:25,600 INFO (5213877,)
+2022-07-29 14:44:25,600 INFO Loading values of extractor: List parallel requests start
+2022-07-29 14:45:35,223 INFO (5213877, 304)
+2022-07-29 14:45:35,223 INFO Loading values of extractor: List parallel requests finished
+2022-07-29 14:46:43,901 INFO (5213877, 607)
+2022-07-29 14:46:43,901 INFO Loading values of extractor: response time
+2022-07-29 14:46:52,693 INFO (5213877, 608)
+2022-07-29 14:47:08,347 INFO memory consumption: 3180465114
+2022-07-29 14:47:08,353 INFO -------
+2022-07-29 14:47:08,353 INFO unscaled
+2022-07-29 14:47:08,353 INFO          cmd  0_x  1_x  2_x  3_x  4_x  ...  297_y  298_y  299_y  300_y  301_y  302_y
+0          1    0    0    0    0    0  ...      0      0      0      0      0      0
+1          1    0    1    0    0    0  ...      0      0      0      0      0      0
+2          2    0    0    1    1    0  ...      0      0      0      0      0      0
+3          3    0    0    1    2    1  ...      0      0      0      0      0      0
+4          1    0    0    1    2    0  ...      0      0      0      0      0      0
+...      ...  ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...    ...
+5213872    6    0    0    0    1    0  ...      0      0      0      0      0      0
+5213873    1    0    0    0    0    0  ...      0      0      0      0      0      0
+5213874    2    0    0    0    0    0  ...      0      0      0      0      0      0
+5213875    5    0    0    0    0    1  ...      0      0      0      0      0      0
+5213876    4    0    0    0    0    0  ...      0      0      0      0      0      0
 
-[5213877 rows x 608 columns]
-2022-07-29 13:03:09,227 INFO ====
-2022-07-29 13:03:09,227 INFO == Evaluating each model in turn ==
-2022-07-29 13:05:05,631 INFO == X_test ==
-2022-07-29 13:05:05,631 INFO          arrive time  cmd  0_x  1_x  2_x  ...  298_y  299_y  300_y  301_y  302_y
-3942379            3    4    0    0    0  ...      0      0      0      0      0
-2345653           34   64    0    0    0  ...      0      0      0      0      0
-1808994           49    4    0    0    0  ...      0      0      0      0      0
-2005282           69    5    0    0    0  ...      0      0      0      0      0
-697829            87   10    0    0    0  ...      0      0      0      0      0
-...              ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
-3054798           38   93    0    0    0  ...      0      0      0      0      0
-1632943           34   10    0    0    0  ...      0      0      0      0      0
-1192300           57  132    0    0    0  ...      0      0      0      0      0
-718408            91    5    0    0    0  ...      0      0      0      0      0
-3088547           41   64    0    0    0  ...      0      0      0      0      0
-
-[1042776 rows x 608 columns]
-2022-07-29 13:05:05,807 INFO == Predictions ==
-2022-07-29 13:05:08,026 INFO [ 36.79650001  35.37725346  38.7155286  ...  33.26259548 111.12271033
-  35.02283245]
-2022-07-29 13:05:08,027 INFO == y_test ==
-2022-07-29 13:05:08,027 INFO 3942379    47
-2345653    31
-1808994    78
-2005282    46
-697829     78
-           ..
-3054798    16
-1632943    93
-1192300    16
-718408     47
-3088547     0
-Name: response time, Length: 1042776, dtype: int16
-2022-07-29 13:05:08,029 INFO ====
-2022-07-29 13:05:08,044 INFO Mean absolute error: 49.962
-2022-07-29 13:05:08,044 INFO Mean squared error: 411742.95
-2022-07-29 13:05:08,044 INFO Coefficient of determination: -636.41%
-2022-07-29 13:05:08,045 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/LR_model_2022-07-29.joblib
-2022-07-29 13:05:48,355 INFO == X_test ==
-2022-07-29 13:05:48,355 INFO          arrive time  cmd  0_x  1_x  2_x  ...  298_y  299_y  300_y  301_y  302_y
-3942379            3    4    0    0    0  ...      0      0      0      0      0
-2345653           34   64    0    0    0  ...      0      0      0      0      0
-1808994           49    4    0    0    0  ...      0      0      0      0      0
-2005282           69    5    0    0    0  ...      0      0      0      0      0
-697829            87   10    0    0    0  ...      0      0      0      0      0
-...              ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
-3054798           38   93    0    0    0  ...      0      0      0      0      0
-1632943           34   10    0    0    0  ...      0      0      0      0      0
-1192300           57  132    0    0    0  ...      0      0      0      0      0
-718408            91    5    0    0    0  ...      0      0      0      0      0
-3088547           41   64    0    0    0  ...      0      0      0      0      0
-
-[1042776 rows x 608 columns]
-2022-07-29 13:05:48,528 INFO == Predictions ==
-2022-07-29 13:05:50,743 INFO [ 36.80658146  35.38080545  38.72283267 ...  33.25948    111.12810154
-  35.01669616]
-2022-07-29 13:05:50,743 INFO == y_test ==
-2022-07-29 13:05:50,743 INFO 3942379    47
-2345653    31
-1808994    78
-2005282    46
-697829     78
-           ..
-3054798    16
-1632943    93
-1192300    16
-718408     47
-3088547     0
-Name: response time, Length: 1042776, dtype: int16
-2022-07-29 13:05:50,745 INFO ====
-2022-07-29 13:05:50,760 INFO Mean absolute error: 48.897
-2022-07-29 13:05:50,760 INFO Mean squared error: 17954.42
-2022-07-29 13:05:50,760 INFO Coefficient of determination: 67.89%
-2022-07-29 13:05:50,761 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/Ridge_model_2022-07-29.joblib
-2022-07-29 13:06:27,363 INFO == X_test ==
-2022-07-29 13:06:27,364 INFO          arrive time  cmd  0_x  1_x  2_x  ...  298_y  299_y  300_y  301_y  302_y
-3942379            3    4    0    0    0  ...      0      0      0      0      0
-2345653           34   64    0    0    0  ...      0      0      0      0      0
-1808994           49    4    0    0    0  ...      0      0      0      0      0
-2005282           69    5    0    0    0  ...      0      0      0      0      0
-697829            87   10    0    0    0  ...      0      0      0      0      0
-...              ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
-3054798           38   93    0    0    0  ...      0      0      0      0      0
-1632943           34   10    0    0    0  ...      0      0      0      0      0
-1192300           57  132    0    0    0  ...      0      0      0      0      0
-718408            91    5    0    0    0  ...      0      0      0      0      0
-3088547           41   64    0    0    0  ...      0      0      0      0      0
-
-[1042776 rows x 608 columns]
-2022-07-29 13:06:27,536 INFO == Predictions ==
-2022-07-29 13:06:29,771 INFO [ 32.64858296  31.90516856  34.69078232 ...  30.52396516 123.83624643
-  32.21593803]
-2022-07-29 13:06:29,771 INFO == y_test ==
-2022-07-29 13:06:29,771 INFO 3942379    47
-2345653    31
-1808994    78
-2005282    46
-697829     78
-           ..
-3054798    16
-1632943    93
-1192300    16
-718408     47
-3088547     0
-Name: response time, Length: 1042776, dtype: int16
-2022-07-29 13:06:29,773 INFO ====
-2022-07-29 13:06:29,788 INFO Mean absolute error: 49.106
-2022-07-29 13:06:29,788 INFO Mean squared error: 18930.24
-2022-07-29 13:06:29,788 INFO Coefficient of determination: 66.14%
-2022-07-29 13:06:29,788 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/Lasso_model_2022-07-29.joblib
-2022-07-29 13:20:00,053 INFO == X_test ==
-2022-07-29 13:20:00,053 INFO          arrive time  cmd  0_x  1_x  2_x  ...  298_y  299_y  300_y  301_y  302_y
-3942379            3    4    0    0    0  ...      0      0      0      0      0
-2345653           34   64    0    0    0  ...      0      0      0      0      0
-1808994           49    4    0    0    0  ...      0      0      0      0      0
-2005282           69    5    0    0    0  ...      0      0      0      0      0
-697829            87   10    0    0    0  ...      0      0      0      0      0
-...              ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...
-3054798           38   93    0    0    0  ...      0      0      0      0      0
-1632943           34   10    0    0    0  ...      0      0      0      0      0
-1192300           57  132    0    0    0  ...      0      0      0      0      0
-718408            91    5    0    0    0  ...      0      0      0      0      0
-3088547           41   64    0    0    0  ...      0      0      0      0      0
-
-[1042776 rows x 608 columns]
-2022-07-29 13:20:00,215 INFO == Predictions ==
-2022-07-29 13:20:02,643 INFO [ 60.34125726  22.9263658   79.31690141 ...  16.75       165.34722222
-  31.33333333]
-2022-07-29 13:20:02,644 INFO == y_test ==
-2022-07-29 13:20:02,644 INFO 3942379    47
-2345653    31
-1808994    78
-2005282    46
-697829     78
-           ..
-3054798    16
-1632943    93
-1192300    16
-718408     47
-3088547     0
-Name: response time, Length: 1042776, dtype: int16
-2022-07-29 13:20:02,645 INFO ====
-2022-07-29 13:20:02,659 INFO Mean absolute error: 37.082
-2022-07-29 13:20:02,659 INFO Mean squared error: 11783.52
-2022-07-29 13:20:02,659 INFO Coefficient of determination: 78.93%
-2022-07-29 13:20:02,659 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/DT_model_2022-07-29.joblib
-2022-07-29 13:20:02,796 INFO save cmd names mapping
-2022-07-29 13:20:02,798 INFO ====
-
-Finished.
-
+[5213877 rows x 607 columns]
+/Applic.HPC/Easybuild/skylake/2021a/software/scikit-learn/0.24.2-foss-2021a/lib/python3.9/site-packages/sklearn/model_selection/_split.py:666: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(("The least populated class in y has only %d"
