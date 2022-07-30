@@ -35,6 +35,7 @@ if __name__ == "__main__":
 
     analysis_config = {
         "db": db_file.as_posix(),
+        "db_limit": -1,
         "features": ["PR 1", "PR 3", "cmd", "First Command Start",
                      "First Command Finished", "response time"],
         "y": "response time",

@@ -134,7 +134,7 @@ class RegressionAnalysis:
             dec_tree__criterion=criterion,
             dec_tree__max_depth=max_depth
         )
-        clf_GS = GridSearchCV(pipe, parameters)
+        clf_GS = GridSearchCV(pipe, parameters, verbose=2)
 
         x_train, x_test, y_train, y_test = train_test_split(
             self.__df, y, test_size=0.2, random_state=42
@@ -158,6 +158,14 @@ class RegressionAnalysis:
         print(clf_GS.best_estimator_.get_params()['dec_tree'])
 
         clf_GS.score(x_test, y_test)
+
+        cv_results = cross_val_score(clf_GS.best_estimator_, x_train, y_train)
+        logging.info(
+            "%s: Accuracy: %0.2f (+/- %0.2f)"
+            % ("DecisionTree", cv_results.mean(), cv_results.std() * 2)
+        )
+
+        print(clf_GS.best_estimator_.get_params())
         # y = self.__df.pop(self.__y_column_name)
         # logging.info("-------")
         # logging.info("unscaled")
