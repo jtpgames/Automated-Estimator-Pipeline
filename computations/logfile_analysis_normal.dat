@@ -113,28 +113,28 @@ Lmod Web Sites
 
 
 
-2022-07-29 14:44:10,396 INFO ################################################################
-2022-07-29 14:44:10,397 INFO ################ Configuration successfully loaded #############
-2022-07-29 14:44:10,397 INFO ################################################################
+2022-07-29 23:50:05,791 INFO ################################################################
+2022-07-29 23:50:05,791 INFO ################ Configuration successfully loaded #############
+2022-07-29 23:50:05,791 INFO ################################################################
 
-2022-07-29 14:44:10,397 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
-2022-07-29 14:44:10,397 INFO features: ['cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
-2022-07-29 14:44:10,397 INFO y column: response time
-2022-07-29 14:44:10,397 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
+2022-07-29 23:50:05,791 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-07-29 23:50:05,791 INFO features: ['cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
+2022-07-29 23:50:05,792 INFO y column: response time
+2022-07-29 23:50:05,792 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
 
-2022-07-29 14:44:10,401 INFO number feature extractors: 4
-2022-07-29 14:44:10,402 INFO Loading values of extractor: cmd
-2022-07-29 14:44:25,600 INFO (5213877,)
-2022-07-29 14:44:25,600 INFO Loading values of extractor: List parallel requests start
-2022-07-29 14:45:35,223 INFO (5213877, 304)
-2022-07-29 14:45:35,223 INFO Loading values of extractor: List parallel requests finished
-2022-07-29 14:46:43,901 INFO (5213877, 607)
-2022-07-29 14:46:43,901 INFO Loading values of extractor: response time
-2022-07-29 14:46:52,693 INFO (5213877, 608)
-2022-07-29 14:47:08,347 INFO memory consumption: 3180465114
-2022-07-29 14:47:08,353 INFO -------
-2022-07-29 14:47:08,353 INFO unscaled
-2022-07-29 14:47:08,353 INFO          cmd  0_x  1_x  2_x  3_x  4_x  ...  297_y  298_y  299_y  300_y  301_y  302_y
+2022-07-29 23:50:05,796 INFO number feature extractors: 4
+2022-07-29 23:50:05,796 INFO Loading values of extractor: cmd
+2022-07-29 23:50:20,484 INFO (5213877,)
+2022-07-29 23:50:20,484 INFO Loading values of extractor: List parallel requests start
+2022-07-29 23:51:33,211 INFO (5213877, 304)
+2022-07-29 23:51:33,211 INFO Loading values of extractor: List parallel requests finished
+2022-07-29 23:52:45,265 INFO (5213877, 607)
+2022-07-29 23:52:45,265 INFO Loading values of extractor: response time
+2022-07-29 23:52:54,454 INFO (5213877, 608)
+2022-07-29 23:53:10,882 INFO memory consumption: 3180465114
+2022-07-29 23:53:10,953 INFO -------
+2022-07-29 23:53:10,953 INFO unscaled
+2022-07-29 23:53:10,953 INFO          cmd  0_x  1_x  2_x  3_x  4_x  ...  297_y  298_y  299_y  300_y  301_y  302_y
 0          1    0    0    0    0    0  ...      0      0      0      0      0      0
 1          1    0    1    0    0    0  ...      0      0      0      0      0      0
 2          2    0    0    1    1    0  ...      0      0      0      0      0      0
@@ -150,4 +150,3 @@ Lmod Web Sites
 [5213877 rows x 607 columns]
 /Applic.HPC/Easybuild/skylake/2021a/software/scikit-learn/0.24.2-foss-2021a/lib/python3.9/site-packages/sklearn/model_selection/_split.py:666: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
   warnings.warn(("The least populated class in y has only %d"
-slurmstepd: error: *** JOB 12093971 ON r07n01 CANCELLED AT 2022-07-29T16:43:48 DUE TO TIME LIMIT ***
