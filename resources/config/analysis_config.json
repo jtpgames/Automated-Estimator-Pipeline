@@ -1,9 +1,10 @@
 {
     "db": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db/trainingdata_2022-05-29.db",
+    "db_limit": 10000,
     "features": [
         "cmd",
-        "List parallel requests start",
-        "List parallel requests finished",
+        "First Command Start",
+        "First Command Finished",
         "response time"
     ],
     "y": "response time",

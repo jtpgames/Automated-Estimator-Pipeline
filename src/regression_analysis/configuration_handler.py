@@ -13,6 +13,7 @@ class ConfigurationHandler:
         self.__db_path = None
         self.__features = None
         self.__config_file_path = config_file_path
+        self.__db_limit = -1
 
     def load_config(self):
         root_dir = get_project_root()
@@ -24,6 +25,7 @@ class ConfigurationHandler:
             self.__models = config["models"]
             self.__y = config["y"]
             self.__model_save_path = config["model_save_path"]
+            self.__db_limit = config["db_limit"]
 
         self.__log_config()
 
@@ -33,12 +35,6 @@ class ConfigurationHandler:
     def get_db_url(self):
         Path(self.__db_path).parent.mkdir(parents=True, exist_ok=True)
         return "sqlite:///" + self.__db_path
-
-    # def __log_config(self):
-    #     logging.info("Configuration successfully loaded")
-    #     logging.info("db path: {}".format(self.__db_path))
-    #     logging.info("features: {}".format(self.__features))
-    #     logging.info("models: {}".format(self.__models))
 
     def __log_config(self):
         logging.info(
@@ -53,7 +49,8 @@ class ConfigurationHandler:
         logging.info("db path: {}".format(self.__db_path))
         logging.info("features: {}".format(self.__features))
         logging.info("y column: {}".format(self.__y))
-        logging.info("models: {}\n".format(self.__models))
+        logging.info("models: {}".format(self.__models))
+        logging.info("db limit: {}\n".format(self.__db_limit))
 
     def get_models(self):
         return self.__models
@@ -63,3 +60,6 @@ class ConfigurationHandler:
 
     def get_model_save_path(self):
         return self.__model_save_path
+
+    def get_db_limit(self):
+        return self.__db_limit
