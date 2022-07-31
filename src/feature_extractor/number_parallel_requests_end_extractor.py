@@ -1,13 +1,10 @@
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractFeatureETLExtractor
+    AbstractETLFeatureExtractor
 )
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 
-class ParallelRequestsTwoETLExtractor(AbstractFeatureETLExtractor):
-    def get_feature_name(self) -> str:
-        return "PR 2"
-
+class ParallelRequestsTwoETLExtractor(AbstractETLFeatureExtractor):
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):

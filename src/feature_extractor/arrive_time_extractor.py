@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer
 
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractAnalysisFeatureExtractor, AbstractFeatureETLExtractor
+    AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
@@ -11,12 +11,9 @@ class ArriveTimeAnalysisExtractor(AbstractAnalysisFeatureExtractor):
         return Column(self.get_column_name(), Integer)
 
 
-class ArriveTimeETLExtractor(AbstractFeatureETLExtractor):
+class ArriveTimeETLExtractor(AbstractETLFeatureExtractor):
     intervals_per_hour = 4
     minutes_per_interval = 60 / intervals_per_hour
-
-    def get_feature_name(self) -> str:
-        return "arrive time"
 
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str

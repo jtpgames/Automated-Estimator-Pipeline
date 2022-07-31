@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Tuple
 
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractFeatureETLExtractor,
+    AbstractETLFeatureExtractor,
 )
 from src.feature_extractor.feature_extractor_init import (
     get_feature_extractors_by_name_etl,
@@ -23,7 +23,7 @@ from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 
 class MergedLogProcessor:
-    __feature_extractors: List[AbstractFeatureETLExtractor] = []
+    __feature_extractors: List[AbstractETLFeatureExtractor] = []
     __data = {}
 
     def __init__(self, config_handler: ETLConfigurationHandler):

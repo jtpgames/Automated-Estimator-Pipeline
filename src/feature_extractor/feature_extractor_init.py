@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List
 
 from src.feature_extractor.abstract_feature_extractor import AbstractAnalysisFeatureExtractor, \
-    AbstractFeatureETLExtractor
+    AbstractETLFeatureExtractor
 from src.feature_extractor.cmd_extractor import CMDETLExtractor, CMDAnalysisExtractor
 from src.database import Database
 from src.feature_extractor.arrive_time_extractor import ArriveTimeAnalysisExtractor, \
@@ -40,6 +40,21 @@ analysis_extractor_generator_dict: Dict[
     'arrive time': ArriveTimeAnalysisExtractor,
 }
 
+etl_extractor_generator_dict: Dict[
+    str, AbstractETLFeatureExtractor] = {
+    'cmd': CMDETLExtractor,
+    'PR 1': ParallelRequestsOneETLExtractor,
+    'PR 2': ParallelRequestsTwoETLExtractor,
+    'PR 3': ParallelRequestsThreeETLExtractor,
+    'First Command Start': FirstParallelRequestStartETLExtractor,
+    'First Command Finished': FirstParallelRequestFinishedETLExtractor,
+    'response time': ResponseTimeETLExtractor,
+    'List parallel requests finished': ListParallelRequestsFinishedETLExtractor,
+    'List parallel requests start': ListParallelRequestsStartETLExtractor,
+    'arrive time': ArriveTimeETLExtractor,
+    'Timestamp': TimestampETLExtractor,
+}
+
 
 def get_feature_extractors_by_name_analysis(
         db: Database,
@@ -56,31 +71,13 @@ def get_feature_extractors_by_name_analysis(
     return feature_extractors
 
 
-possible_feature_extractors: List[AbstractFeatureETLExtractor] = [
-    ParallelRequestsOneETLExtractor(),
-    ParallelRequestsTwoETLExtractor(),
-    ParallelRequestsThreeETLExtractor(),
-    ResponseTimeETLExtractor(),
-    CMDETLExtractor(),
-    TimestampETLExtractor(),
-    FirstParallelRequestStartETLExtractor(),
-    FirstParallelRequestFinishedETLExtractor(),
-    ListParallelRequestsStartETLExtractor(),
-    ListParallelRequestsFinishedETLExtractor(),
-    ArriveTimeETLExtractor()
-]
-
-
 def get_feature_extractors_by_name_etl(
-        extractor_names: List[str],
-) -> List[AbstractFeatureETLExtractor]:
+        feature_extractor_names: List[str]
+) -> List[AbstractAnalysisFeatureExtractor]:
     feature_extractors = []
-    for extractor in extractor_names:
-        extractor_found = False
-        for actual_extractor in possible_feature_extractors:
-            if extractor == actual_extractor.get_feature_name():
-                feature_extractors.append(actual_extractor)
-                extractor_found = True
-        if not extractor_found:
-            logging.warning("No feature extractor found for name: ", extractor)
+    for extractors_name in feature_extractor_names:
+        feature_extractors.append(etl_extractor_generator_dict[extractors_name](
+                extractors_name
+            )
+        )
     return feature_extractors

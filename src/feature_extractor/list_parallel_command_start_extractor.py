@@ -5,7 +5,7 @@ from numpy import uint8
 from sqlalchemy import Column, Integer
 
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractAnalysisFeatureExtractor, AbstractFeatureETLExtractor
+    AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )
 from src.feature_extractor.json_encoder.dict_encoder import \
     JSONEncodedDict
@@ -42,9 +42,7 @@ class ListParallelRequestsStartAnalysisExtractor(
         return df
 
 
-class ListParallelRequestsStartETLExtractor(AbstractFeatureETLExtractor):
-    def get_feature_name(self) -> str:
-        return "List parallel requests start"
+class ListParallelRequestsStartETLExtractor(AbstractETLFeatureExtractor):
 
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str

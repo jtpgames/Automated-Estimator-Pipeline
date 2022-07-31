@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer
 
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractAnalysisFeatureExtractor, AbstractFeatureETLExtractor
+    AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
@@ -11,10 +11,7 @@ class FirstCommandStartAnalysisExtractor(AbstractAnalysisFeatureExtractor):
         return Column(self.get_column_name(), Integer)
 
 
-class FirstParallelRequestStartETLExtractor(AbstractFeatureETLExtractor):
-    def get_feature_name(self) -> str:
-        return "First Command Start"
-
+class FirstParallelRequestStartETLExtractor(AbstractETLFeatureExtractor):
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):

@@ -47,10 +47,14 @@ class AbstractAnalysisFeatureExtractor(ABC):
         return self.__db.get_cmd_names_dict()
 
 
-class AbstractFeatureETLExtractor(ABC):
-    def get_feature_name(self) -> str:
-        pass
+class AbstractETLFeatureExtractor(ABC):
+    def __init__(self, feature_name):
+        self.__feature_name = feature_name
 
+    def get_feature_name(self) -> str:
+        return self.__feature_name
+
+    @abstractmethod
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):

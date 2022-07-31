@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer
 
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractAnalysisFeatureExtractor, AbstractFeatureETLExtractor
+    AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
@@ -12,10 +12,7 @@ class PROneAnalysisExtractor(AbstractAnalysisFeatureExtractor):
         return Column(self.get_column_name(), Integer)
 
 
-class ParallelRequestsOneETLExtractor(AbstractFeatureETLExtractor):
-    def get_feature_name(self) -> str:
-        return "PR 1"
-
+class ParallelRequestsOneETLExtractor(AbstractETLFeatureExtractor):
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):
