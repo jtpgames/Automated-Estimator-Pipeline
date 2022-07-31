@@ -1,5 +1,6 @@
 {
-  "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-16.db",
+  "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db",
+  "db_limit": 10000,
   "features": [
     "cmd",
     "List parallel requests start",

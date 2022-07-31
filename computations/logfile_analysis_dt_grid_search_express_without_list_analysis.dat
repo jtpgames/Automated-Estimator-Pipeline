@@ -113,41 +113,48 @@ Lmod Web Sites
 
 
 
-2022-07-29 23:50:05,791 INFO ################################################################
-2022-07-29 23:50:05,791 INFO ################ Configuration successfully loaded #############
-2022-07-29 23:50:05,791 INFO ################################################################
+2022-07-31 09:47:05,612 INFO ################################################################
+2022-07-31 09:47:05,613 INFO ################ Configuration successfully loaded #############
+2022-07-31 09:47:05,613 INFO ################################################################
 
-2022-07-29 23:50:05,791 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
-2022-07-29 23:50:05,791 INFO features: ['cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
-2022-07-29 23:50:05,792 INFO y column: response time
-2022-07-29 23:50:05,792 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
+2022-07-31 09:47:05,613 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-07-31 09:47:05,613 INFO features: ['cmd', 'PR 1', 'PR 3', 'First Command Start', 'First Command Finished', 'arrive time', 'response time']
+2022-07-31 09:47:05,613 INFO y column: response time
+2022-07-31 09:47:05,613 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
+2022-07-31 09:47:05,613 INFO db limit: -1
 
-2022-07-29 23:50:05,796 INFO number feature extractors: 4
-2022-07-29 23:50:05,796 INFO Loading values of extractor: cmd
-2022-07-29 23:50:20,484 INFO (5213877,)
-2022-07-29 23:50:20,484 INFO Loading values of extractor: List parallel requests start
-2022-07-29 23:51:33,211 INFO (5213877, 304)
-2022-07-29 23:51:33,211 INFO Loading values of extractor: List parallel requests finished
-2022-07-29 23:52:45,265 INFO (5213877, 607)
-2022-07-29 23:52:45,265 INFO Loading values of extractor: response time
-2022-07-29 23:52:54,454 INFO (5213877, 608)
-2022-07-29 23:53:10,882 INFO memory consumption: 3180465114
-2022-07-29 23:53:10,953 INFO -------
-2022-07-29 23:53:10,953 INFO unscaled
-2022-07-29 23:53:10,953 INFO          cmd  0_x  1_x  2_x  3_x  4_x  ...  297_y  298_y  299_y  300_y  301_y  302_y
-0          1    0    0    0    0    0  ...      0      0      0      0      0      0
-1          1    0    1    0    0    0  ...      0      0      0      0      0      0
-2          2    0    0    1    1    0  ...      0      0      0      0      0      0
-3          3    0    0    1    2    1  ...      0      0      0      0      0      0
-4          1    0    0    1    2    0  ...      0      0      0      0      0      0
-...      ...  ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...    ...
-5213872    6    0    0    0    1    0  ...      0      0      0      0      0      0
-5213873    1    0    0    0    0    0  ...      0      0      0      0      0      0
-5213874    2    0    0    0    0    0  ...      0      0      0      0      0      0
-5213875    5    0    0    0    0    1  ...      0      0      0      0      0      0
-5213876    4    0    0    0    0    0  ...      0      0      0      0      0      0
+2022-07-31 09:47:05,619 INFO number feature extractors: 7
+2022-07-31 09:47:05,619 INFO Loading values of extractor: cmd
+2022-07-31 09:47:19,454 INFO (5213877, 1)
+2022-07-31 09:47:19,454 INFO Loading values of extractor: PR 1
+2022-07-31 09:47:33,067 INFO (5213877, 2)
+2022-07-31 09:47:33,068 INFO Loading values of extractor: PR 3
+2022-07-31 09:47:45,572 INFO (5213877, 3)
+2022-07-31 09:47:45,572 INFO Loading values of extractor: First Command Start
+2022-07-31 09:47:58,626 INFO (5213877, 4)
+2022-07-31 09:47:58,626 INFO Loading values of extractor: First Command Finished
+2022-07-31 09:48:10,897 INFO (5213877, 5)
+2022-07-31 09:48:10,900 INFO Loading values of extractor: arrive time
+2022-07-31 09:48:23,843 INFO (5213877, 6)
+2022-07-31 09:48:23,843 INFO Loading values of extractor: response time
+2022-07-31 09:48:35,841 INFO (5213877, 7)
+2022-07-31 09:48:38,492 INFO memory consumption: 249971654
+2022-07-31 09:48:38,523 INFO -------
+2022-07-31 09:48:38,523 INFO unscaled
+2022-07-31 09:48:38,523 INFO          cmd  PR 1  ...  First Command Finished  arrive time
+index               ...                                     
+0          1     0  ...                       0            0
+1          1     1  ...                       1            0
+2          4     2  ...                       0            0
+3          5     4  ...                       4            0
+4          1     3  ...                       0            0
+...      ...   ...  ...                     ...          ...
+5213872    6     2  ...                       3           95
+5213873    1     1  ...                       0           95
+5213874    4     1  ...                       0           95
+5213875    3     2  ...                       4           95
+5213876    2     1  ...                       0           95
 
-[5213877 rows x 607 columns]
+[5213877 rows x 6 columns]
 /Applic.HPC/Easybuild/skylake/2021a/software/scikit-learn/0.24.2-foss-2021a/lib/python3.9/site-packages/sklearn/model_selection/_split.py:666: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
   warnings.warn(("The least populated class in y has only %d"
-slurmstepd: error: *** JOB 12094996 ON r09n41 CANCELLED AT 2022-07-30T23:49:20 DUE TO TIME LIMIT ***
