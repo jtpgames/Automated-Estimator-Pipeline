@@ -11,7 +11,6 @@
 #SBATCH --mail-type=ALL         # receive email for start | finish | abortion
 #SBATCH --mail-user=a_lier03@uni-muenster.de
 
-# test
 # Instead of Module Loading here, load them prior to execution and run script as "bash -i <script_name>.sh"
 # load needed modules
 module load palma/2021a         # short version with "ml" also possible: ml palma/2020b
