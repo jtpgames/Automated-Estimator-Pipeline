@@ -21,11 +21,11 @@ from src.regression_analysis.database import Database
 from src.regression_analysis.features.abstract_feature_extractor import (
     AbstractFeatureExtractor,
 )
-from src.regression_analysis.features.feature_extractors import (
-    get_feature_extractors_by_name,
-)
+
 from numpy import std, mean
 
+from src.regression_analysis.features.feature_extractor_init import \
+    get_feature_extractors_by_name
 from src.regression_analysis.models.models import get_model_objects_from_names
 
 logging.basicConfig(
@@ -36,44 +36,47 @@ logging.basicConfig(
 
 class RegressionAnalysis:
     __db_path: str
-    __cmd_numbers_mapping = {}
     __df: pd.DataFrame
-    __features_extractors: List[AbstractFeatureExtractor] = []
+    __feature_extractors: List[AbstractFeatureExtractor] = []
+    __feature_extractor_names = List[str]
     __models: List[tuple[str, Any]]
     __db: Database
     __y_column_name: str
 
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: ConfigurationHandler, db: Database):
         self.__models = get_model_objects_from_names(
             config_handler.get_models()
         )
-        self.__db = Database(config_handler)
+        self.__db = db
         self.__df = pd.DataFrame()
-        self.__features_extractors = get_feature_extractors_by_name(
-            config_handler.get_features()
-        )
+        self.__feature_extractor_names = config_handler.get_features()
         self.__y_column_name = config_handler.get_y_column_name()
         self.__export_path = config_handler.get_model_save_path()
+
+    def start(self):
+        self.setup_feature_extractors()
+        self.load_data()
+        self.create_models()
+
+    def setup_feature_extractors(self):
+        self.__feature_extractors = get_feature_extractors_by_name(self.__db, self.__feature_extractor_names)
 
     def load_data(self):
         logging.info(
             "number feature extractors: {}".format(
-                len(self.__features_extractors)
+                len(self.__feature_extractors)
             )
         )
-        for extractor in self.__features_extractors:
+        for extractor in self.__feature_extractors:
             logging.info(
                 "Loading values of extractor: {}".format(
                     extractor.get_column_name()
                 )
             )
             if self.__df.empty:
-                self.__df = extractor.get_df(
-                    self.__db,
-                    self.__cmd_numbers_mapping
-                )
+                self.__df = extractor.get_df()
             else:
-                new_df = extractor.get_df(self.__db, self.__cmd_numbers_mapping)
+                new_df = extractor.get_df()
                 self.__df = pd.merge(
                     self.__df,
                     new_df,
@@ -234,7 +237,7 @@ class RegressionAnalysis:
         mapping_name = "cmd_names_mapping_{}.json".format(today)
         path_to_mapping_file = Path(self.__export_path) / mapping_name
         with open(path_to_mapping_file, "w") as file:
-            json.dump(self.__cmd_numbers_mapping, file)
+            json.dump(self.__db.get_cmd_names_dict(), file)
 
     def save_model(self, mae, mse, r_2_score, model, name):
         today = datetime.now().strftime("%Y-%m-%d")
@@ -259,11 +262,10 @@ class RegressionAnalysis:
 def main(config_file_path: str = "resources/config/analysis_config.json"):
     config_handler = ConfigurationHandler(config_file_path)
     config_handler.load_config()
+    database = Database(config_handler)
 
-    regression_analysis = RegressionAnalysis(config_handler)
-    regression_analysis.load_data()
-    regression_analysis.create_models()
-
+    regression_analysis = RegressionAnalysis(config_handler, database)
+    regression_analysis.start()
 
 if __name__ == "__main__":
     typer.run(main)
