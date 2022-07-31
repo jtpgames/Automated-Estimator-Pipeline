@@ -3,14 +3,17 @@ import pandas as pd
 from numpy import uint8
 from sqlalchemy import Column, Integer
 
-from src.regression_analysis.features.abstract_feature_extractor import (
-    AbstractFeatureExtractor
+from src.feature_extractor.abstract_feature_extractor import (
+    AbstractAnalysisFeatureExtractor, AbstractFeatureETLExtractor
 )
-from src.regression_analysis.features.json_encoder.dict_encoder import \
+from src.feature_extractor.json_encoder.dict_encoder import \
     JSONEncodedDict
+from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 
-class ListParallelRequestsFinishedAnalysisExtractor(AbstractFeatureExtractor):
+class ListParallelRequestsFinishedAnalysisExtractor(
+    AbstractAnalysisFeatureExtractor
+):
     def get_column(self) -> Column:
         return Column(self.get_column_name(), Integer)
 
@@ -35,3 +38,18 @@ class ListParallelRequestsFinishedAnalysisExtractor(AbstractFeatureExtractor):
 
         df = pd.DataFrame(array, dtype=uint8)
         return df
+
+
+import json
+
+
+class ListParallelRequestsFinishedETLExtractor(AbstractFeatureETLExtractor):
+    def get_feature_name(self) -> str:
+        return "List parallel requests finished"
+
+    def extract_feature(
+            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
+    ):
+        return json.dumps(
+            parallel_commands_tracker[tid]["listParallelCommandsFinished"]
+        )

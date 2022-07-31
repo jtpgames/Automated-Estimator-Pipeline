@@ -16,16 +16,16 @@ from sklearn import decomposition, datasets, tree
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from src.regression_analysis.configuration_handler import ConfigurationHandler
-from src.regression_analysis.database import Database
-from src.regression_analysis.features.abstract_feature_extractor import (
-    AbstractFeatureExtractor,
+from src.configuration_handler import AnalysisConfigurationHandler
+from src.database import Database
+from src.feature_extractor.abstract_feature_extractor import (
+    AbstractAnalysisFeatureExtractor,
 )
 
 from numpy import std, mean
 
-from src.regression_analysis.features.feature_extractor_init import \
-    get_feature_extractors_by_name
+from src.feature_extractor.feature_extractor_init import \
+    get_feature_extractors_by_name_analysis
 from src.regression_analysis.models.models import get_model_objects_from_names
 
 logging.basicConfig(
@@ -37,13 +37,13 @@ logging.basicConfig(
 class RegressionAnalysis:
     __db_path: str
     __df: pd.DataFrame
-    __feature_extractors: List[AbstractFeatureExtractor] = []
+    __feature_extractors: List[AbstractAnalysisFeatureExtractor] = []
     __feature_extractor_names = List[str]
     __models: List[tuple[str, Any]]
     __db: Database
     __y_column_name: str
 
-    def __init__(self, config_handler: ConfigurationHandler, db: Database):
+    def __init__(self, config_handler: AnalysisConfigurationHandler, db: Database):
         self.__models = get_model_objects_from_names(
             config_handler.get_models()
         )
@@ -59,7 +59,7 @@ class RegressionAnalysis:
         self.create_models()
 
     def setup_feature_extractors(self):
-        self.__feature_extractors = get_feature_extractors_by_name(self.__db, self.__feature_extractor_names)
+        self.__feature_extractors = get_feature_extractors_by_name_analysis(self.__db, self.__feature_extractor_names)
 
     def load_data(self):
         logging.info(
@@ -263,7 +263,7 @@ class RegressionAnalysis:
 
 
 def main(config_file_path: str = "resources/config/analysis_config.json"):
-    config_handler = ConfigurationHandler(config_file_path)
+    config_handler = AnalysisConfigurationHandler(config_file_path)
     config_handler.load_config()
     database = Database(config_handler)
 

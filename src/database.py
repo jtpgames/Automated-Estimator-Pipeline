@@ -1,10 +1,11 @@
-from src.regression_analysis.configuration_handler import ConfigurationHandler
 from sqlalchemy import select, types, MetaData, Table, Column, Integer, String, \
     create_engine
 
+from src.configuration_handler import AnalysisConfigurationHandler
+
 
 class Database:
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: AnalysisConfigurationHandler):
         self.__db_url = config_handler.get_db_url()
         self.__db_limit = config_handler.get_db_limit()
 

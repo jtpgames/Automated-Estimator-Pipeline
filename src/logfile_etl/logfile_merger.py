@@ -4,11 +4,11 @@ from os.path import join
 
 from itertools import groupby
 from src.logfile_etl.time_utils import get_date_from_string, get_timestamp_from_string
-from src.logfile_etl.etl_config_handler import ConfigurationHandler
+from src.configuration_handler import ETLConfigurationHandler
 
 
 class LogMerger:
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: ETLConfigurationHandler):
         self.__reading_directory = config_handler.get_processed_logfile_dir()
 
     def merge_logfiles(self):

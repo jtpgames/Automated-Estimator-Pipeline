@@ -2,15 +2,15 @@ import logging
 from datetime import datetime
 from typing import List, Tuple
 
-from src.logfile_etl.feature_extractor.abstract_feature_extractor import (
+from src.feature_extractor.abstract_feature_extractor import (
     AbstractFeatureETLExtractor,
 )
-from src.logfile_etl.feature_extractor.feature_extractors import (
-    get_feature_extractors_from_names,
+from src.feature_extractor.feature_extractor_init import (
+    get_feature_extractors_by_name_etl,
 )
 
 from src.logfile_etl.exporter import Exporter
-from src.logfile_etl.etl_config_handler import ConfigurationHandler
+from src.configuration_handler import ETLConfigurationHandler
 import glob
 from os.path import join
 from re import search
@@ -26,10 +26,10 @@ class MergedLogProcessor:
     __feature_extractors: List[AbstractFeatureETLExtractor] = []
     __data = {}
 
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: ETLConfigurationHandler):
         self.__force = config_handler.get_force()
         self.__reading_directory = config_handler.get_processed_logfile_dir()
-        self.__feature_extractors = get_feature_extractors_from_names(
+        self.__feature_extractors = get_feature_extractors_by_name_etl(
             config_handler.get_extractors()
         )
         self.__parallel_commands_tracker = ParallelCommandsTracker()

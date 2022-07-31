@@ -4,13 +4,13 @@ from pathlib import Path
 
 from src.logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
 from src.logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
-from src.logfile_etl.etl_config_handler import ConfigurationHandler
+from src.configuration_handler import ETLConfigurationHandler
 
 
 class LogfileConverter:
     __converters = [WSLogConverter(), ARSLogConverter()]
 
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: ETLConfigurationHandler):
         self.__input_dir = config_handler.get_unprocessed_logfile_dir()
         self.__output_dir = config_handler.get_processed_logfile_dir()
         self.__create_dirs_if_necessary()

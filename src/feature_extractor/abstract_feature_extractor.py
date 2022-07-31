@@ -1,15 +1,16 @@
-from abc import ABC, abstractmethod
-
 import pandas as pd
+from abc import ABC, abstractmethod
 from numpy import short
-from sqlalchemy import select, Table, Column, Integer, String, MetaData
-from src.regression_analysis.database import Database
+from sqlalchemy import Column
+from src.database import Database
 
+from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 trainings_data_table_name = "gs_training_data"
 cmd_mapping_table_name = "gs_training_cmd_mapping"
 
-class AbstractAnaysisFeatureExtractor(ABC):
+
+class AbstractAnalysisFeatureExtractor(ABC):
 
     def __init__(self, db: Database, column_name):
         self.__db = db
@@ -42,9 +43,15 @@ class AbstractAnaysisFeatureExtractor(ABC):
     def get_column_data(self, column):
         self.__db.get_training_data_from_db(column)
 
-
     def get_cmd_names_mapping(self):
         return self.__db.get_cmd_names_dict()
 
 
+class AbstractFeatureETLExtractor(ABC):
+    def get_feature_name(self) -> str:
+        pass
 
+    def extract_feature(
+            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
+    ):
+        pass

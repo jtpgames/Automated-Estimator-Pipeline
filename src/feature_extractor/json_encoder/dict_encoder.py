@@ -1,7 +1,6 @@
-from ast import literal_eval
-
-from sqlalchemy import types
 import json
+from ast import literal_eval
+from sqlalchemy import types
 
 
 class JSONEncodedDict(types.TypeDecorator):

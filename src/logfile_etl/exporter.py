@@ -5,11 +5,11 @@ import platform
 
 import pandas as pd
 from sqlalchemy import create_engine
-from src.logfile_etl.etl_config_handler import ConfigurationHandler
+from src.configuration_handler import ETLConfigurationHandler
 
 
 class Exporter:
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: ETLConfigurationHandler):
         self.__config_handler = config_handler
 
     # TODO make user directories exist

@@ -2,10 +2,10 @@ import logging
 
 import typer
 
+from src.configuration_handler import ETLConfigurationHandler
 from src.logfile_etl.log_converter.logfile_converter import LogfileConverter
 from src.logfile_etl.logfile_merger import LogMerger
 from src.logfile_etl.merged_logfile_processor import MergedLogProcessor
-from src.logfile_etl.etl_config_handler import ConfigurationHandler
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -17,7 +17,7 @@ app = typer.Typer()
 
 @app.command()
 def convert_logs(config_file_path: str = "resources/config/etl_config.json"):
-    config_handler = ConfigurationHandler(config_file_path)
+    config_handler = ETLConfigurationHandler(config_file_path)
     config_handler.load_config()
 
     log_converter = LogfileConverter(config_handler)
@@ -26,7 +26,7 @@ def convert_logs(config_file_path: str = "resources/config/etl_config.json"):
 
 @app.command()
 def merge_logs(config_file_path: str = "resources/config/etl_config.json"):
-    config_handler = ConfigurationHandler(config_file_path)
+    config_handler = ETLConfigurationHandler(config_file_path)
     config_handler.load_config()
 
     log_merger = LogMerger(config_handler)
@@ -37,7 +37,7 @@ def merge_logs(config_file_path: str = "resources/config/etl_config.json"):
 def extract_features(
         config_file_path: str = "resources/config/etl_config.json"
 ):
-    config_handler = ConfigurationHandler(config_file_path)
+    config_handler = ETLConfigurationHandler(config_file_path)
     config_handler.load_config()
 
     feature_extractor = MergedLogProcessor(config_handler)
@@ -47,7 +47,7 @@ def extract_features(
 
 @app.command()
 def run(config_file_path: str = "resources/config/etl_config.json"):
-    config_handler = ConfigurationHandler(config_file_path)
+    config_handler = ETLConfigurationHandler(config_file_path)
     config_handler.load_config()
 
     log_converter = LogfileConverter(config_handler)
