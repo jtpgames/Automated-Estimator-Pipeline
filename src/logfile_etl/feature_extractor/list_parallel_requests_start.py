@@ -2,11 +2,11 @@ import json
 
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 from src.logfile_etl.feature_extractor.abstract_feature_extractor import (
-    AbstractFeatureExtractor,
+    AbstractFeatureETLExtractor,
 )
 
 
-class ListParallelRequestsStart(AbstractFeatureExtractor):
+class ListParallelRequestsStartETLExtractor(AbstractFeatureETLExtractor):
     def get_feature_name(self) -> str:
         return "List parallel requests start"
 

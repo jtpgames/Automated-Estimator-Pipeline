@@ -4,7 +4,7 @@ from os.path import join
 
 from itertools import groupby
 from src.logfile_etl.time_utils import get_date_from_string, get_timestamp_from_string
-from src.logfile_etl.configuration_handler import ConfigurationHandler
+from src.logfile_etl.etl_config_handler import ConfigurationHandler
 
 
 class LogMerger:

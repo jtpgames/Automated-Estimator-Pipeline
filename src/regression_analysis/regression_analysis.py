@@ -156,6 +156,8 @@ class RegressionAnalysis:
             'Best Number Of Components:',
             clf_GS.best_estimator_.get_params()['pca__n_components']
         )
+
+        print('Best components:', clf_GS.best_estimator_.named_steps['pca'].components_)
         print()
 
         print(clf_GS.best_estimator_.get_params()['dec_tree'])
@@ -169,6 +171,7 @@ class RegressionAnalysis:
         )
 
         print(clf_GS.best_estimator_.get_params())
+        self.save_cmd_names_mapping()
         # y = self.__df.pop(self.__y_column_name)
         # logging.info("-------")
         # logging.info("unscaled")

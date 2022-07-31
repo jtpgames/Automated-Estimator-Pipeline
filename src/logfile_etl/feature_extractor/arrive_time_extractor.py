@@ -1,10 +1,10 @@
 from src.logfile_etl.feature_extractor.abstract_feature_extractor import \
-    AbstractFeatureExtractor
+    AbstractFeatureETLExtractor
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 import datetime
 
 
-class ArriveTimeExtractor(AbstractFeatureExtractor):
+class ArriveTimeETLExtractor(AbstractFeatureETLExtractor):
     intervals_per_hour = 4
     minutes_per_interval = 60 / intervals_per_hour
 

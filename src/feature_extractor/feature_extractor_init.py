@@ -20,7 +20,7 @@ from src.regression_analysis.features.response_time_extractor import \
     ResponseTimeExtractor
 from typing import Dict, List
 
-func_calls_dict: Dict[str, AbstractFeatureExtractor] = {
+analysis_extractor_generator_dict: Dict[str, AbstractFeatureExtractor] = {
     'cmd': CMDExtractor,
     'PR 1': PROneExtractor,
     'PR 3': PRThreeExtractor,
@@ -35,5 +35,5 @@ func_calls_dict: Dict[str, AbstractFeatureExtractor] = {
 def get_feature_extractors_by_name(db:Database, feature_extractor_names: List[str]) -> List[AbstractFeatureExtractor]:
     feature_extractors = []
     for extractors_name in feature_extractor_names:
-        feature_extractors.append(func_calls_dict[extractors_name](db, extractors_name))
+        feature_extractors.append(analysis_extractor_generator_dict[extractors_name](db, extractors_name))
     return feature_extractors

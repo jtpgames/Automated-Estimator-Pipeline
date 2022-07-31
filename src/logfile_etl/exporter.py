@@ -5,7 +5,7 @@ import platform
 
 import pandas as pd
 from sqlalchemy import create_engine
-from src.logfile_etl.configuration_handler import ConfigurationHandler
+from src.logfile_etl.etl_config_handler import ConfigurationHandler
 
 
 class Exporter:

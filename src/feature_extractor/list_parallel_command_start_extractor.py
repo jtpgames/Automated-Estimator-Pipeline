@@ -4,13 +4,14 @@ from numpy import uint8
 from sqlalchemy import Column, Integer
 
 from src.regression_analysis.features.abstract_feature_extractor import (
-    AbstractFeatureExtractor
+    AbstractFeatureExtractor,
 )
 from src.regression_analysis.features.json_encoder.dict_encoder import \
     JSONEncodedDict
 
 
-class ListParallelRequestsFinished(AbstractFeatureExtractor):
+class ListParallelRequestsStartAnalysisExtractor(AbstractFeatureExtractor):
+
     def get_column(self) -> Column:
         return Column(self.get_column_name(), Integer)
 
@@ -19,10 +20,10 @@ class ListParallelRequestsFinished(AbstractFeatureExtractor):
 
     def get_df(self) -> pd.DataFrame:
         column = Column(self.get_column_name(), JSONEncodedDict)
-        result_data = self.get_column_data(column).all()
-        result_mapping = self.get_cmd_names_mapping()
+        result_data = self.get_training_data_from_db(column).all()
+        result_mapping = self.get_names_mapping_from_db()
 
-        # TODO warum + 1 ?
+        # TODO warum hier + 1?
         array = np.zeros(
             shape=(len(result_data), len(result_mapping) + 1),
             dtype=uint8

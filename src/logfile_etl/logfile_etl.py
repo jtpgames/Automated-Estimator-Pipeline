@@ -5,7 +5,7 @@ import typer
 from src.logfile_etl.log_converter.logfile_converter import LogfileConverter
 from src.logfile_etl.logfile_merger import LogMerger
 from src.logfile_etl.merged_logfile_processor import MergedLogProcessor
-from src.logfile_etl.configuration_handler import ConfigurationHandler
+from src.logfile_etl.etl_config_handler import ConfigurationHandler
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",

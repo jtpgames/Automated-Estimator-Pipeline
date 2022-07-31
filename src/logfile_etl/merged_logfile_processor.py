@@ -3,14 +3,14 @@ from datetime import datetime
 from typing import List, Tuple
 
 from src.logfile_etl.feature_extractor.abstract_feature_extractor import (
-    AbstractFeatureExtractor,
+    AbstractFeatureETLExtractor,
 )
 from src.logfile_etl.feature_extractor.feature_extractors import (
     get_feature_extractors_from_names,
 )
 
 from src.logfile_etl.exporter import Exporter
-from src.logfile_etl.configuration_handler import ConfigurationHandler
+from src.logfile_etl.etl_config_handler import ConfigurationHandler
 import glob
 from os.path import join
 from re import search
@@ -23,7 +23,7 @@ from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 
 class MergedLogProcessor:
-    __feature_extractors: List[AbstractFeatureExtractor] = []
+    __feature_extractors: List[AbstractFeatureETLExtractor] = []
     __data = {}
 
     def __init__(self, config_handler: ConfigurationHandler):

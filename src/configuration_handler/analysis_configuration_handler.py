@@ -5,7 +5,7 @@ from src.utils import get_project_root
 import json
 
 
-class ConfigurationHandler:
+class EtlConfigurationHandler:
     def __init__(self, config_file_path: str):
         self.__model_save_path = None
         self.__y = None

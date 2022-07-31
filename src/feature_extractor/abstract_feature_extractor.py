@@ -9,7 +9,7 @@ from src.regression_analysis.database import Database
 trainings_data_table_name = "gs_training_data"
 cmd_mapping_table_name = "gs_training_cmd_mapping"
 
-class AbstractFeatureExtractor(ABC):
+class AbstractAnaysisFeatureExtractor(ABC):
 
     def __init__(self, db: Database, column_name):
         self.__db = db

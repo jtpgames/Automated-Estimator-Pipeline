@@ -2,51 +2,51 @@ import logging
 from typing import List
 
 from src.logfile_etl.feature_extractor.abstract_feature_extractor import (
-    AbstractFeatureExtractor,
+    AbstractFeatureETLExtractor,
 )
 from src.logfile_etl.feature_extractor.arrive_time_extractor import \
-    ArriveTimeExtractor
-from src.logfile_etl.feature_extractor.cmd_extractor import CMDExtractor
+    ArriveTimeETLExtractor
+from src.logfile_etl.feature_extractor.cmd_extractor import CMDETLExtractor
 from src.logfile_etl.feature_extractor.first_parallel_request_finished_extractor import (
-    FirstParallelRequestFinishedExtractor,
+    FirstParallelRequestFinishedETLExtractor,
 )
 from src.logfile_etl.feature_extractor.fist_parallel_request_start_extractor import (
-    FirstParallelRequestStartExtractor,
+    FirstParallelRequestStartETLExtractor,
 )
-from src.logfile_etl.feature_extractor.list_parallel_requests_finished import ListParallelRequestsFinished
-from src.logfile_etl.feature_extractor.list_parallel_requests_start import ListParallelRequestsStart
+from src.logfile_etl.feature_extractor.list_parallel_requests_finished import ListParallelRequestsFinishedETLExtractor
+from src.logfile_etl.feature_extractor.list_parallel_requests_start import ListParallelRequestsStartETLExtractor
 from src.logfile_etl.feature_extractor.number_parallel_requests_start_extractor import (
-    ParallelRequestsOne,
+    ParallelRequestsOneETLExtractor,
 )
 from src.logfile_etl.feature_extractor.number_parallel_requests_finished_extractor import (
-    ParallelRequestsThree,
+    ParallelRequestsThreeETLExtractor,
 )
 from src.logfile_etl.feature_extractor.number_parallel_requests_end_extractor import (
-    ParallelRequestsTwo,
+    ParallelRequestsTwoETLExtractor,
 )
 from src.logfile_etl.feature_extractor.response_time_extractor import (
-    ResponseTimeExtractor,
+    ResponseTimeETLExtractor,
 )
-from src.logfile_etl.feature_extractor.timestamp_extractor import TimestampExtractor
+from src.logfile_etl.feature_extractor.timestamp_extractor import TimestampETLExtractor
 
-possible_feature_extractors: List[AbstractFeatureExtractor] = [
-    ParallelRequestsOne(),
-    ParallelRequestsTwo(),
-    ParallelRequestsThree(),
-    ResponseTimeExtractor(),
-    CMDExtractor(),
-    TimestampExtractor(),
-    FirstParallelRequestStartExtractor(),
-    FirstParallelRequestFinishedExtractor(),
-    ListParallelRequestsStart(),
-    ListParallelRequestsFinished(),
-    ArriveTimeExtractor()
+possible_feature_extractors: List[AbstractFeatureETLExtractor] = [
+    ParallelRequestsOneETLExtractor(),
+    ParallelRequestsTwoETLExtractor(),
+    ParallelRequestsThreeETLExtractor(),
+    ResponseTimeETLExtractor(),
+    CMDETLExtractor(),
+    TimestampETLExtractor(),
+    FirstParallelRequestStartETLExtractor(),
+    FirstParallelRequestFinishedETLExtractor(),
+    ListParallelRequestsStartETLExtractor(),
+    ListParallelRequestsFinishedETLExtractor(),
+    ArriveTimeETLExtractor()
 ]
 
 
 def get_feature_extractors_from_names(
     extractor_names: List[str],
-) -> List[AbstractFeatureExtractor]:
+) -> List[AbstractFeatureETLExtractor]:
     feature_extractors = []
     for extractor in extractor_names:
         extractor_found = False

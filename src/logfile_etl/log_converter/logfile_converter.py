@@ -4,7 +4,7 @@ from pathlib import Path
 
 from src.logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
 from src.logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
-from src.logfile_etl.configuration_handler import ConfigurationHandler
+from src.logfile_etl.etl_config_handler import ConfigurationHandler
 
 
 class LogfileConverter:

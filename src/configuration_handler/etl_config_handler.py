@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 
 
-class ConfigurationHandler:
+class AnalysisConfigurationHandler:
     def __init__(self, config_file_path: str):
         self.__force = False
         self.__extractors = []

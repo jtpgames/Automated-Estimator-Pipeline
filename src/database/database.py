@@ -19,7 +19,7 @@ class Database:
         query_result = self.__execute_query(query_table)
         names_mapping_dict = {}
         for str_cmd, int_cmd in query_result.all():
-            names_mapping_dict[int_cmd] = str_cmd
+            names_mapping_dict[str_cmd] = int_cmd
         return names_mapping_dict
 
     def get_training_data_from_db(self, column):
