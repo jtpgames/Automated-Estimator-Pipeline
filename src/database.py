@@ -31,13 +31,16 @@ class Database:
             Column('index', Integer, primary_key=True),
             column
         )
-        return self.__execute_query(data)
+        return self.__execute_query(data, row_limitation=True)
 
-    def __execute_query(self, table):
+    def __execute_query(self, table, row_limitation=False):
         engine = create_engine(self.__db_url)
         con = engine.connect()
 
         query = select(table)
-        if self.__db_limit != -1:
+        if self.__db_limit != -1 and row_limitation:
             query = query.limit(self.__db_limit)
         return con.execute(query)
+
+
+

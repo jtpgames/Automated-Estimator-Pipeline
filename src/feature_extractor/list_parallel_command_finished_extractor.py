@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from numpy import uint8
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column
 import json
 
 from src.feature_extractor.abstract_feature_extractor import (
@@ -17,19 +17,21 @@ class ListParallelRequestsFinishedAnalysisExtractor(
     AbstractAnalysisFeatureExtractor
 ):
     def get_column(self) -> Column:
-        return Column(self.get_column_name(), Integer)
+        return Column(self.get_column_name(), JSONEncodedDict)
 
-    def df_postproduction(self, df: pd.DataFrame) -> pd.DataFrame:
+    def df_post_production(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     def get_df(self) -> pd.DataFrame:
-        column = Column(self.get_column_name(), JSONEncodedDict)
-        result_data = self.get_column_data(column).all()
+        result_data = self.get_column_data(self.get_column())
         result_mapping = self.get_cmd_names_mapping()
+
+        shape=(len(result_data), len(result_mapping))
+        print(shape)
 
         # TODO warum + 1 ?
         array = np.zeros(
-            shape=(len(result_data), len(result_mapping) + 1),
+            shape=(len(result_data), len(result_mapping)),
             dtype=uint8
         )
 

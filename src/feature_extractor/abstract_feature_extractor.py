@@ -24,14 +24,14 @@ class AbstractAnalysisFeatureExtractor(ABC):
         return self.__column_name
 
     # TODO change name
-    def df_postproduction(self, df: pd.DataFrame) -> pd.DataFrame:
+    def df_post_production(self, df: pd.DataFrame) -> pd.DataFrame:
         df[self.get_column_name()].fillna(value=0, axis=0, inplace=True)
         return df.astype(short)
 
     def get_df(self) -> pd.DataFrame:
         result = self.__db.get_training_data_from_db(self.get_column())
         df = self.get_df_from_db_column_data(result)
-        return self.df_postproduction(df)
+        return self.df_post_production(df)
 
     def get_df_from_db_column_data(self, db_result):
         return pd.DataFrame.from_records(
@@ -41,7 +41,8 @@ class AbstractAnalysisFeatureExtractor(ABC):
         )
 
     def get_column_data(self, column):
-        self.__db.get_training_data_from_db(column)
+        print(column)
+        return self.__db.get_training_data_from_db(column).all()
 
     def get_cmd_names_mapping(self):
         return self.__db.get_cmd_names_dict()
