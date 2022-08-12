@@ -166,6 +166,7 @@ resources/logfiles/*
 resources/models/*
 resources/config/analysis_config.json
 resources/config/etl_config.json
+resources/config/characterization_config.json
 
 start_computation.sh
 

@@ -240,7 +240,7 @@ class RegressionAnalysis:
         mapping_name = "cmd_names_mapping_{}.json".format(today)
         path_to_mapping_file = Path(self.__export_path) / mapping_name
         with open(path_to_mapping_file, "w") as file:
-            json.dump(self.__db.get_cmd_names_dict(), file)
+            json.dump(self.__db.get_cmd_int_dict(), file)
 
     def save_model(self, mae, mse, r_2_score, model, name):
         today = datetime.now().strftime("%Y-%m-%d")

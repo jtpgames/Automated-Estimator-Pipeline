@@ -29,10 +29,12 @@ class AbstractAnalysisFeatureExtractor(ABC):
         return df.astype(short)
 
     def get_df(self) -> pd.DataFrame:
-        result = self.__db.get_training_data_from_db(self.get_column())
+        result = self.__db.get_training_data_cursor_result_columns(self.get_column())
         df = self.get_df_from_db_column_data(result)
         return self.df_post_production(df)
 
+    # TODO why do i need get column_data and df_from_column_data
+    # one returns db_result and the other one df
     def get_df_from_db_column_data(self, db_result):
         return pd.DataFrame.from_records(
             db_result,
@@ -41,11 +43,10 @@ class AbstractAnalysisFeatureExtractor(ABC):
         )
 
     def get_column_data(self, column):
-        print(column)
-        return self.__db.get_training_data_from_db(column).all()
+        return self.__db.get_training_data_cursor_result_columns(column).all()
 
     def get_cmd_names_mapping(self):
-        return self.__db.get_cmd_names_dict()
+        return self.__db.get_cmd_int_dict()
 
 
 class AbstractETLFeatureExtractor(ABC):
