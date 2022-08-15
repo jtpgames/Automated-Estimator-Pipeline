@@ -5,7 +5,7 @@ from pathlib import Path
 from src.logfile_etl.log_converter.abstract_logfile_converter import (
     AbstractLogFileConverter,
 )
-from src.logfile_etl.time_utils import get_date_from_string
+from src.time_utils import get_date_from_string
 
 
 def peek_line(f):

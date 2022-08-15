@@ -1,3 +1,6 @@
+from pathlib import Path
+from time_utils import get_date_from_string
+
 import pandas as pd
 import plotly.express as px
 # # Import Data
@@ -26,3 +29,6 @@ import plotly.express as px
 # X_mean = X - X.mean()
 # print(X_mean.head())
 
+path_str = "/Users/igor/Documents/Masterarbeit/logfile_analysis/resources/export/db/trainingdata_2022-08-15.db"
+path = Path(path_str)
+print(get_date_from_string(path.stem))

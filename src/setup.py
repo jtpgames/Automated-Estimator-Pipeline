@@ -66,7 +66,7 @@ if __name__ == "__main__":
     with open(etl_config_file_path, 'w+') as fp:
         json.dump(etl_config, fp)
 
-    with open(etl_config_file_path, 'w+') as fp:
+    with open(characterization_config_file_path, 'w+') as fp:
         json.dump(characterization_config, fp)
 
     print("Configuration files created in: {}".format(configuration_folder))
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             model_folder.as_posix()
         )
     )
-    os.makedirs(export_folder.as_posix(), exist_ok=True)
+    os.makedirs(statistics_folder.as_posix(), exist_ok=True)
     print(
         "Folder for statistics export is created at: {}".format(
             export_folder.as_posix()
