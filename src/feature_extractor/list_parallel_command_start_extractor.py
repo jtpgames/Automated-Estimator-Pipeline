@@ -28,7 +28,7 @@ class ListParallelRequestsStartAnalysisExtractor(
 
         # TODO warum hier + 1?
         array = np.zeros(
-            shape=(len(result_data), len(result_mapping)),
+            shape=(len(result_data), len(result_mapping) + 1),
             dtype=uint8
         )
 
