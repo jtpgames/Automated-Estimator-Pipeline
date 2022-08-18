@@ -2,12 +2,13 @@
 
 #SBATCH --nodes=1               # number of nodes to reserve
 #SBATCH --ntasks-per-node=6    # number of CPU cores per node
-#SBATCH --mem=32gb		        # RAM memory to reserve
-#SBATCH --partition=express     # partition to submit job to # test node: express
-#SBATCH --time=2:00:00          # max wallclock time (i.e. job exec time limit)
+#SBATCH --mem=64gb		        # RAM memory to reserve
+#SBATCH --partition=gpuv100	     # partition to submit job to # test node: express
+#SBATCH --time=12:00:00          # max wallclock time (i.e. job exec time limit)
+#SBATCH --gres=gpu:1
 
 #SBATCH --job-name=create_model_dt_grid_search    # only ~30 characters shown when using squeue 
-#SBATCH --output=logfile_analysis_dt_grid_search_express_without_list_analysis.dat   # important for debugging etc!! name individually
+#SBATCH --output=logfile_analysis_dt_grid_search_gpu_limit_5000.dat   # important for debugging etc!! name individually
 #SBATCH --mail-type=ALL         # receive email for start | finish | abortion
 #SBATCH --mail-user=a_lier03@uni-muenster.de
 

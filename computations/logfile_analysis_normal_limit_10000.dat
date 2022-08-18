@@ -154,3 +154,4 @@ index                           ...
 [10000 rows x 608 columns]
 /Applic.HPC/Easybuild/skylake/2021a/software/scikit-learn/0.24.2-foss-2021a/lib/python3.9/site-packages/sklearn/model_selection/_split.py:666: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
   warnings.warn(("The least populated class in y has only %d"
+slurmstepd: error: *** JOB 12098503 ON r02n03 CANCELLED AT 2022-07-31T10:45:11 DUE TO TIME LIMIT ***
