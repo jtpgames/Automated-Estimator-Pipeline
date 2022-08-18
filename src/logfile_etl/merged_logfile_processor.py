@@ -15,7 +15,7 @@ import glob
 from os.path import join
 from re import search
 
-from src.logfile_etl.time_utils import (
+from src.time_utils import (
     get_timestamp_from_string,
     contains_timestamp_with_ms,
 )

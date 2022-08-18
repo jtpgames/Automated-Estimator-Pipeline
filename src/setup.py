@@ -8,8 +8,10 @@ if __name__ == "__main__":
     resource_folder = parent_dir / "resources"
     unprocessed_folder = resource_folder / "logfiles" / "unprocessed"
     processed_folder = resource_folder / "logfiles" / "processed"
-    db_folder = resource_folder / "export" / "db"
-    csv_folder = resource_folder / "export" / "csv"
+    export_folder = resource_folder / "export"
+    db_folder = export_folder / "db"
+    csv_folder = export_folder / "csv"
+    statistics_folder = export_folder / "statistics"
     today = datetime.now().strftime("%Y-%m-%d")
     file_name = "trainingdata_{}.db".format(today)
     db_file = db_folder / file_name
@@ -43,10 +45,17 @@ if __name__ == "__main__":
                    "AdaLR", "AdaDT", "DT"],
         "model_save_path": model_folder.as_posix()
     }
+
+    characterization_config = {
+        "db": db_file.as_posix(),
+        "db_limit": -1,
+        "export_folder": statistics_folder.as_posix()
+    }
     configuration_folder = resource_folder / "config"
 
     analysis_config_file_path = configuration_folder / "analysis_config.json"
     etl_config_file_path = configuration_folder / "etl_config.json"
+    characterization_config_file_path = configuration_folder / "characterization_config.json"
 
     os.makedirs(configuration_folder.as_posix(), exist_ok=True)
 
@@ -56,6 +65,9 @@ if __name__ == "__main__":
 
     with open(etl_config_file_path, 'w+') as fp:
         json.dump(etl_config, fp)
+
+    with open(characterization_config_file_path, 'w+') as fp:
+        json.dump(characterization_config, fp)
 
     print("Configuration files created in: {}".format(configuration_folder))
 
@@ -81,5 +93,11 @@ if __name__ == "__main__":
     print(
         "Folder for model export is created at: {}".format(
             model_folder.as_posix()
+        )
+    )
+    os.makedirs(statistics_folder.as_posix(), exist_ok=True)
+    print(
+        "Folder for statistics export is created at: {}".format(
+            export_folder.as_posix()
         )
     )

@@ -1,11 +1,22 @@
 import logging
+from abc import ABC, abstractmethod
 from pathlib import Path
 
 from src.utils import get_project_root
 import json
 
 
-class AnalysisConfigurationHandler:
+class BaseConfigurationHandler(ABC):
+    @abstractmethod
+    def get_db_url(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_db_limit(self) -> int:
+        pass
+
+
+class AnalysisConfigurationHandler(BaseConfigurationHandler):
     def __init__(self, config_file_path: str):
         self.__model_save_path = None
         self.__y = None
@@ -140,3 +151,50 @@ class ETLConfigurationHandler:
             )
         )
         logging.info("Force parameter is set to: {}\n".format(self.__force))
+
+
+class WorkloadCharacterizationConfigHandler(BaseConfigurationHandler):
+    def __init__(self, config_file_path: str):
+        self.__export_folder = None
+        self.__db_path = None
+        self.__db_limit = -1
+        self.__config_file_path = config_file_path
+
+    def load_config(self):
+        root_dir = get_project_root()
+        abs_file_path = root_dir / self.__config_file_path
+        with open(abs_file_path) as config_file:
+            config = json.load(config_file)
+            self.__db_path = config["db"]
+            self.__db_limit = config["db_limit"]
+            self.__export_folder = config["export_folder"]
+
+        self.__log_config()
+
+    def get_db_limit(self):
+        return self.__db_limit
+
+    def get_db_url(self):
+        Path(self.__db_path).parent.mkdir(parents=True, exist_ok=True)
+        return "sqlite:///" + self.__db_path
+
+    def get_export_folder(self):
+        return self.__export_folder
+
+    def __log_config(self):
+        logging.info(
+            "################################################################"
+        )
+        logging.info(
+            "################ Configuration successfully loaded #############"
+        )
+        logging.info(
+            "################################################################\n"
+        )
+        logging.info(
+            "db to load workload characterization from: {}\n".format(
+                self.__db_path
+            )
+        )
+        logging.info("db limit: {}\n".format(self.__db_limit))
+        logging.info("export folder: {}\n".format(self.__export_folder))

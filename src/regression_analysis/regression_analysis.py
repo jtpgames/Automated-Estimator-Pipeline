@@ -90,6 +90,7 @@ class RegressionAnalysis:
         self.__remove_outliers()
         logging.info("memory consumption: {}".format(sys.getsizeof(self.__df)))
 
+    # TODO mit dataframe command ersetzen
     def __remove_outliers(self):
         anomalies = []
         y = self.__df[self.__y_column_name]
@@ -125,7 +126,7 @@ class RegressionAnalysis:
         pca = decomposition.PCA()
         dec_tree = tree.DecisionTreeClassifier()
         pipe = Pipeline(
-            steps=[('std_slc', std_slc), ('pca', pca), ('dec_tree', dec_tree)]
+            steps=[('std_slc', std_slc), ('dec_tree', dec_tree)]
         )
 
         n_components = list(range(1, self.__df.shape[1] + 1, 1))
@@ -133,11 +134,10 @@ class RegressionAnalysis:
         max_depth = [2, 4, 6, 8, 10, 12]
 
         parameters = dict(
-            pca__n_components=n_components,
             dec_tree__criterion=criterion,
             dec_tree__max_depth=max_depth
         )
-        clf_GS = GridSearchCV(pipe, parameters, verbose=2)
+        clf_GS = GridSearchCV(pipe, parameters, verbose=2, scoring="r2")
 
         x_train, x_test, y_train, y_test = train_test_split(
             self.__df, y, test_size=0.2, random_state=42
@@ -145,33 +145,27 @@ class RegressionAnalysis:
         clf_GS.fit(x_train, y_train)
 
         print(
-            'Best Criterion:',
-            clf_GS.best_estimator_.get_params()['dec_tree__criterion']
+            'Best parameters:',
+            clf_GS.best_estimator_.get_params()
         )
-        print(
-            'Best max_depth:',
-            clf_GS.best_estimator_.get_params()['dec_tree__max_depth']
-        )
-        print(
-            'Best Number Of Components:',
-            clf_GS.best_estimator_.get_params()['pca__n_components']
-        )
-
-        print('Best components:', clf_GS.best_estimator_.named_steps['pca'].components_)
         print()
 
-        print(clf_GS.best_estimator_.get_params()['dec_tree'])
+        #clf_GS.score(x_test, y_test)
+        predictions = clf_GS.best_estimator_.predict(x_test)
 
-        clf_GS.score(x_test, y_test)
-
-        cv_results = cross_val_score(clf_GS.best_estimator_, x_train, y_train)
+        cv_results = cross_val_score(clf_GS.best_estimator_, x_test, y_test)
         logging.info(
-            "%s: Accuracy: %0.2f (+/- %0.2f)"
-            % ("DecisionTree", cv_results.mean(), cv_results.std() * 2)
+            "%s: Accuracy: %0.2f (+/- %0.2f) R2: %0.2f"
+            % ("DecisionTree", cv_results.mean(), cv_results.std() * 2, r2_score(y_test, predictions))
         )
 
         print(clf_GS.best_estimator_.get_params())
         self.save_cmd_names_mapping()
+
+        mae = mean_absolute_error(y_test, predictions)
+        mse = mean_squared_error(y_test, predictions)
+        r_2_score = r2_score(y_test, predictions)
+        self.save_model(mae, mse, r_2_score, clf_GS.best_estimator_, "DecisionTree_GridSearch")
         # y = self.__df.pop(self.__y_column_name)
         # logging.info("-------")
         # logging.info("unscaled")
@@ -240,7 +234,7 @@ class RegressionAnalysis:
         mapping_name = "cmd_names_mapping_{}.json".format(today)
         path_to_mapping_file = Path(self.__export_path) / mapping_name
         with open(path_to_mapping_file, "w") as file:
-            json.dump(self.__db.get_cmd_names_dict(), file)
+            json.dump(self.__db.get_cmd_int_dict(), file)
 
     def save_model(self, mae, mse, r_2_score, model, name):
         today = datetime.now().strftime("%Y-%m-%d")

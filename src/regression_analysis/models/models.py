@@ -23,6 +23,7 @@ possible_models = [
     ("KNN", KNeighborsRegressor(weights="distance")),
     ("AdaLR", AdaBoostRegressor(LinearRegression(), n_estimators=10)),
     ("AdaDT", AdaBoostRegressor(DecisionTreeRegressor(), n_estimators=10)),
+    # Random Forest
 ]
 
 
