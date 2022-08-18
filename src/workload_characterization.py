@@ -1,4 +1,7 @@
+import logging
 from pathlib import Path
+import calendar
+import numpy as np
 
 import pandas as pd
 import plotly.express as px
@@ -9,17 +12,60 @@ from configuration_handler import WorkloadCharacterizationConfigHandler
 from database import Database
 from src.time_utils import get_date_from_string
 
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s",
+    level=logging.INFO
+)
+
 
 class WorkloadCharacterization:
     __database: Database
     __mapping: dict
+    __remove_response_time_outliers: bool = False
 
-    def __init__(self, database, config_handler):
+    def __init__(self, database, config_handler, remove_response_time_outliers):
         self.__database = database
         self.__mapping = database.get_int_cmd_dict()
         self.__config_handler = config_handler
+        self.__remove_response_time_outliers = remove_response_time_outliers
 
-    def format_request_type(self, int_cmd):
+    def start_characterization(self):
+        logging.info("begin loading data from db")
+        timestamp_col = Column("Timestamp", DateTime)
+        cmd_col = Column("cmd", Integer)
+        response_time_col = Column("response time", Integer)
+        training_data_db_result = self.__database.get_training_data_cursor_result(
+            [timestamp_col, cmd_col, response_time_col]
+        )
+        training_data = pd.DataFrame.from_records(
+            training_data_db_result,
+            index="index",
+            columns=["index", "Timestamp", "cmd", "response time"]
+        )
+        training_data = training_data.sort_values("response time", ascending=False)
+        if self.__remove_response_time_outliers is True:
+            training_data = self.__remove_outliers(training_data)
+
+        training_data["weekday"] = training_data["Timestamp"].apply(
+            lambda x: calendar.day_name[x.weekday()]
+        )
+
+        logging.info("start exporting charts")
+        self.__export_charts(training_data)
+        logging.info("start exporting excel")
+        self.__export_excel(training_data)
+
+    def __remove_outliers(self, training_data, std_threshold: int = 3):
+        logging.info("removing response time outliers")
+        row_count_before = training_data.__len__()
+        training_data = training_data[
+            np.abs(training_data["response time"] - training_data["response time"].mean()) <= (
+                    std_threshold * training_data["response time"].std())]
+        row_count_after = training_data.__len__()
+        logging.info("removed {} of {} rows".format(row_count_before - row_count_after, row_count_before))
+        return training_data
+
+    def __format_request_type(self, int_cmd):
         return self.__mapping[int_cmd]
 
     def __get_request_rates_df(self, training_data: pd.DataFrame):
@@ -59,7 +105,7 @@ class WorkloadCharacterization:
             ["cmd", "response time"]].reset_index().drop(columns=["index"])
         request_types_with_response_time["cmd"] = \
             request_types_with_response_time["cmd"].apply(
-                self.format_request_type
+                self.__format_request_type
             )
         request_types_with_response_time_mean: pd.DataFrame = request_types_with_response_time.groupby(
             ["cmd"]
@@ -111,65 +157,43 @@ class WorkloadCharacterization:
 
     def __export_charts(self, training_data: pd.DataFrame):
         training_data = training_data.drop("response time", axis=1)
-        training_data["weekday"] = training_data["Timestamp"].apply(
-            lambda x: x.weekday()
-        )
         training_data["hour"] = training_data["Timestamp"].apply(lambda x: x.hour)
+        training_data = training_data.rename(columns={"cmd":"count"})
         requests_per_hour = training_data.groupby(["weekday", "hour"]).count()
         requests_per_hour.reset_index(inplace=True)
 
-        fig_requests_per_hour = px.bar(requests_per_hour, x="hour", y="cmd", color="weekday", barmode="group")
+        fig_requests_per_hour = px.bar(requests_per_hour, x="hour", y="count", color="weekday", barmode="group")
+        fig_requests_per_hour.update_xaxes(type="category")
         request_per_hour_filename = "rph_" + self.__get_export_date_suffix() + ".pdf"
         filepath = Path(self.__config_handler.get_export_folder()) / request_per_hour_filename
         fig_requests_per_hour.write_image(filepath)
 
         requests_count_per_day = training_data[
             ["weekday", "Timestamp"]].groupby(["weekday"]).count().rename(
-            columns={"Timestamp": "Count"}
+            columns={"Timestamp": "count"}
         ).reset_index()
         fig_req_per_day = px.bar(
             requests_count_per_day,
-            y="Count",
+            y="count",
             x="weekday",
             orientation="v",
-            text="Count"
+            text="count"
         )
         fig_req_per_day.update_xaxes(type="category")
         req_per_day = "rpd_" + self.__get_export_date_suffix() + ".pdf"
         filepath = Path(self.__config_handler.get_export_folder()) / req_per_day
         fig_req_per_day.write_image(filepath)
 
-    def start_characterization(self):
-        timestamp_col = Column("Timestamp", DateTime)
-        cmd_col = Column("cmd", Integer)
-        response_time_col = Column("response time", Integer)
-        training_data_db_result = self.__database.get_training_data_cursor_result(
-            [timestamp_col, cmd_col, response_time_col]
-        )
-        training_data = pd.DataFrame.from_records(
-            training_data_db_result,
-            index="index",
-            columns=["index", "Timestamp", "cmd", "response time"]
-        )
-        training_data["weekday"] = training_data["Timestamp"].apply(
-            lambda x: x.weekday()
-        )
-
-        print("start exporting charts")
-        self.__export_charts(training_data)
-        print("start exporting excel")
-        self.__export_excel(training_data)
-
 
 def main(
-        config_file_path: str = "resources/config/characterization_config.json"
+        config_file_path: str = "resources/config/characterization_config.json", remove_response_time_outliers=False
 ):
     config_handler = WorkloadCharacterizationConfigHandler(config_file_path)
     config_handler.load_config()
     database = Database(config_handler)
 
-    regression_analysis = WorkloadCharacterization(database, config_handler)
-    regression_analysis.start_characterization()
+    workload_characterization = WorkloadCharacterization(database, config_handler, remove_response_time_outliers)
+    workload_characterization.start_characterization()
 
 
 if __name__ == "__main__":
