@@ -88,6 +88,10 @@ class RegressionAnalysis:
             logging.info(self.__df.shape)
 
         self.__remove_outliers()
+        # TODO test with min number of entries per class
+        print(self.__df)
+        self.__df = self.__df.loc[:, (self.__df.sum(axis=0) > 5)]
+        print(self.__df)
         logging.info("memory consumption: {}".format(sys.getsizeof(self.__df)))
 
     # TODO mit dataframe command ersetzen
