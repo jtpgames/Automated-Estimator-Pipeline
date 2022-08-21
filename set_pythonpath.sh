@@ -1,1 +1,1 @@
-export PYTHONPATH=${PYTHONPATH}:/Users/igor/Documents/Masterarbeit/logfile_analysis
+export PYTHONPATH=${PYTHONPATH}:/scratch/tmp/a_lier03/logfile_analysis

@@ -1,0 +1,152 @@
+
+The following have been reloaded with a version change:
+  1) palma/2019a => palma/2021a
+
+
+2022-08-18 22:08:28,461 INFO ################################################################
+2022-08-18 22:08:28,461 INFO ################ Configuration successfully loaded #############
+2022-08-18 22:08:28,461 INFO ################################################################
+
+2022-08-18 22:08:28,461 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-08-18 22:08:28,461 INFO features: ['cmd', 'PR 1', 'PR 3', 'List parallel requests start', 'List parallel requests finished', 'response time']
+2022-08-18 22:08:28,461 INFO y column: response time
+2022-08-18 22:08:28,461 INFO models: ['LR', 'Ridge', 'Lasso', 'DT']
+2022-08-18 22:08:28,461 INFO db limit: -1
+
+2022-08-18 22:08:28,465 INFO number feature extractors: 6
+2022-08-18 22:08:28,465 INFO Loading values of extractor: cmd
+2022-08-18 22:08:44,514 INFO (5213877, 1)
+2022-08-18 22:08:44,514 INFO Loading values of extractor: PR 1
+2022-08-18 22:09:00,607 INFO (5213877, 2)
+2022-08-18 22:09:00,608 INFO Loading values of extractor: PR 3
+2022-08-18 22:09:15,478 INFO (5213877, 3)
+2022-08-18 22:09:15,478 INFO Loading values of extractor: List parallel requests start
+2022-08-18 22:10:36,537 INFO (5213877, 306)
+2022-08-18 22:10:36,541 INFO Loading values of extractor: List parallel requests finished
+2022-08-18 22:11:56,307 INFO (5213877, 609)
+2022-08-18 22:11:56,307 INFO Loading values of extractor: response time
+2022-08-18 22:12:11,186 INFO (5213877, 610)
+2022-08-18 22:12:33,691 INFO Note: NumExpr detected 36 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2022-08-18 22:12:37,147 INFO memory consumption: 2773488122
+2022-08-18 22:12:37,158 INFO -------
+2022-08-18 22:12:37,158 INFO unscaled
+2022-08-18 22:12:37,158 INFO          cmd  PR 1  PR 3  1_x  2_x  ...  269_y  275_y  280_y  282_y  290_y
+index                               ...                                   
+0          1     0     0    0    0  ...      0      0      0      0      0
+1          1     1     1    1    0  ...      0      0      0      0      0
+2          4     2     0    0    1  ...      0      0      0      0      0
+3          5     4     1    0    1  ...      0      0      0      0      0
+4          1     3     0    0    1  ...      0      0      0      0      0
+...      ...   ...   ...  ...  ...  ...    ...    ...    ...    ...    ...
+5213872    6     2     1    0    0  ...      0      0      0      0      0
+5213873    1     1     0    0    0  ...      0      0      0      0      0
+5213874    4     1     0    0    0  ...      0      0      0      0      0
+5213875    3     2     1    0    0  ...      0      0      0      0      0
+5213876    2     1     0    0    0  ...      0      0      0      0      0
+
+[5213877 rows x 493 columns]
+/Applic.HPC/Easybuild/skylake/2021a/software/scikit-learn/0.24.2-foss-2021a/lib/python3.9/site-packages/sklearn/model_selection/_split.py:666: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(("The least populated class in y has only %d"
+/Applic.HPC/Easybuild/skylake/2021a/software/scikit-learn/0.24.2-foss-2021a/lib/python3.9/site-packages/sklearn/model_selection/_split.py:666: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(("The least populated class in y has only %d"
+2022-08-19 00:51:23,443 INFO DecisionTree: Accuracy: 0.28 (+/- 0.00) R2: 0.98
+2022-08-19 00:51:23,444 INFO save cmd names mapping
+2022-08-19 00:51:23,463 INFO dump file /scratch/tmp/a_lier03/logfile_analysis/resources/models/DecisionTree_GridSearch_model_2022-08-19.joblib
+(5213877, 302)
+         cmd  PR 1  PR 3  0_x  1_x  ...  299_y  300_y  301_y  302_y  response time
+index                               ...                                           
+0          1     0     0    0    0  ...      0      0      0      0            421
+1          1     1     1    0    1  ...      0      0      0      0             31
+2          4     2     0    0    0  ...      0      0      0      0            296
+3          5     4     1    0    0  ...      0      0      0      0            141
+4          1     3     0    0    0  ...      0      0      0      0            109
+...      ...   ...   ...  ...  ...  ...    ...    ...    ...    ...            ...
+5213872    6     2     1    0    0  ...      0      0      0      0            156
+5213873    1     1     0    0    0  ...      0      0      0      0             47
+5213874    4     1     0    0    0  ...      0      0      0      0             46
+5213875    3     2     1    0    0  ...      0      0      0      0            110
+5213876    2     1     0    0    0  ...      0      0      0      0             47
+
+[5213877 rows x 610 columns]
+         cmd  PR 1  PR 3  1_x  2_x  ...  275_y  280_y  282_y  290_y  response time
+index                               ...                                           
+0          1     0     0    0    0  ...      0      0      0      0            421
+1          1     1     1    1    0  ...      0      0      0      0             31
+2          4     2     0    0    1  ...      0      0      0      0            296
+3          5     4     1    0    1  ...      0      0      0      0            141
+4          1     3     0    0    1  ...      0      0      0      0            109
+...      ...   ...   ...  ...  ...  ...    ...    ...    ...    ...            ...
+5213872    6     2     1    0    0  ...      0      0      0      0            156
+5213873    1     1     0    0    0  ...      0      0      0      0             47
+5213874    4     1     0    0    0  ...      0      0      0      0             46
+5213875    3     2     1    0    0  ...      0      0      0      0            110
+5213876    2     1     0    0    0  ...      0      0      0      0             47
+
+[5213877 rows x 494 columns]
+Fitting 5 folds for each of 12 candidates, totalling 60 fits
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=2; total time= 1.6min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=2; total time= 1.5min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=2; total time= 1.5min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=2; total time= 1.5min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=2; total time= 1.5min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=4; total time= 1.9min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=4; total time= 1.9min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=4; total time= 1.9min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=4; total time= 1.9min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=4; total time= 1.9min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=6; total time= 2.3min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=6; total time= 2.3min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=6; total time= 2.2min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=6; total time= 2.3min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=6; total time= 2.3min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=8; total time= 2.6min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=8; total time= 2.7min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=8; total time= 2.8min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=8; total time= 2.8min
+[CV] END ....dec_tree__criterion=gini, dec_tree__max_depth=8; total time= 2.8min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=10; total time= 3.1min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=10; total time= 3.0min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=10; total time= 3.1min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=10; total time= 3.1min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=10; total time= 3.1min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=12; total time= 3.3min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=12; total time= 3.3min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=12; total time= 3.3min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=12; total time= 3.3min
+[CV] END ...dec_tree__criterion=gini, dec_tree__max_depth=12; total time= 3.3min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=2; total time= 1.7min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=2; total time= 1.7min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=2; total time= 1.7min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=2; total time= 1.7min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=2; total time= 1.7min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=4; total time= 2.1min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=4; total time= 2.1min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=4; total time= 2.1min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=4; total time= 2.1min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=4; total time= 2.1min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=6; total time= 2.4min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=6; total time= 2.4min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=6; total time= 2.4min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=6; total time= 2.4min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=6; total time= 2.4min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=8; total time= 2.8min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=8; total time= 2.8min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=8; total time= 2.8min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=8; total time= 2.8min
+[CV] END .dec_tree__criterion=entropy, dec_tree__max_depth=8; total time= 2.8min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=10; total time= 3.1min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=10; total time= 3.1min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=10; total time= 3.1min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=10; total time= 3.1min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=10; total time= 3.1min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=12; total time= 3.3min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=12; total time= 3.3min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=12; total time= 3.3min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=12; total time= 3.4min
+[CV] END dec_tree__criterion=entropy, dec_tree__max_depth=12; total time= 3.3min
+Best parameters: {'memory': None, 'steps': [('std_slc', StandardScaler()), ('dec_tree', DecisionTreeClassifier(max_depth=12))], 'verbose': False, 'std_slc': StandardScaler(), 'dec_tree': DecisionTreeClassifier(max_depth=12), 'std_slc__copy': True, 'std_slc__with_mean': True, 'std_slc__with_std': True, 'dec_tree__ccp_alpha': 0.0, 'dec_tree__class_weight': None, 'dec_tree__criterion': 'gini', 'dec_tree__max_depth': 12, 'dec_tree__max_features': None, 'dec_tree__max_leaf_nodes': None, 'dec_tree__min_impurity_decrease': 0.0, 'dec_tree__min_impurity_split': None, 'dec_tree__min_samples_leaf': 1, 'dec_tree__min_samples_split': 2, 'dec_tree__min_weight_fraction_leaf': 0.0, 'dec_tree__random_state': None, 'dec_tree__splitter': 'best'}
+
+{'memory': None, 'steps': [('std_slc', StandardScaler()), ('dec_tree', DecisionTreeClassifier(max_depth=12))], 'verbose': False, 'std_slc': StandardScaler(), 'dec_tree': DecisionTreeClassifier(max_depth=12), 'std_slc__copy': True, 'std_slc__with_mean': True, 'std_slc__with_std': True, 'dec_tree__ccp_alpha': 0.0, 'dec_tree__class_weight': None, 'dec_tree__criterion': 'gini', 'dec_tree__max_depth': 12, 'dec_tree__max_features': None, 'dec_tree__max_leaf_nodes': None, 'dec_tree__min_impurity_decrease': 0.0, 'dec_tree__min_impurity_split': None, 'dec_tree__min_samples_leaf': 1, 'dec_tree__min_samples_split': 2, 'dec_tree__min_weight_fraction_leaf': 0.0, 'dec_tree__random_state': None, 'dec_tree__splitter': 'best'}
+
+Finished.
+
