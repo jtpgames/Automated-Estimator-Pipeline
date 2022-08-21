@@ -3,6 +3,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
+import os
 
 import pandas as pd
 import typer
@@ -15,7 +16,8 @@ from sklearn.model_selection import train_test_split, cross_val_score, \
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from typing import List, Any
-
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.feature_selection import SelectFromModel
 from src.configuration_handler import AnalysisConfigurationHandler
 from src.database import Database
 from src.feature_extractor.abstract_feature_extractor import (
@@ -24,13 +26,14 @@ from src.feature_extractor.abstract_feature_extractor import (
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
 from src.regression_analysis.models.models import get_model_objects_from_names
+from sklearn.feature_selection import VarianceThreshold
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.INFO
 )
 handler = logging.StreamHandler(sys.stdout)
-
+SLURM_CPUS_PER_TASK = os.environ.get("SLURM_CPUS_PER_TASK")
 
 class RegressionAnalysis:
     __db_path: str
@@ -134,119 +137,39 @@ class RegressionAnalysis:
         std_slc = StandardScaler()
         pca = decomposition.PCA()
         dec_tree = tree.DecisionTreeRegressor()
+        # pipe = Pipeline(
+        #     steps=[('feature_selection', SelectFromModel(DecisionTreeRegressor())), ('std_slc', std_slc), ('dec_tree', dec_tree)]
+        # )
+
+        # parameters = {
+        #     "dec_tree__splitter": ["best", "random"],
+        #     "dec_tree__max_depth": [1, 5, 9, 12],
+        #     "dec_tree__min_samples_leaf": [1, 3, 5, 7, 9],
+        #     "dec_tree__min_weight_fraction_leaf": [0, 0.2, 0.4, 0.5],
+        #     #"dec_tree__max_features": ["auto", "log2", "sqrt", None],
+        #     #"dec_tree__max_leaf_nodes": [None, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+        # }
         pipe = Pipeline(
-            steps=[('std_slc', std_slc), ('dec_tree', dec_tree)]
+            steps=[("feature_selection", VarianceThreshold(threshold=(.8 * (1 - .8))), ("std_slc", StandardScaler()), ("lin_reg", LinearRegression()))]
         )
-
-        n_components = list(range(1, self.__df.shape[1] + 1, 1))
-        criterion = ['mse', 'mae']
-        max_depth = [2, 4, 6, 8, 10, 12]
-
         parameters = {
-            "dec_tree__splitter": ["best", "random"],
-            "dec_tree__max_depth": [1, 3, 5, 7, 9, 11, 12],
-            "dec_tree__min_samples_leaf": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            "dec_tree__min_weight_fraction_leaf": [0, 0.1, 0.2, 0.3, 0.4, 0.5],
-            "dec_tree__max_features": ["auto", "log2", "sqrt", None],
-            "dec_tree__max_leaf_nodes": [None, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+            "lin_reg__fit_intercept": [True, False] 
         }
+        start_time = datetime.now()
+        clf_GS = GridSearchCV(pipe, parameters, verbose=1, scoring=["r2", "neg_mean_squared_error", "neg_root_mean_squared_error"], n_jobs=int(SLURM_CPUS_PER_TASK), refit="r2")
+        end_time = datetime.now()
+        delta = end_time - start_time
+        print("gridsearch constructor call duration in minutes: {}". format(delta.seconds/60))
 
-        clf_GS = GridSearchCV(pipe, parameters, verbose=2, scoring="r2")
+        start_time = datetime.now()
+        clf_GS.fit(self.__df, y)
+        end_time = datetime.now()
+        delta = end_time - start_time
+        print("gridsearch fit call duration in minutes: {}". format(delta.seconds/60))
+        print("best_parameter: {}".format(clf_GS.best_params_))
+        print("best_score: {}".format(clf_GS.best_score_))
+        print("cv_results: {}".format(clf_GS.cv_results_))
 
-        x_train, x_test, y_train, y_test = train_test_split(
-            self.__df, y, test_size=0.2, random_state=42
-        )
-        clf_GS.fit(x_train, y_train)
-
-        # n_components = list(range(1, self.__df.shape[1] + 1, 1))
-        # criterion = ['gini', 'entropy']
-        # max_depth = [2, 4, 6, 8, 10, 12]
-
-        # clf_GS.score(x_test, y_test)
-        predictions = clf_GS.best_estimator_.predict(x_test)
-
-        cv_results = cross_val_score(clf_GS.best_estimator_, x_test, y_test)
-        logging.info(
-            "%s: Accuracy: %0.2f (+/- %0.2f) R2: %0.2f"
-            % ("DecisionTree", cv_results.mean(), cv_results.std() * 2,
-               r2_score(y_test, predictions))
-        )
-
-        # #print(clf_GS.best_estimator_.get_params())
-        # self.save_cmd_names_mapping()
-
-        mae = mean_absolute_error(y_test, predictions)
-        mse = mean_squared_error(y_test, predictions)
-        r_2_score = r2_score(y_test, predictions)
-        self.save_model(
-            mae,
-            mse,
-            r_2_score,
-            clf_GS.best_estimator_,
-            "DecisionTree_GridSearch"
-        )
-
-        # y = self.__df.pop(self.__y_column_name)
-        # logging.info("-------")
-        # logging.info("unscaled")
-        # logging.info(self.__df)
-        # x_scaled = StandardScaler().fit_transform(self.__df)
-        # logging.info("scaled")
-        # logging.info(x_scaled.mean(axis=0))
-        # logging.info(x_scaled.std(axis=0))
-
-        x_train, x_test, y_train, y_test = train_test_split(
-            self.__df, y, test_size=0.2, random_state=42
-        )
-
-        logging.info("====")
-        logging.info("== Evaluating each model in turn ==")
-        results = []
-        names = []
-        for name, model in self.__models:
-            # cv_results = cross_val_score(model, x_train, y_train)
-            model.fit(x_train, y_train)
-            # results.append(cv_results)
-            # names.append(name)
-            # logging.info(
-            #     "%s: Accuracy: %0.2f (+/- %0.2f)"
-            #     % (name, cv_results.mean(), cv_results.std() * 2)
-            # )
-
-            logging.info("== X_test ==")
-            logging.info(x_test)
-            logging.info("== Predictions ==")
-            predictions = model.predict(x_test)
-            logging.info(predictions)
-            logging.info("== y_test ==")
-            logging.info(y_test)
-            logging.info("====")
-
-            # The coefficients
-            # logging.info("Model Coefficients: ", model.coef_)
-            # logging.info("Model intercept: ", model.intercept_)
-            mae = mean_absolute_error(y_test, predictions)
-            mse = mean_squared_error(y_test, predictions)
-            r_2_score = r2_score(y_test, predictions)
-            logging.info(
-                'Mean absolute error: {:.3f}'.format(mae)
-            )
-            # The mean squared error
-            logging.info(
-                'Mean squared error: {:.2f}'.format(mse)
-            )
-
-            # The coefficient of determination: 1 is perfect prediction
-            logging.info(
-                'Coefficient of determination: {:.2%}'.format(r_2_score)
-            )
-            self.save_model(mae, mse, r_2_score, model, name)
-
-        # self.save_cmd_names_mapping()
-        # logging.info("====")
-
-        # # for model in self.__models:
-        # #     model.fit()
 
     def save_cmd_names_mapping(self):
         logging.info("save cmd names mapping")

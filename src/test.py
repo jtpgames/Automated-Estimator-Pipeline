@@ -42,4 +42,4 @@
 # plt.xlim([alphas[0], alphas[-1]])
 # plt.show()
 import os
-print(os.environ.get("$SLURM_CPUS_PER_TASK"))
+print(os.environ.get("SLURM_CPUS_PER_TASK"))

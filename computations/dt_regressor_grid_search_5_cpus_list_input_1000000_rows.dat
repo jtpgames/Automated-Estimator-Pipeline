@@ -1,0 +1,76 @@
+
+The following have been reloaded with a version change:
+  1) palma/2019a => palma/2021a
+
+
+2022-08-21 13:26:23,289 INFO ################################################################
+2022-08-21 13:26:23,289 INFO ################ Configuration successfully loaded #############
+2022-08-21 13:26:23,289 INFO ################################################################
+
+2022-08-21 13:26:23,290 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-08-21 13:26:23,290 INFO features: ['cmd', 'List parallel requests start', 'List parallel requests finished', 'response time']
+2022-08-21 13:26:23,290 INFO y column: response time
+2022-08-21 13:26:23,290 INFO models: ['DT']
+2022-08-21 13:26:23,290 INFO db limit: 1000000
+
+2022-08-21 13:26:23,293 INFO number feature extractors: 4
+2022-08-21 13:26:23,293 INFO Loading values of extractor: cmd
+2022-08-21 13:26:26,315 INFO (1000000, 1)
+2022-08-21 13:26:26,315 INFO Loading values of extractor: List parallel requests start
+2022-08-21 13:26:39,313 INFO (1000000, 304)
+2022-08-21 13:26:39,317 INFO Loading values of extractor: List parallel requests finished
+2022-08-21 13:26:51,772 INFO (1000000, 607)
+2022-08-21 13:26:51,772 INFO Loading values of extractor: response time
+2022-08-21 13:26:54,379 INFO (1000000, 608)
+2022-08-21 13:26:58,690 INFO memory consumption: 434816632
+2022-08-21 13:26:58,693 INFO -------
+2022-08-21 13:26:58,693 INFO unscaled
+2022-08-21 13:26:58,693 INFO         cmd  1_x  2_x  3_x  4_x  5_x  ...  233_y  239_y  245_y  249_y  250_y  251_y
+index                                 ...                                          
+0         1    0    0    0    0    0  ...      0      0      0      0      0      0
+1         1    1    0    0    0    0  ...      0      0      0      0      0      0
+2         4    0    1    1    0    0  ...      0      0      0      0      0      0
+3         5    0    1    2    1    0  ...      0      0      0      0      0      0
+4         1    0    1    2    0    0  ...      0      0      0      0      0      0
+...     ...  ...  ...  ...  ...  ...  ...    ...    ...    ...    ...    ...    ...
+999995  250    0    0    0    0    0  ...      0      0      0      0      0      0
+999996   15    0    0    0    0    0  ...      0      0      0      1      1      0
+999997   60    0    0    0    0    0  ...      0      0      0      0      0      0
+999998  130    0    0    0    0    0  ...      0      0      0      0      0      0
+999999    1    0    0    0    0    0  ...      0      0      0      0      0      0
+
+[1000000 rows x 390 columns]
+(1000000, 302)
+        cmd  0_x  1_x  2_x  3_x  ...  299_y  300_y  301_y  302_y  response time
+index                            ...                                           
+0         1    0    0    0    0  ...      0      0      0      0            421
+1         1    0    1    0    0  ...      0      0      0      0             31
+2         4    0    0    1    1  ...      0      0      0      0            296
+3         5    0    0    1    2  ...      0      0      0      0            141
+4         1    0    0    1    2  ...      0      0      0      0            109
+...     ...  ...  ...  ...  ...  ...    ...    ...    ...    ...            ...
+999995  250    0    0    0    0  ...      0      0      0      0             31
+999996   15    0    0    0    0  ...      0      0      0      0             78
+999997   60    0    0    0    0  ...      0      0      0      0             47
+999998  130    0    0    0    0  ...      0      0      0      0             47
+999999    1    0    0    0    0  ...      0      0      0      0             15
+
+[1000000 rows x 608 columns]
+        cmd  1_x  2_x  3_x  4_x  ...  245_y  249_y  250_y  251_y  response time
+index                            ...                                           
+0         1    0    0    0    0  ...      0      0      0      0            421
+1         1    1    0    0    0  ...      0      0      0      0             31
+2         4    0    1    1    0  ...      0      0      0      0            296
+3         5    0    1    2    1  ...      0      0      0      0            141
+4         1    0    1    2    0  ...      0      0      0      0            109
+...     ...  ...  ...  ...  ...  ...    ...    ...    ...    ...            ...
+999995  250    0    0    0    0  ...      0      0      0      0             31
+999996   15    0    0    0    0  ...      0      1      1      0             78
+999997   60    0    0    0    0  ...      0      0      0      0             47
+999998  130    0    0    0    0  ...      0      0      0      0             47
+999999    1    0    0    0    0  ...      0      0      0      0             15
+
+[1000000 rows x 391 columns]
+gridsearch constructor call duration in minutes: 0.0
+Fitting 5 folds for each of 640 candidates, totalling 3200 fits
+slurmstepd: error: *** JOB 12288367 ON r05n10 CANCELLED AT 2022-08-21T15:26:04 DUE TO TIME LIMIT ***
