@@ -10,6 +10,7 @@ import typer
 from joblib import dump
 from numpy import std, mean
 from sklearn import decomposition, tree
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split, cross_val_score, \
     GridSearchCV
@@ -34,6 +35,8 @@ logging.basicConfig(
 )
 handler = logging.StreamHandler(sys.stdout)
 SLURM_CPUS_PER_TASK = os.environ.get("SLURM_CPUS_PER_TASK")
+if SLURM_CPUS_PER_TASK == None:
+    SLURM_CPUS_PER_TASK = -1
 
 class RegressionAnalysis:
     __db_path: str
@@ -150,7 +153,7 @@ class RegressionAnalysis:
         #     #"dec_tree__max_leaf_nodes": [None, 10, 20, 30, 40, 50, 60, 70, 80, 90]
         # }
         pipe = Pipeline(
-            steps=[("feature_selection", VarianceThreshold(threshold=(.8 * (1 - .8))), ("std_slc", StandardScaler()), ("lin_reg", LinearRegression()))]
+            steps=[("feature_selection", VarianceThreshold(threshold=(.8 * (1 - .8)))), ("std_slc", StandardScaler()), ("lin_reg", LinearRegression())]
         )
         parameters = {
             "lin_reg__fit_intercept": [True, False] 
