@@ -2,14 +2,14 @@
 
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=40gb		        # RAM memory to reserve
+#SBATCH --cpus-per-task=6
+#SBATCH --mem=1gb		        # RAM memory to reserve
 #SBATCH --partition=express     # partition to submit job to # test node: express
 #SBATCH --time=2:00:00          # max wallclock time (i.e. job exec time limit)
 
 
 #SBATCH --job-name=create_model_dt_grid_search    # only ~30 characters shown when using squeue 
-#SBATCH --output=logfile_analysis_dt_grid_search_full.dat   # important for debugging etc!! name individually
+#SBATCH --output=test_environ.dat   # important for debugging etc!! name individually
 #SBATCH --mail-type=ALL         # receive email for start | finish | abortion
 #SBATCH --mail-user=a_lier03@uni-muenster.de
 
@@ -31,7 +31,8 @@ echo    # functions like a print()-call; here, it creates a blank line, because 
 
 # explicit job to run, e.g. python
 
-python ../src/regression_analysis/regression_analysis.py
+python ../src/test.py
+#python ../src/regression_analysis/regression_analysis.py
 
 
 

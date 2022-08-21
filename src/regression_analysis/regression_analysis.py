@@ -3,27 +3,24 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Any
 
-import typer
 import pandas as pd
-from joblib import dump, load
+import typer
+from joblib import dump
+from numpy import std, mean
+from sklearn import decomposition, tree
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split, cross_val_score, \
     GridSearchCV
-
-from sklearn import decomposition, datasets, tree
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from typing import List, Any
 
 from src.configuration_handler import AnalysisConfigurationHandler
 from src.database import Database
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractAnalysisFeatureExtractor,
 )
-
-from numpy import std, mean
-
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
 from src.regression_analysis.models.models import get_model_objects_from_names
@@ -44,7 +41,11 @@ class RegressionAnalysis:
     __db: Database
     __y_column_name: str
 
-    def __init__(self, config_handler: AnalysisConfigurationHandler, db: Database):
+    def __init__(
+            self,
+            config_handler: AnalysisConfigurationHandler,
+            db: Database
+    ):
         self.__models = get_model_objects_from_names(
             config_handler.get_models()
         )
@@ -60,7 +61,10 @@ class RegressionAnalysis:
         self.create_models()
 
     def setup_feature_extractors(self):
-        self.__feature_extractors = get_feature_extractors_by_name_analysis(self.__db, self.__feature_extractor_names)
+        self.__feature_extractors = get_feature_extractors_by_name_analysis(
+            self.__db,
+            self.__feature_extractor_names
+        )
 
     def load_data(self):
         logging.info(
@@ -127,58 +131,61 @@ class RegressionAnalysis:
         logging.info("unscaled")
         logging.info(self.__df)
 
-        # std_slc = StandardScaler()
-        # pca = decomposition.PCA()
-        # dec_tree = tree.DecisionTreeClassifier()
-        # pipe = Pipeline(
-        #     steps=[('std_slc', std_slc), ('dec_tree', dec_tree)]
-        # )
+        std_slc = StandardScaler()
+        pca = decomposition.PCA()
+        dec_tree = tree.DecisionTreeRegressor()
+        pipe = Pipeline(
+            steps=[('std_slc', std_slc), ('dec_tree', dec_tree)]
+        )
+
+        n_components = list(range(1, self.__df.shape[1] + 1, 1))
+        criterion = ['mse', 'mae']
+        max_depth = [2, 4, 6, 8, 10, 12]
+
+        parameters = {
+            "dec_tree__splitter": ["best", "random"],
+            "dec_tree__max_depth": [1, 3, 5, 7, 9, 11, 12],
+            "dec_tree__min_samples_leaf": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            "dec_tree__min_weight_fraction_leaf": [0, 0.1, 0.2, 0.3, 0.4, 0.5],
+            "dec_tree__max_features": ["auto", "log2", "sqrt", None],
+            "dec_tree__max_leaf_nodes": [None, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+        }
+
+        clf_GS = GridSearchCV(pipe, parameters, verbose=2, scoring="r2")
+
+        x_train, x_test, y_train, y_test = train_test_split(
+            self.__df, y, test_size=0.2, random_state=42
+        )
+        clf_GS.fit(x_train, y_train)
 
         # n_components = list(range(1, self.__df.shape[1] + 1, 1))
         # criterion = ['gini', 'entropy']
         # max_depth = [2, 4, 6, 8, 10, 12]
 
-        # parameters = dict(
-        #     dec_tree__criterion=criterion,
-        #     dec_tree__max_depth=max_depth
-        # )
-        # #clf_GS = GridSearchCV(pipe, parameters, verbose=2, scoring="r2")
+        # clf_GS.score(x_test, y_test)
+        predictions = clf_GS.best_estimator_.predict(x_test)
 
-        # x_train, x_test, y_train, y_test = train_test_split(
-        #     self.__df, y, test_size=0.2, random_state=42
-        # )
-        # #clf_GS.fit(x_train, y_train)
-        # pipe.fit(x_train, y_train)
-
-        # # print(
-        # #     'Best parameters:',
-        # #     clf_GS.best_estimator_.get_params()
-        # # )
-        # # print()
-
-        # #clf_GS.score(x_test, y_test)
-        # #predictions = clf_GS.best_estimator_.predict(x_test)
-        # predictions = pipe.predict(x_test)
-
-        # # cv_results = cross_val_score(clf_GS.best_estimator_, x_test, y_test)
-        # # logging.info(
-        # #     "%s: Accuracy: %0.2f (+/- %0.2f) R2: %0.2f"
-        # #     % ("DecisionTree", cv_results.mean(), cv_results.std() * 2, r2_score(y_test, predictions))
-        # # )
-
-        # cv_results = cross_val_score(pipe, x_test, y_test)
-        # logging.info(
-        #     "%s: Accuracy: %0.2f (+/- %0.2f) R2: %0.2f"
-        #     % ("DecisionTree", cv_results.mean(), cv_results.std() * 2, r2_score(y_test, predictions))
-        # )
+        cv_results = cross_val_score(clf_GS.best_estimator_, x_test, y_test)
+        logging.info(
+            "%s: Accuracy: %0.2f (+/- %0.2f) R2: %0.2f"
+            % ("DecisionTree", cv_results.mean(), cv_results.std() * 2,
+               r2_score(y_test, predictions))
+        )
 
         # #print(clf_GS.best_estimator_.get_params())
         # self.save_cmd_names_mapping()
 
-        # mae = mean_absolute_error(y_test, predictions)
-        # mse = mean_squared_error(y_test, predictions)
-        # r_2_score = r2_score(y_test, predictions)
-        # self.save_model(mae, mse, r_2_score, pipe, "DecisionTree_Basic")
+        mae = mean_absolute_error(y_test, predictions)
+        mse = mean_squared_error(y_test, predictions)
+        r_2_score = r2_score(y_test, predictions)
+        self.save_model(
+            mae,
+            mse,
+            r_2_score,
+            clf_GS.best_estimator_,
+            "DecisionTree_GridSearch"
+        )
+
         # y = self.__df.pop(self.__y_column_name)
         # logging.info("-------")
         # logging.info("unscaled")
@@ -276,6 +283,7 @@ def main(config_file_path: str = "resources/config/analysis_config.json"):
 
     regression_analysis = RegressionAnalysis(config_handler, database)
     regression_analysis.start()
+
 
 if __name__ == "__main__":
     typer.run(main)
