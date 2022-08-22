@@ -2,14 +2,14 @@
 
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=5
 #SBATCH --mem=40gb		        # RAM memory to reserve
 #SBATCH --partition=express     # partition to submit job to # test node: express
 #SBATCH --time=2:00:00          # max wallclock time (i.e. job exec time limit)
 
 
 #SBATCH --job-name=create_model_dt_grid_search    # only ~30 characters shown when using squeue 
-#SBATCH --output=lin_reg_grid_search_1_cpus_list_input_10000_rows_model_select.dat   # important for debugging etc!! name individually
+#SBATCH --output=grid_search_feature_selection_100000_rows.dat   # important for debugging etc!! name individually
 #SBATCH --mail-type=ALL         # receive email for start | finish | abortion
 #SBATCH --mail-user=a_lier03@uni-muenster.de
 
@@ -22,9 +22,6 @@ module load Python/3.9.5
 module load scikit-learn/0.24
 # module laod SQLite/3.35.4
 
-export OMP_PROC_BIND=TRUE
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-export NUMEXPR_MAX_THREADS=$SLURM_CPUS_PER_TASK
 
 echo    # functions like a print()-call; here, it creates a blank line, because no text is provided
 

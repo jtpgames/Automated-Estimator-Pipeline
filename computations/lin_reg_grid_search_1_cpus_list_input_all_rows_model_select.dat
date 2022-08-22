@@ -1,0 +1,91 @@
+
+The following have been reloaded with a version change:
+  1) palma/2019a => palma/2021a
+
+
+2022-08-21 16:23:47,500 INFO ################################################################
+2022-08-21 16:23:47,500 INFO ################ Configuration successfully loaded #############
+2022-08-21 16:23:47,500 INFO ################################################################
+
+2022-08-21 16:23:47,500 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-08-21 16:23:47,500 INFO features: ['cmd', 'PR 1', 'PR 3', 'arrive time', 'List parallel requests start', 'List parallel requests finished', 'response time']
+2022-08-21 16:23:47,500 INFO y column: response time
+2022-08-21 16:23:47,501 INFO models: ['DT']
+2022-08-21 16:23:47,501 INFO db limit: -1
+
+2022-08-21 16:23:47,505 INFO number feature extractors: 7
+2022-08-21 16:23:47,505 INFO Loading values of extractor: cmd
+2022-08-21 16:24:02,110 INFO (5213877, 1)
+2022-08-21 16:24:02,115 INFO Loading values of extractor: PR 1
+2022-08-21 16:24:16,447 INFO (5213877, 2)
+2022-08-21 16:24:16,447 INFO Loading values of extractor: PR 3
+2022-08-21 16:24:29,595 INFO (5213877, 3)
+2022-08-21 16:24:29,595 INFO Loading values of extractor: arrive time
+2022-08-21 16:24:43,483 INFO (5213877, 4)
+2022-08-21 16:24:43,486 INFO Loading values of extractor: List parallel requests start
+2022-08-21 16:25:52,490 INFO (5213877, 307)
+2022-08-21 16:25:52,493 INFO Loading values of extractor: List parallel requests finished
+2022-08-21 16:27:00,894 INFO (5213877, 610)
+2022-08-21 16:27:00,895 INFO Loading values of extractor: response time
+2022-08-21 16:27:14,931 INFO (5213877, 611)
+2022-08-21 16:27:37,110 INFO memory consumption: 2783915876
+2022-08-21 16:27:37,132 INFO -------
+2022-08-21 16:27:37,132 INFO unscaled
+2022-08-21 16:27:37,132 INFO          cmd  PR 1  PR 3  arrive time  1_x  ...  269_y  275_y  280_y  282_y  290_y
+index                                       ...                                   
+0          1     0     0            0    0  ...      0      0      0      0      0
+1          1     1     1            0    1  ...      0      0      0      0      0
+2          4     2     0            0    0  ...      0      0      0      0      0
+3          5     4     1            0    0  ...      0      0      0      0      0
+4          1     3     0            0    0  ...      0      0      0      0      0
+...      ...   ...   ...          ...  ...  ...    ...    ...    ...    ...    ...
+5213872    6     2     1           95    0  ...      0      0      0      0      0
+5213873    1     1     0           95    0  ...      0      0      0      0      0
+5213874    4     1     0           95    0  ...      0      0      0      0      0
+5213875    3     2     1           95    0  ...      0      0      0      0      0
+5213876    2     1     0           95    0  ...      0      0      0      0      0
+
+[5213877 rows x 494 columns]
+(5213877, 302)
+         cmd  PR 1  PR 3  arrive time  ...  300_y  301_y  302_y  response time
+index                                  ...                                    
+0          1     0     0            0  ...      0      0      0            421
+1          1     1     1            0  ...      0      0      0             31
+2          4     2     0            0  ...      0      0      0            296
+3          5     4     1            0  ...      0      0      0            141
+4          1     3     0            0  ...      0      0      0            109
+...      ...   ...   ...          ...  ...    ...    ...    ...            ...
+5213872    6     2     1           95  ...      0      0      0            156
+5213873    1     1     0           95  ...      0      0      0             47
+5213874    4     1     0           95  ...      0      0      0             46
+5213875    3     2     1           95  ...      0      0      0            110
+5213876    2     1     0           95  ...      0      0      0             47
+
+[5213877 rows x 611 columns]
+         cmd  PR 1  PR 3  arrive time  ...  280_y  282_y  290_y  response time
+index                                  ...                                    
+0          1     0     0            0  ...      0      0      0            421
+1          1     1     1            0  ...      0      0      0             31
+2          4     2     0            0  ...      0      0      0            296
+3          5     4     1            0  ...      0      0      0            141
+4          1     3     0            0  ...      0      0      0            109
+...      ...   ...   ...          ...  ...    ...    ...    ...            ...
+5213872    6     2     1           95  ...      0      0      0            156
+5213873    1     1     0           95  ...      0      0      0             47
+5213874    4     1     0           95  ...      0      0      0             46
+5213875    3     2     1           95  ...      0      0      0            110
+5213876    2     1     0           95  ...      0      0      0             47
+
+[5213877 rows x 495 columns]
+gridsearch constructor call duration in minutes: 0.0
+Fitting 5 folds for each of 2 candidates, totalling 10 fits
+gridsearch fit call duration in minutes: 6.85
+best_parameter: {'lin_reg__fit_intercept': True}
+best_score: 0.5739483552556874
+cv_results: {'mean_fit_time': array([37.37067652, 37.14059529]), 'std_fit_time': array([0.25367146, 0.18819654]), 'mean_score_time': array([0.35599308, 0.35045075]), 'std_score_time': array([0.0026796 , 0.00322787]), 'param_lin_reg__fit_intercept': masked_array(data=[True, False],
+             mask=[False, False],
+       fill_value='?',
+            dtype=object), 'params': [{'lin_reg__fit_intercept': True}, {'lin_reg__fit_intercept': False}], 'split0_test_r2': array([0.13110905, 0.01190629]), 'split1_test_r2': array([0.71048494, 0.58902653]), 'split2_test_r2': array([0.74431902, 0.64912942]), 'split3_test_r2': array([0.56348835, 0.23112042]), 'split4_test_r2': array([0.72034042, 0.6306392 ]), 'mean_test_r2': array([0.57394836, 0.42236437]), 'std_test_r2': array([0.23035412, 0.25597936]), 'rank_test_r2': array([1, 2], dtype=int32), 'split0_test_neg_mean_squared_error': array([-35334.28886837, -40181.7843122 ]), 'split1_test_neg_mean_squared_error': array([-14736.16760087, -20918.33819122]), 'split2_test_neg_mean_squared_error': array([-17514.25680161, -24034.78525714]), 'split3_test_neg_mean_squared_error': array([ -9811.79187493, -17282.66930043]), 'split4_test_neg_mean_squared_error': array([-25024.67941926, -33051.3815736 ]), 'mean_test_neg_mean_squared_error': array([-20484.23691301, -27093.79172692]), 'std_test_neg_mean_squared_error': array([8909.56594902, 8373.05555833]), 'rank_test_neg_mean_squared_error': array([1, 2], dtype=int32), 'split0_test_neg_root_mean_squared_error': array([-187.97417075, -200.45394561]), 'split1_test_neg_root_mean_squared_error': array([-121.39261757, -144.631733  ]), 'split2_test_neg_root_mean_squared_error': array([-132.34144023, -155.03156213]), 'split3_test_neg_root_mean_squared_error': array([ -99.05448942, -131.46356644]), 'split4_test_neg_root_mean_squared_error': array([-158.19190693, -181.80038937]), 'mean_test_neg_root_mean_squared_error': array([-139.79092498, -162.67623931]), 'std_test_neg_root_mean_squared_error': array([30.70397704, 25.10443966]), 'rank_test_neg_root_mean_squared_error': array([1, 2], dtype=int32)}
+
+Finished.
+
