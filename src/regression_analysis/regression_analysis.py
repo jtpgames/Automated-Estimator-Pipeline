@@ -161,7 +161,7 @@ class RegressionAnalysis:
             verbose=1,
             scoring=["r2", "neg_mean_squared_error",
                      "neg_root_mean_squared_error"],
-            n_jobs=int(SLURM_CPUS_PER_TASK),
+            #n_jobs=int(SLURM_CPUS_PER_TASK),
             refit="r2"
         )
         end_time = datetime.now()
