@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import typer
-from joblib import dump
+from joblib import dump, parallel_backend
 from numpy import std, mean
 from sklearn import tree
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
@@ -32,9 +32,9 @@ logging.basicConfig(
     level=logging.INFO
 )
 handler = logging.StreamHandler(sys.stdout)
-SLURM_CPUS_PER_TASK = os.environ.get("SLURM_CPUS_PER_TASK")
-if SLURM_CPUS_PER_TASK == None:
-    SLURM_CPUS_PER_TASK = -1
+NUM_OF_JOBS = os.environ.get("SLURM_CPUS_PER_TASK")
+if NUM_OF_JOBS == None:
+    NUM_OF_JOBS = 1
 
 
 class RegressionAnalysis:
@@ -173,7 +173,8 @@ class RegressionAnalysis:
         )
 
         start_time = datetime.now()
-        clf_GS.fit(self.__df, y)
+        with parallel_backend('threading', n_jobs=NUM_OF_JOBS):
+            clf_GS.fit(self.__df, y)
         end_time = datetime.now()
         delta = end_time - start_time
         logging.info(
@@ -185,7 +186,6 @@ class RegressionAnalysis:
         logging.info("best_score: {}".format(clf_GS.best_score_))
         df = pd.DataFrame.from_records(clf_GS.cv_results_)
         df.to_excel("cv_results.xlsx")
-        logging.info("cv_results: {}".format(clf_GS.cv_results_))
 
     def save_cmd_names_mapping(self):
         logging.info("save cmd names mapping")
