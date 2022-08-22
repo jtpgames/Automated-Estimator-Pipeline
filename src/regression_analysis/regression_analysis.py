@@ -11,6 +11,8 @@ import typer
 from joblib import dump, parallel_backend
 from numpy import std, mean
 from sklearn import tree
+from sklearn.feature_selection import SelectKBest, f_regression, \
+    SelectPercentile, mutual_info_regression
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
@@ -34,7 +36,7 @@ logging.basicConfig(
 handler = logging.StreamHandler(sys.stdout)
 NUM_OF_JOBS = os.environ.get("SLURM_CPUS_PER_TASK")
 if NUM_OF_JOBS == None:
-    NUM_OF_JOBS = 1
+    NUM_OF_JOBS = 5
 
 
 class RegressionAnalysis:
@@ -134,31 +136,32 @@ class RegressionAnalysis:
         y = self.__df.pop(self.__y_column_name)
 
         pipe = Pipeline(
-            steps=[("std_slc", StandardScaler()),
-                   ("estimator", LinearRegression())]
+            steps=[
+                ("selection", SelectPercentile(percentile=10)),
+                ("std_slc", StandardScaler()),
+                ("estimator", LinearRegression())]
         )
-        parameters = [{
-                "estimator__fit_intercept": [True, False]
-            },
-            {
-                "estimator": [DecisionTreeRegressor()],
-                "estimator__max_depth": [1, 5, 9, 12, 14, 16],
-                "estimator__min_samples_leaf": [1, 3, 5, 7, 9],
-            },
+        parameters = [
+            #{"selection__score_func": [f_regression, mutual_info_regression]},
+            # {
+            #     "estimator": [DecisionTreeRegressor()],
+            #     "estimator__max_depth": [1, 5, 9, 12, 14, 16],
+            #     "estimator__min_samples_leaf": [1, 3, 5, 7, 9],
+            # },
             {
                 "estimator": [Lasso()],
-                "estimator__alpha": np.arange(0, 2, 0.1)
+                "estimator__alpha": np.arange(0, 1, 0.1)
             },
             {
                 "estimator": [Ridge()],
-                "estimator__alpha": np.arange(0, 2, 0.1)
+                "estimator__alpha": np.arange(0, 1, 0.1)
             }]
 
         start_time = datetime.now()
         clf_GS = GridSearchCV(
             pipe,
             parameters,
-            verbose=1,
+            verbose=2,
             scoring=["r2", "neg_mean_squared_error",
                      "neg_root_mean_squared_error"],
             #n_jobs=int(SLURM_CPUS_PER_TASK),
@@ -186,6 +189,32 @@ class RegressionAnalysis:
         logging.info("best_score: {}".format(clf_GS.best_score_))
         df = pd.DataFrame.from_records(clf_GS.cv_results_)
         df.to_excel("cv_results.xlsx")
+        featurelist = list(self.__df.columns.values)
+        skb_step = clf_GS.best_estimator_.named_steps["selection"]
+        feature_scores = ['%.2f' % elem for elem in skb_step.scores_ ]
+
+        # Get SelectKBest pvalues, rounded to 3 decimal places, name them "feature_scores_pvalues"
+
+        feature_scores_pvalues = ['%.3f' % elem for elem in  skb_step.pvalues_
+                                  ]
+
+        # Get SelectKBest feature names, whose indices are stored in 'skb_step.get_support',
+
+        # create a tuple of feature names, scores and pvalues, name it "features_selected_tuple"
+
+        features_selected_tuple=[(featurelist[i+1], feature_scores[i],
+                                  feature_scores_pvalues[i]) for i in skb_step.get_support(indices=True)]
+
+        # Sort the tuple by score, in reverse order
+
+        features_selected_tuple = sorted(features_selected_tuple, key=lambda
+                feature: float(feature[1]) , reverse=True)
+
+        # Print
+
+        logging.info(' ')
+        logging.info('Selected Features, Scores, P-Values')
+        logging.info(features_selected_tuple)
 
     def save_cmd_names_mapping(self):
         logging.info("save cmd names mapping")
