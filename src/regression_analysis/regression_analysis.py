@@ -178,7 +178,7 @@ class RegressionAnalysis:
         )
 
         start_time = datetime.now()
-        with parallel_backend('threading', n_jobs=NUM_OF_JOBS):
+        with parallel_backend(n_jobs=NUM_OF_JOBS):
             clf_GS.fit(self.__df, y)
         end_time = datetime.now()
         delta = end_time - start_time
