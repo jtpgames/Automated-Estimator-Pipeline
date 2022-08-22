@@ -1,24 +1,23 @@
 import json
 import logging
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
-import os
 
+import numpy as np
 import pandas as pd
 import typer
 from joblib import dump
 from numpy import std, mean
-from sklearn import decomposition, tree
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import train_test_split, cross_val_score, \
-    GridSearchCV
+from sklearn import tree
+from sklearn.linear_model import LinearRegression, Lasso, Ridge
+from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from typing import List, Any
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.feature_selection import SelectFromModel
+from typing import List, Any
+
 from src.configuration_handler import AnalysisConfigurationHandler
 from src.database import Database
 from src.feature_extractor.abstract_feature_extractor import (
@@ -27,7 +26,6 @@ from src.feature_extractor.abstract_feature_extractor import (
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
 from src.regression_analysis.models.models import get_model_objects_from_names
-from sklearn.feature_selection import VarianceThreshold
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -37,6 +35,7 @@ handler = logging.StreamHandler(sys.stdout)
 SLURM_CPUS_PER_TASK = os.environ.get("SLURM_CPUS_PER_TASK")
 if SLURM_CPUS_PER_TASK == None:
     SLURM_CPUS_PER_TASK = -1
+
 
 class RegressionAnalysis:
     __db_path: str
@@ -100,9 +99,9 @@ class RegressionAnalysis:
 
         self.__remove_outliers()
         # TODO test with min number of entries per class
-        print(self.__df)
-        self.__df = self.__df.loc[:, (self.__df.sum(axis=0) > 10)]
-        print(self.__df)
+        # logging.info(self.__df)
+        # self.__df = self.__df.loc[:, (self.__df.sum(axis=0) > 10)]
+        # logging.info(self.__df)
         logging.info("memory consumption: {}".format(sys.getsizeof(self.__df)))
 
     # TODO mit dataframe command ersetzen
@@ -133,46 +132,60 @@ class RegressionAnalysis:
 
     def create_models(self):
         y = self.__df.pop(self.__y_column_name)
-        logging.info("-------")
-        logging.info("unscaled")
-        logging.info(self.__df)
 
-        std_slc = StandardScaler()
-        pca = decomposition.PCA()
-        dec_tree = tree.DecisionTreeRegressor()
-        # pipe = Pipeline(
-        #     steps=[('feature_selection', SelectFromModel(DecisionTreeRegressor())), ('std_slc', std_slc), ('dec_tree', dec_tree)]
-        # )
-
-        # parameters = {
-        #     "dec_tree__splitter": ["best", "random"],
-        #     "dec_tree__max_depth": [1, 5, 9, 12],
-        #     "dec_tree__min_samples_leaf": [1, 3, 5, 7, 9],
-        #     "dec_tree__min_weight_fraction_leaf": [0, 0.2, 0.4, 0.5],
-        #     #"dec_tree__max_features": ["auto", "log2", "sqrt", None],
-        #     #"dec_tree__max_leaf_nodes": [None, 10, 20, 30, 40, 50, 60, 70, 80, 90]
-        # }
         pipe = Pipeline(
-            steps=[("feature_selection", VarianceThreshold(threshold=(.8 * (1 - .8)))), ("std_slc", StandardScaler()), ("lin_reg", LinearRegression())]
+            steps=[("std_slc", StandardScaler()),
+                   ("estimator", LinearRegression())]
         )
-        parameters = {
-            "lin_reg__fit_intercept": [True, False] 
-        }
+        parameters = [{
+                "estimator__fit_intercept": [True, False]
+            },
+            {
+                "estimator": [DecisionTreeRegressor()],
+                "estimator__max_depth": [1, 5, 9, 12, 14, 16],
+                "estimator__min_samples_leaf": [1, 3, 5, 7, 9],
+            },
+            {
+                "estimator": [Lasso()],
+                "estimator__alpha": np.arange(0, 2, 0.1)
+            },
+            {
+                "estimator": [Ridge()],
+                "estimator__alpha": np.arange(0, 2, 0.1)
+            }]
+
         start_time = datetime.now()
-        clf_GS = GridSearchCV(pipe, parameters, verbose=1, scoring=["r2", "neg_mean_squared_error", "neg_root_mean_squared_error"], n_jobs=int(SLURM_CPUS_PER_TASK), refit="r2")
+        clf_GS = GridSearchCV(
+            pipe,
+            parameters,
+            verbose=1,
+            scoring=["r2", "neg_mean_squared_error",
+                     "neg_root_mean_squared_error"],
+            n_jobs=int(SLURM_CPUS_PER_TASK),
+            refit="r2"
+        )
         end_time = datetime.now()
         delta = end_time - start_time
-        print("gridsearch constructor call duration in minutes: {}". format(delta.seconds/60))
+        logging.info(
+            "gridsearch constructor call duration in minutes: {}".format(
+                delta.seconds / 60
+            )
+        )
 
         start_time = datetime.now()
         clf_GS.fit(self.__df, y)
         end_time = datetime.now()
         delta = end_time - start_time
-        print("gridsearch fit call duration in minutes: {}". format(delta.seconds/60))
-        print("best_parameter: {}".format(clf_GS.best_params_))
-        print("best_score: {}".format(clf_GS.best_score_))
-        print("cv_results: {}".format(clf_GS.cv_results_))
-
+        logging.info(
+            "gridsearch fit call duration in minutes: {}".format(
+                delta.seconds / 60
+            )
+        )
+        logging.info("best_parameter: {}".format(clf_GS.best_params_))
+        logging.info("best_score: {}".format(clf_GS.best_score_))
+        df = pd.DataFrame.from_records(clf_GS.cv_results_)
+        df.to_excel("cv_results.xlsx")
+        logging.info("cv_results: {}".format(clf_GS.cv_results_))
 
     def save_cmd_names_mapping(self):
         logging.info("save cmd names mapping")
