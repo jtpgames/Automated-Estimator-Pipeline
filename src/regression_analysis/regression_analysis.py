@@ -38,6 +38,8 @@ NUM_OF_JOBS = os.environ.get("SLURM_CPUS_PER_TASK")
 if NUM_OF_JOBS == None:
     NUM_OF_JOBS = 5
 
+NUM_OF_JOBS = int(NUM_OF_JOBS)
+
 
 class RegressionAnalysis:
     __db_path: str
