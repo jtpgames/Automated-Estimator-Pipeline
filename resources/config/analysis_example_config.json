@@ -13,7 +13,7 @@
   "y": "response time",
   "pipeline": {
     "scaler": "std",
-    "select_feature"
+    "select_feature": "kbest"
   },
   "grid_search": {
     "scoring": [
