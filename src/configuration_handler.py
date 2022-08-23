@@ -2,8 +2,58 @@ import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from sklearn.ensemble import RandomForestRegressor
+
 from src.utils import get_project_root
 import json
+
+from typing import List, Any
+
+from sklearn.linear_model import (
+    LinearRegression,
+    Ridge,
+    Lasso, ElasticNet,
+)
+from sklearn.tree import DecisionTreeRegressor
+
+possible_estimators = [
+    ("LR", LinearRegression()),
+    ("Ridge", Ridge()),
+    ("Lasso", Lasso()),
+    ("DT", DecisionTreeRegressor()),
+    ("ElasticNet", ElasticNet()),
+    ("RF", RandomForestRegressor())
+]
+
+
+def get_model_object_from_name(estimator_name: str) -> Any:
+    for x, estimator in possible_estimators:
+        if estimator_name == x:
+            return estimator
+    # TODO raise error
+    return ""
+
+
+class EstimatorWrapper:
+    __name: str
+    __estimator: any
+    __parameter: dict
+
+    def __init__(self, name, estimator, parameter=None):
+        if parameter is None:
+            parameter = {}
+        self.__name = name
+        self.__estimator = estimator
+        self.__parameter = parameter
+
+    def get_name(self):
+        return self.__name
+
+    def get_estimator(self):
+        return self.__estimator
+
+    def get_parameter(self):
+        return self.__parameter
 
 
 class BaseConfigurationHandler(ABC):
@@ -20,7 +70,9 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
     def __init__(self, config_file_path: str):
         self.__model_save_path = None
         self.__y = None
-        self.__models = None
+        self.__pipeline = None
+        self.__grid_search = None
+        self.__estimators: List[EstimatorWrapper] = []
         self.__db_path = None
         self.__features = None
         self.__config_file_path = config_file_path
@@ -33,10 +85,12 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
             config = json.load(config_file)
             self.__db_path = config["db"]
             self.__features = config["features"]
-            self.__models = config["models"]
-            self.__y = config["y"]
-            self.__model_save_path = config["model_save_path"]
             self.__db_limit = config["db_limit"]
+            self.__y = config["y"]
+            self.__estimators = self.__get_estimators_from_config(config["estimators"])
+            self.__pipeline = config["pipeline"]
+            self.__grid_search = config["grid_search"]
+            self.__model_save_path = config["model_save_path"]
 
         self.__log_config()
 
@@ -60,11 +114,13 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
         logging.info("db path: {}".format(self.__db_path))
         logging.info("features: {}".format(self.__features))
         logging.info("y column: {}".format(self.__y))
-        logging.info("models: {}".format(self.__models))
+        logging.info("models: {}".format(self.__estimators))
         logging.info("db limit: {}\n".format(self.__db_limit))
+        logging.info("pipeline: {}\n".format(self.__pipeline))
+        logging.info("grid search: {}\n".format(self.__grid_search))
 
-    def get_models(self):
-        return self.__models
+    def get_estimators(self):
+        return self.__estimators
 
     def get_y_column_name(self):
         return self.__y
@@ -74,6 +130,27 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
 
     def get_db_limit(self):
         return self.__db_limit
+
+    def __get_estimators_from_config(self, param):
+        estimators = []
+        for estimator_config in param:
+            name = estimator_config["name"]
+            estimator = get_model_object_from_name(name)
+            grid_dict = {}
+            if "grid_dict" in estimator_config:
+                grid_dict = estimator_config["grid_dict"]
+            wrapper = EstimatorWrapper(name, estimator, grid_dict)
+            estimators.append(wrapper)
+        return estimators
+
+    def get_grid_search_parameter(self):
+        return self.__grid_search
+
+    def get_pipeline_parameters(self):
+        return self.__pipeline
+
+    def use_feature_selection(self):
+        return "feature_selection" in self.__pipeline
 
 
 class ETLConfigurationHandler:
@@ -198,3 +275,5 @@ class WorkloadCharacterizationConfigHandler(BaseConfigurationHandler):
         )
         logging.info("db limit: {}\n".format(self.__db_limit))
         logging.info("export folder: {}\n".format(self.__export_folder))
+
+

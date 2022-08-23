@@ -10,7 +10,7 @@ from sqlalchemy import Column, Integer, DateTime
 
 from configuration_handler import WorkloadCharacterizationConfigHandler
 from database import Database
-from src.time_utils import get_date_from_string
+from utils import get_date_from_string
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",

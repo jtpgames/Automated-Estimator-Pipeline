@@ -1,7 +1,7 @@
 import json
+import os
 import pathlib
 from datetime import datetime
-import os
 
 if __name__ == "__main__":
     parent_dir = pathlib.Path().absolute().parent
@@ -41,8 +41,83 @@ if __name__ == "__main__":
         "features": ["PR 1", "PR 3", "cmd", "First Command Start",
                      "First Command Finished", "response time"],
         "y": "response time",
-        "models": ["LR", "Ridge", "Lasso", "ElasticNet", "SGD", "MLP", "KNN",
-                   "AdaLR", "AdaDT", "DT"],
+        "pipeline": {
+            "scaler": "std",
+            "feature_selection": "kbest"
+        },
+        "grid_search": {
+            "scoring": [
+                "r2",
+                "neg_mean_squared_error",
+                "neg_root_mean_squared_error"
+            ],
+            "refit": "r2",
+            "verbose": 3
+        },
+        "estimators": [
+            {
+                "name": "DT",
+                "grid_dict": {
+                    "max_depth": [
+                        1,
+                        5,
+                        9,
+                        12,
+                        14,
+                        16
+                    ],
+                    "min_samples_leaf": [
+                        1,
+                        3,
+                        5,
+                        7,
+                        9
+                    ]
+                }
+            },
+            {
+                "name": "LR"
+            },
+            {
+                "name": "Ridge",
+                "grid_dict": {
+                    "alpha": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5
+                    ]
+                }
+            },
+            {
+                "name": "Lasso",
+                "grid_dict": {
+                    "alpha": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5
+                    ]
+                }
+            },
+            {
+                "name": "ElasticNet",
+                "grid_dict": {
+                    "alpha": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5
+                    ],
+                    "l1_ratio": [
+                        0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1
+                    ]
+                }
+            }
+        ],
         "model_save_path": model_folder.as_posix()
     }
 
@@ -58,7 +133,6 @@ if __name__ == "__main__":
     characterization_config_file_path = configuration_folder / "characterization_config.json"
 
     os.makedirs(configuration_folder.as_posix(), exist_ok=True)
-
 
     with open(analysis_config_file_path, 'w+') as fp:
         json.dump(analysis_config, fp)

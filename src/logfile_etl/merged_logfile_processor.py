@@ -15,10 +15,7 @@ import glob
 from os.path import join
 from re import search
 
-from src.time_utils import (
-    get_timestamp_from_string,
-    contains_timestamp_with_ms,
-)
+from utils import get_timestamp_from_string, contains_timestamp_with_ms
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 
