@@ -12,7 +12,8 @@
   ],
   "y": "response time",
   "pipeline": {
-    "scaler": "std"
+    "scaler": "std",
+    "select_feature"
   },
   "grid_search": {
     "scoring": [

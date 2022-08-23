@@ -99,7 +99,6 @@ class RegressionAnalysis:
         pipe = Pipeline(steps=steps)
         grid_dict = self.__create_grid_search_parameter_dict()
         cv = list(KFold(n_splits=3, shuffle=True, random_state=42).split(self.__df))
-        print(len(cv))
         grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
 
         start_time = datetime.now()
@@ -155,7 +154,6 @@ class RegressionAnalysis:
 
     def __save_results(self, grid_search):
         self.__log_results(grid_search)
-        # TODO get name of estimator
 
         path_to_folder = self.__create_folder_for_estimator_saving()
 
@@ -179,6 +177,37 @@ class RegressionAnalysis:
         mapping_name = "cv_results.xlsx"
         path_to_mapping_file = Path(path_to_folder) / mapping_name
         df.to_excel(path_to_mapping_file)
+        log_file_name = "infos.txt"
+        path_to_log_file = Path(path_to_folder) / log_file_name
+        log_file = open(path_to_log_file, "w")
+        estimator_name = grid_search.best_estimator_.named_steps["estimator"].__class__.__name__
+        columns = self.__get_metric_column_names()
+        refit_col = "rank_test_" + columns[0]
+        prefix = "mean_test_"
+        score_cols = [prefix + x for x in columns]
+        scores = df[df[refit_col] == 1][score_cols].mean()
+        log_file.write(
+            "{}: Metrics: {})".format(
+                estimator_name, scores.to_dict()
+            )
+        )
+        column_names = ", ".join(self.__df.columns.values)
+        log_file.write("\ndataframe columns: {}".format(column_names))
+        log_file.close()
+
+    def __get_metric_column_names(self):
+        metric_names = []
+        grid_params = self.__config_handler.get_grid_search_parameter()
+        # if multiple scoring metrices are defined, refit has to be set
+        if "refit" in grid_params:
+            metric_names.append(grid_params["refit"])
+            for x in grid_params["scoring"]:
+                if x not in metric_names:
+                    metric_names.append(x)
+        else:
+            # if refit is not set, then scoring has to be a single value
+            metric_names.append(grid_params["scoring"])
+        return metric_names
 
     def __save_cmd_names_mapping(self, path_to_folder):
         logging.info("save cmd names mapping")
@@ -191,28 +220,13 @@ class RegressionAnalysis:
     def __save_estimator(
             self,
             grid_search,
-            path_to_folder,
-            mae=0,
-            mse=0,
-            r_2_score=0
+            path_to_folder
     ):
         estimator_name = grid_search.best_estimator_.named_steps["estimator"].__class__.__name__
-        log_file_name = "{}_statistics.txt".format(estimator_name)
         dump_file_name = "{}_model.joblib".format(estimator_name)
         path_to_dump_file = Path(path_to_folder) / dump_file_name
-        path_to_log_file = Path(path_to_folder) / log_file_name
         logging.info("dump file {}".format(path_to_dump_file))
         dump(grid_search.best_estimator_, path_to_dump_file)
-        log_file = open(path_to_log_file, "w")
-        log_file.write(
-            "{name}: Accuracy: mae {mae:.3f} mse {mse:.2f} r2 score {r_2_score:.2%})".format(
-                name=estimator_name, mae=mae,
-                mse=mse, r_2_score=r_2_score
-            )
-        )
-        column_names = ", ".join(self.__df.columns.values)
-        log_file.write("\ndataframe columns: {}".format(column_names))
-        log_file.close()
 
     def __log_results(self, grid_search):
         logging.info("best_parameter: {}".format(grid_search.best_params_))
