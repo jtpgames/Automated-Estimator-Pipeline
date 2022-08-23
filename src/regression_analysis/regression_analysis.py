@@ -14,7 +14,7 @@ from numpy import std, mean
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection import f_regression, \
     SelectPercentile, SelectKBest
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from typing import List
@@ -91,12 +91,37 @@ class RegressionAnalysis:
         self.__remove_outliers()
         logging.info("memory consumption: {}".format(sys.getsizeof(self.__df)))
 
+    def create_models(self):
+        y = self.__df.pop(self.__config_handler.get_y_column_name())
+        steps = self.__add_preprocess_steps()
+        steps.append(("estimator", BaseEstimator()))
+
+        pipe = Pipeline(steps=steps)
+        grid_dict = self.__create_grid_search_parameter_dict()
+        cv = list(KFold(n_splits=3, shuffle=True, random_state=42).split(self.__df))
+        print(len(cv))
+        grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
+
+        start_time = datetime.now()
+        grid_search.fit(self.__df, y)
+        print(grid_search.cv_results_)
+        end_time = datetime.now()
+        delta = end_time - start_time
+
+        logging.info(
+            "gridsearch fit call duration in minutes: {}".format(
+                delta.seconds / 60
+            )
+        )
+
+        self.__save_results(grid_search)
+
     def __remove_outliers(self):
         self.__df = self.__df[
             np.abs(
                 self.__df[self.__config_handler.get_y_column_name()] - self.__df[
                     self.__config_handler.get_y_column_name()].mean()
-                ) <= (
+            ) <= (
                     self.__std_threshold * self.__df[
                 self.__config_handler.get_y_column_name()].std())]
 
@@ -117,39 +142,28 @@ class RegressionAnalysis:
             steps.append(("std_scaler", StandardScaler()))
         return steps
 
-    def create_models(self):
-        y = self.__df.pop(self.__config_handler.get_y_column_name())
-        steps = self.__add_preprocess_steps()
-        steps.append(("estimator", BaseEstimator()))
-
-        pipe = Pipeline(steps=steps)
-        grid_dict = self.__create_grid_search_parameter_dict()
-        grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter())
-
-        start_time = datetime.now()
-        grid_search.fit(self.__df, y)
-        end_time = datetime.now()
-        delta = end_time - start_time
-
-        logging.info(
-            "gridsearch fit call duration in minutes: {}".format(
-                delta.seconds / 60
-            )
-        )
-
-        self.__save_results(grid_search)
+    def __create_grid_search_parameter_dict(self):
+        grid_dict = []
+        for wrapper in self.__config_handler.get_estimators():
+            wrapper_dict = wrapper.get_parameter()
+            new_dict = {"estimator": [wrapper.get_estimator()]}
+            for key, val in wrapper_dict.items():
+                new_name = "estimator__" + key
+                new_dict[new_name] = val
+            grid_dict.append(new_dict)
+        return grid_dict
 
     def __save_results(self, grid_search):
         self.__log_results(grid_search)
         # TODO get name of estimator
 
-        path_to_folder = self.__generate_save_folder()
+        path_to_folder = self.__create_folder_for_estimator_saving()
 
-        self.__save_estimator(grid_search.best_estimator_, "test", path_to_folder)
+        self.__save_estimator(grid_search, path_to_folder)
         self.__save_cmd_names_mapping(path_to_folder)
         self.__save_cv_results(grid_search, path_to_folder)
 
-    def __generate_save_folder(self):
+    def __create_folder_for_estimator_saving(self):
         today = datetime.now().strftime("%Y-%m-%d")
         hash_value = random.getrandbits(16)
         folder_name = "{}_{:02X}".format(today, hash_value)
@@ -166,17 +180,6 @@ class RegressionAnalysis:
         path_to_mapping_file = Path(path_to_folder) / mapping_name
         df.to_excel(path_to_mapping_file)
 
-    def __create_grid_search_parameter_dict(self):
-        grid_dict = []
-        for wrapper in self.__config_handler.get_estimators():
-            wrapper_dict = wrapper.get_parameter()
-            new_dict = {"estimator": [wrapper.get_estimator()]}
-            for key, val in wrapper_dict.items():
-                new_name = "estimator__" + key
-                new_dict[new_name] = val
-            grid_dict.append(new_dict)
-        return grid_dict
-
     def __save_cmd_names_mapping(self, path_to_folder):
         logging.info("save cmd names mapping")
         mapping_name = "cmd_names_mapping.json"
@@ -187,19 +190,19 @@ class RegressionAnalysis:
     # TODO scores übergeben
     def __save_estimator(
             self,
-            pipeline,
-            estimator_name,
+            grid_search,
             path_to_folder,
             mae=0,
             mse=0,
             r_2_score=0
     ):
+        estimator_name = grid_search.best_estimator_.named_steps["estimator"].__class__.__name__
         log_file_name = "{}_statistics.txt".format(estimator_name)
         dump_file_name = "{}_model.joblib".format(estimator_name)
         path_to_dump_file = Path(path_to_folder) / dump_file_name
         path_to_log_file = Path(path_to_folder) / log_file_name
         logging.info("dump file {}".format(path_to_dump_file))
-        dump(pipeline, path_to_dump_file)
+        dump(grid_search.best_estimator_, path_to_dump_file)
         log_file = open(path_to_log_file, "w")
         log_file.write(
             "{name}: Accuracy: mae {mae:.3f} mse {mse:.2f} r2 score {r_2_score:.2%})".format(
@@ -224,7 +227,7 @@ class RegressionAnalysis:
                                        skb_step.get_support(indices=True)]
             features_selected_tuple = sorted(
                 features_selected_tuple, key=lambda
-                        feature: float(feature[1]), reverse=True
+                    feature: float(feature[1]), reverse=True
             )
             logging.info(' ')
             logging.info('Selected Features, Scores, P-Values')
@@ -232,7 +235,7 @@ class RegressionAnalysis:
 
 
 def main(
-        config_file_path: str = "resources/config/analysis_grid_search_config.json"
+        config_file_path: str = "resources/config/analysis_config.json"
 ):
     config_handler = AnalysisConfigurationHandler(config_file_path)
     config_handler.load_config()

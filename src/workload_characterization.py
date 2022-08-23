@@ -1,8 +1,8 @@
+import calendar
 import logging
 from pathlib import Path
-import calendar
-import numpy as np
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import typer
@@ -21,7 +21,7 @@ logging.basicConfig(
 class WorkloadCharacterization:
     __database: Database
     __mapping: dict
-    __remove_response_time_outliers: bool = False
+    __remove_response_time_outliers: bool
 
     def __init__(self, database, config_handler, remove_response_time_outliers):
         self.__database = database
@@ -142,10 +142,16 @@ class WorkloadCharacterization:
         db_path = Path(self.__config_handler.get_db_url())
         return get_date_from_string(db_path.stem)
 
+    def __get_export_name_outlier_str(self):
+        outlier_str = "removed_outliers"
+        if not self.__remove_response_time_outliers:
+            outlier_str = "with_outliers"
+        return outlier_str
+
     def __export_excel(self, training_data: pd.DataFrame):
         request_rates_df = self.__get_request_rates_df(training_data)
         request_types_response_time_df = self.__get_request_type_response_time_df(training_data)
-        filename = "statistics_" + self.__get_export_date_suffix() + ".xlsx"
+        filename = "statistics_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".xlsx"
         filepath = Path(self.__config_handler.get_export_folder()) / filename
         excel_writer = pd.ExcelWriter(path=filepath, engine="xlsxwriter")
         request_types_response_time_df.to_excel(
@@ -158,13 +164,13 @@ class WorkloadCharacterization:
     def __export_charts(self, training_data: pd.DataFrame):
         training_data = training_data.drop("response time", axis=1)
         training_data["hour"] = training_data["Timestamp"].apply(lambda x: x.hour)
-        training_data = training_data.rename(columns={"cmd":"count"})
+        training_data = training_data.rename(columns={"cmd": "count"})
         requests_per_hour = training_data.groupby(["weekday", "hour"]).count()
         requests_per_hour.reset_index(inplace=True)
 
         fig_requests_per_hour = px.bar(requests_per_hour, x="hour", y="count", color="weekday", barmode="group")
         fig_requests_per_hour.update_xaxes(type="category")
-        request_per_hour_filename = "rph_" + self.__get_export_date_suffix() + ".pdf"
+        request_per_hour_filename = "rph_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".pdf"
         filepath = Path(self.__config_handler.get_export_folder()) / request_per_hour_filename
         fig_requests_per_hour.write_image(filepath)
 
@@ -180,13 +186,13 @@ class WorkloadCharacterization:
             text="count"
         )
         fig_req_per_day.update_xaxes(type="category")
-        req_per_day = "rpd_" + self.__get_export_date_suffix() + ".pdf"
+        req_per_day = "rpd_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".pdf"
         filepath = Path(self.__config_handler.get_export_folder()) / req_per_day
         fig_req_per_day.write_image(filepath)
 
 
 def main(
-        config_file_path: str = "resources/config/characterization_config.json", remove_response_time_outliers=False
+        config_file_path: str = "resources/config/characterization_config.json", remove_response_time_outliers: bool = False
 ):
     config_handler = WorkloadCharacterizationConfigHandler(config_file_path)
     config_handler.load_config()
