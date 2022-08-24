@@ -99,13 +99,13 @@ class RegressionAnalysis:
     def create_models(self):
         y = self.__df.pop(self.__config_handler.get_y_column_name())
         steps = self.__add_preprocess_steps()
-        steps.append(("estimator", BaseEstimator()))
+        steps.append(("estimator", "passthrough"))
 
         pipe = Pipeline(steps=steps)
         grid_dict = self.__create_grid_search_parameter_dict()
-        cv = list(KFold(n_splits=3, shuffle=True, random_state=42).split(self.__df))
+        cv = list(KFold(n_splits=2, shuffle=True, random_state=42).split(self.__df))
         #grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
-        grid_search = HalvingGridSearchCV(pipe, grid_dict, resource="n_samples", cv=cv, **self.__config_handler.get_grid_search_parameter(), n_jobs=-1)
+        grid_search = HalvingGridSearchCV(pipe, grid_dict, resource="n_samples", cv=cv, **self.__config_handler.get_grid_search_parameter())
 
         start_time = datetime.now()
         grid_search.fit(self.__df, y)
