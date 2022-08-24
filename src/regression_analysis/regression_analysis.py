@@ -1,24 +1,22 @@
 import json
 import logging
+import os
 import random
 import sys
 from datetime import datetime
 from pathlib import Path
-import os
-from sklearn.metrics import r2_score
 
 import numpy as np
 import pandas as pd
 import typer
 from joblib import dump
-from numpy import std, mean
-from sklearn.base import BaseEstimator
+# explicitly require this experimental feature
+from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.feature_selection import f_regression, \
-    SelectPercentile, SelectKBest, SelectFromModel
-from sklearn.model_selection import GridSearchCV, KFold, train_test_split
+    SelectPercentile, SelectKBest
+from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeRegressor
 from typing import List
 
 from src.configuration_handler import AnalysisConfigurationHandler
@@ -29,10 +27,7 @@ from src.feature_extractor.abstract_feature_extractor import (
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
 
-# explicitly require this experimental feature
-from sklearn.experimental import enable_halving_search_cv # noqa
 # now you can import normally from model_selection
-from sklearn.model_selection import HalvingGridSearchCV
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -100,40 +95,26 @@ class RegressionAnalysis:
 
     def create_models(self):
         y = self.__df.pop(self.__config_handler.get_y_column_name())
-        dec_est = DecisionTreeRegressor()
-        select_feature = SelectFromModel(dec_est)
-        X_train, X_test, y_train, y_test = train_test_split(self.__df, y, random_state=42, test_size=0.2)
-        dec_est.fit(X_train, y_train)
-        y_pred = dec_est.predict(X_test)
-        r2_score_without_feature_sel = r2_score(y_test, y_pred)
-        pipe = Pipeline([("sel", select_feature), ("est", dec_est)])
-        pipe.fit(X_train, y_train)
-        y_pred = pipe.predict(X_test)
-        r2_score_with_feature_sel = r2_score(y_test, y_pred)
-        logging.info("r2 only est: {} r2 with feature sel {}".format(r2_score_without_feature_sel, r2_score_with_feature_sel))
-        logging.info("r2 only est: {} r2 with feature sel {}".format(r2_score_without_feature_sel, r2_score_with_feature_sel))
-        # steps = self.__add_preprocess_steps()
-        # steps.append(("estimator", "passthrough"))
-        # logging.info(self.__df.shape)
-        # pipe = Pipeline(steps=steps)
-        # grid_dict = self.__create_grid_search_parameter_dict()
-        # cv = list(KFold(n_splits=2, shuffle=True, random_state=42).split(self.__df))
-        # grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
-        # #grid_search = HalvingGridSearchCV(pipe, grid_dict, resource="n_samples", cv=cv, **self.__config_handler.get_grid_search_parameter())
-        #
-        # start_time = datetime.now()
-        # grid_search.fit(self.__df, y)
-        # print(grid_search.cv_results_)
-        # end_time = datetime.now()
-        # delta = end_time - start_time
-        #
-        # logging.info(
-        #     "gridsearch fit call duration in minutes: {}".format(
-        #         delta.seconds / 60
-        #     )
-        # )
-        #
-        # self.__save_results(grid_search)
+        steps = self.__add_preprocess_steps()
+        steps.append(("estimator", "passthrough"))
+        logging.info(self.__df.shape)
+        pipe = Pipeline(steps=steps)
+        grid_dict = self.__create_grid_search_parameter_dict()
+        cv = list(KFold(n_splits=2, shuffle=True, random_state=42).split(self.__df))
+        grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
+
+        start_time = datetime.now()
+        grid_search.fit(self.__df, y)
+        end_time = datetime.now()
+        delta = end_time - start_time
+
+        logging.info(
+            "gridsearch fit call duration in minutes: {}".format(
+                delta.seconds / 60
+            )
+        )
+
+        self.__save_results(grid_search)
 
     def __remove_outliers(self):
         self.__df = self.__df[
@@ -175,16 +156,17 @@ class RegressionAnalysis:
     def __save_results(self, grid_search):
         self.__log_results(grid_search)
 
-        path_to_folder = self.__create_folder_for_estimator_saving()
+        path_to_folder = self.__create_folder_for_estimator_saving(grid_search)
 
         self.__save_estimator(grid_search, path_to_folder)
         self.__save_cmd_names_mapping(path_to_folder)
         self.__save_cv_results(grid_search, path_to_folder)
 
-    def __create_folder_for_estimator_saving(self):
-        today = datetime.now().strftime("%Y-%m-%d")
-        hash_value = random.getrandbits(16)
-        folder_name = "{}_{:02X}".format(today, hash_value)
+    def __create_folder_for_estimator_saving(self, grid_search):
+        today = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        estimator_name = grid_search.best_estimator_.named_steps["estimator"].__class__.__name__
+        scores = self.__get_scores_from_cv_result(grid_search.cv_results_)
+        folder_name = "{}_{}_{}_{:.2f}".format(today, estimator_name, scores[1][0], scores[0][0])
         path_to_folder = Path(
             self.__config_handler.get_model_save_path()
         ) / folder_name
@@ -201,33 +183,43 @@ class RegressionAnalysis:
         path_to_log_file = Path(path_to_folder) / log_file_name
         log_file = open(path_to_log_file, "w")
         estimator_name = grid_search.best_estimator_.named_steps["estimator"].__class__.__name__
-        columns = self.__get_metric_column_names()
-        refit_col = "rank_test_" + columns[0]
-        prefix = "mean_test_"
-        score_cols = [prefix + x for x in columns]
-        scores = df[df[refit_col] == 1][score_cols].mean()
+        scores = self.__get_scores_from_cv_result(grid_search.cv_results_)
+        score_str = ""
+        for counter in range(len(scores[0])):
+            score_str = score_str + "{}: {:02f} ".format(scores[1][counter], scores[0][counter])
         log_file.write(
-            "{}: Metrics: {})".format(
-                estimator_name, scores.to_dict()
+            "{}: Metrics: {}".format(
+                estimator_name, score_str
             )
         )
         column_names = ", ".join(self.__df.columns.values)
+        estimators_string = " ".join([str(elem) for elem in self.__config_handler.get_estimators()])
         log_file.write("\ndataframe columns: {}".format(column_names))
+        log_file.write("\ndatabase limit: {}".format(self.__config_handler.get_db_limit()))
+        log_file.write("\nbest_parameter: {}".format(grid_search.best_params_))
+        log_file.write("\npipeline: {}".format(self.__config_handler.get_pipeline_parameters()))
+        log_file.write("\nestimators: {}".format(estimators_string))
         log_file.close()
 
-    def __get_metric_column_names(self):
-        metric_names = []
+    def __get_scores_from_cv_result(self, cv_results):
         grid_params = self.__config_handler.get_grid_search_parameter()
         # if multiple scoring metrices are defined, refit has to be set
+        params = {}
         if "refit" in grid_params:
-            metric_names.append(grid_params["refit"])
-            for x in grid_params["scoring"]:
-                if x not in metric_names:
-                    metric_names.append(x)
+            params = {
+                "key": "rank_test_" + grid_params["refit"],
+                "values": ["mean_test_" + x for x in grid_params["scoring"]],
+                "names": grid_params["scoring"]
+            }
         else:
             # if refit is not set, then scoring has to be a single value
-            metric_names.append(grid_params["scoring"])
-        return metric_names
+            params = {"key": "rank_test_score", "values": ["mean_test_score"],
+                      "names": [grid_params["scoring"]]}
+
+        df = pd.DataFrame.from_records(cv_results)
+        scores = df[df[params["key"]] == 1][params["values"]].mean().values
+        names = params["names"]
+        return scores, names
 
     def __save_cmd_names_mapping(self, path_to_folder):
         logging.info("save cmd names mapping")
@@ -236,7 +228,6 @@ class RegressionAnalysis:
         with open(path_to_mapping_file, "w") as file:
             json.dump(self.__db.get_cmd_int_dict(), file)
 
-    # TODO scores übergeben
     def __save_estimator(
             self,
             grid_search,

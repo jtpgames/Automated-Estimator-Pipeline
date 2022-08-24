@@ -55,7 +55,7 @@ class EstimatorWrapper:
     def get_parameter(self):
         return self.__parameter
 
-    def str(self):
+    def __str__(self):
         return self.__name
 
 
@@ -118,7 +118,8 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
         logging.info("db path: {}".format(self.__db_path))
         logging.info("features: {}".format(self.__features))
         logging.info("y column: {}".format(self.__y))
-        logging.info("models: {}".format(self.__estimators))
+        estimators_string = " ".join([str(elem) for elem in self.__estimators])
+        logging.info("estimators: {}".format(estimators_string))
         logging.info("db limit: {}\n".format(self.__db_limit))
         logging.info("pipeline: {}\n".format(self.__pipeline))
         logging.info("grid search: {}\n".format(self.__grid_search))

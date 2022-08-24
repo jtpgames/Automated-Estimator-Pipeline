@@ -1,23 +1,21 @@
-from sklearn.datasets import load_iris
-from sklearn import tree
-from sklearn.feature_selection import SelectFromModel
-from sklearn.metrics import r2_score
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.pipeline import Pipeline
-from sklearn.tree import DecisionTreeRegressor
+test_str = "eins"
+test_list = ["eins", "zwei"]
 
-iris = load_iris()
-X, y = iris.data, iris.target
+print("'eins' länge: {}".format(len(test_str)))
+print("'eins' isinstance: {}".format(isinstance(test_str, list)))
+print("'['eins', 'zwei']' länge: {}".format(len(test_list)))
+print("'['eins', 'zwei']' isinstance: {}".format(isinstance(test_list, list)))
 
-X_train, X_test, y_train, y_test = train_test_split(X,y, random_state=42, test_size=0.5)
+class Test:
+    def __str__(self):
+        return "test"
 
-est = DecisionTreeRegressor()
-est_2 = DecisionTreeRegressor()
-select = SelectFromModel(estimator=est)
-pipeline = Pipeline(steps=[("feature_selection", select), ("estimator", est)])
-parameter_grid = {"estimator": DecisionTreeRegressor()}
-#grid_search = GridSearchCV(pipeline, )
-pipeline.fit(X_train,y_train)
-y_pred = pipeline.predict(X_test)
-r2_score = r2_score(y_test, y_pred)
-print(r2_score)
+class Test2:
+    def __str__(self):
+        return "test2"
+
+cls1 = Test()
+cls2 = Test2()
+cls = [cls1, cls2]
+str = " ".join([str(elem) for elem in cls])
+print("{}".format(str))
