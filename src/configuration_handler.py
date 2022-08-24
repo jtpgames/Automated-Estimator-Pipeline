@@ -55,6 +55,10 @@ class EstimatorWrapper:
     def get_parameter(self):
         return self.__parameter
 
+    def str(self):
+        return self.__name
+
+
 
 class BaseConfigurationHandler(ABC):
     @abstractmethod
