@@ -27,6 +27,11 @@ from src.feature_extractor.abstract_feature_extractor import (
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
 
+# explicitly require this experimental feature
+from sklearn.experimental import enable_halving_search_cv # noqa
+# now you can import normally from model_selection
+from sklearn.model_selection import HalvingGridSearchCV
+
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.INFO
@@ -99,7 +104,8 @@ class RegressionAnalysis:
         pipe = Pipeline(steps=steps)
         grid_dict = self.__create_grid_search_parameter_dict()
         cv = list(KFold(n_splits=3, shuffle=True, random_state=42).split(self.__df))
-        grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
+        #grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
+        grid_search = HalvingGridSearchCV(pipe, grid_dict, resource="n_samples", cv=cv, **self.__config_handler.get_grid_search_parameter(), n_jobs=-1)
 
         start_time = datetime.now()
         grid_search.fit(self.__df, y)
