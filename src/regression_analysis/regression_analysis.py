@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 import os
+from sklearn.metrics import r2_score
 
 import numpy as np
 import pandas as pd
@@ -13,10 +14,11 @@ from joblib import dump
 from numpy import std, mean
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection import f_regression, \
-    SelectPercentile, SelectKBest
-from sklearn.model_selection import GridSearchCV, KFold
+    SelectPercentile, SelectKBest, SelectFromModel
+from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeRegressor
 from typing import List
 
 from src.configuration_handler import AnalysisConfigurationHandler
@@ -98,28 +100,40 @@ class RegressionAnalysis:
 
     def create_models(self):
         y = self.__df.pop(self.__config_handler.get_y_column_name())
-        steps = self.__add_preprocess_steps()
-        steps.append(("estimator", "passthrough"))
-
-        pipe = Pipeline(steps=steps)
-        grid_dict = self.__create_grid_search_parameter_dict()
-        cv = list(KFold(n_splits=2, shuffle=True, random_state=42).split(self.__df))
-        #grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
-        grid_search = HalvingGridSearchCV(pipe, grid_dict, resource="n_samples", cv=cv, **self.__config_handler.get_grid_search_parameter())
-
-        start_time = datetime.now()
-        grid_search.fit(self.__df, y)
-        print(grid_search.cv_results_)
-        end_time = datetime.now()
-        delta = end_time - start_time
-
-        logging.info(
-            "gridsearch fit call duration in minutes: {}".format(
-                delta.seconds / 60
-            )
-        )
-
-        self.__save_results(grid_search)
+        dec_est = DecisionTreeRegressor()
+        select_feature = SelectFromModel(dec_est)
+        X_train, X_test, y_train, y_test = train_test_split(self.__df, y, random_state=42, test_size=0.2)
+        dec_est.fit(X_train, y_train)
+        y_pred = dec_est.predict(X_test)
+        r2_score_without_feature_sel = r2_score(y_test, y_pred)
+        pipe = Pipeline([("sel", select_feature), ("est", dec_est)])
+        pipe.fit(X_train, y_train)
+        y_pred = pipe.predict(X_test)
+        r2_score_with_feature_sel = r2_score(y_test, y_pred)
+        logging.info("r2 only est: {} r2 with feature sel {}".format(r2_score_without_feature_sel, r2_score_with_feature_sel))
+        logging.info("r2 only est: {} r2 with feature sel {}".format(r2_score_without_feature_sel, r2_score_with_feature_sel))
+        # steps = self.__add_preprocess_steps()
+        # steps.append(("estimator", "passthrough"))
+        # logging.info(self.__df.shape)
+        # pipe = Pipeline(steps=steps)
+        # grid_dict = self.__create_grid_search_parameter_dict()
+        # cv = list(KFold(n_splits=2, shuffle=True, random_state=42).split(self.__df))
+        # grid_search = GridSearchCV(pipe, grid_dict, **self.__config_handler.get_grid_search_parameter(), cv=cv)
+        # #grid_search = HalvingGridSearchCV(pipe, grid_dict, resource="n_samples", cv=cv, **self.__config_handler.get_grid_search_parameter())
+        #
+        # start_time = datetime.now()
+        # grid_search.fit(self.__df, y)
+        # print(grid_search.cv_results_)
+        # end_time = datetime.now()
+        # delta = end_time - start_time
+        #
+        # logging.info(
+        #     "gridsearch fit call duration in minutes: {}".format(
+        #         delta.seconds / 60
+        #     )
+        # )
+        #
+        # self.__save_results(grid_search)
 
     def __remove_outliers(self):
         self.__df = self.__df[
