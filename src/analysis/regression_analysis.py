@@ -12,7 +12,7 @@ from joblib import dump
 from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
-from src.configuration_handler import AnalysisConfigurationHandlerNew
+from src.configuration_handler import AnalysisConfigurationHandler
 from src.database import Database
 
 from src.feature_extractor.feature_extractor_init import \
@@ -31,11 +31,11 @@ class RegressionAnalysis:
     __df: pd.DataFrame
     __db: Database
     __grid_search_params: dict
-    __config_handler: AnalysisConfigurationHandlerNew
+    __config_handler: AnalysisConfigurationHandler
 
     def __init__(
             self,
-            config_handler: AnalysisConfigurationHandlerNew,
+            config_handler: AnalysisConfigurationHandler,
             db: Database
     ):
         self.__feature_extractors = None
@@ -145,7 +145,6 @@ class RegressionAnalysis:
     def __get_scores_from_cv_result(self, cv_results):
         # TODO rename
         params = self.__config_handler.get_estimator_handler().get_grid_search_parameter()
-        # if multiple scoring metrices are defined, refit has to be set
         df = pd.DataFrame.from_records(cv_results)
         scores = df[df[params["key"]] == 1][params["values"]].mean().values
         names = params["names"]
@@ -192,7 +191,7 @@ class RegressionAnalysis:
 def main(
         config_file_path: str = "resources/config/analysis_config_pipeline_test.json"
 ):
-    config_handler = AnalysisConfigurationHandlerNew(config_file_path)
+    config_handler = AnalysisConfigurationHandler(config_file_path)
     config_handler.load_config()
     database = Database(config_handler)
 

@@ -170,7 +170,8 @@ class EstimatorHandler:
         return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid, "grid_search_params": GridSearch.Schema().dump(self.grid_search)}
 
     def get_grid_search_parameter(self):
-        if self.grid_search.refit is not None :
+        # if multiple scoring metrices are defined, refit has to be set
+        if self.grid_search.refit is not None:
             return {
                 "key": "rank_test_" + self.grid_search.refit,
                 "values": ["mean_test_" + x for x in self.grid_search.scoring],
@@ -193,7 +194,7 @@ class ConfigFile:
     Schema: ClassVar[Type[Schema]] = Schema
 
 
-class AnalysisConfigurationHandlerNew(BaseConfigurationHandler):
+class AnalysisConfigurationHandler(BaseConfigurationHandler):
     __config_file_path: str
     __config: ConfigFile
 
@@ -372,7 +373,7 @@ class WorkloadCharacterizationConfigHandler(BaseConfigurationHandler):
 def main(
         config_file_path: str = "resources/config/analysis_config_pipeline_test.json"
 ):
-    config_handler = AnalysisConfigurationHandlerNew(config_file_path)
+    config_handler = AnalysisConfigurationHandler(config_file_path)
     config_handler.load_config()
     # database = Database(config_handler)
     #
