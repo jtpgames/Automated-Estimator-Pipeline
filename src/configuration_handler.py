@@ -2,37 +2,58 @@ import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+import typer
+from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestRegressor
+from marshmallow_dataclass import dataclass
+from typing import Union
 
-from src.utils import get_project_root
-import json
+from sklearn.feature_selection import SelectFromModel, SelectKBest, SelectPercentile
+from sklearn.preprocessing import StandardScaler
 
-from typing import List, Any
-
+from utils import get_project_root
+from typing import List, Any, Optional, ClassVar, Type
 from sklearn.linear_model import (
     LinearRegression,
     Ridge,
     Lasso, ElasticNet,
 )
 from sklearn.tree import DecisionTreeRegressor
+from marshmallow import Schema
+import json
 
 possible_estimators = [
-    ("LR", LinearRegression()),
-    ("Ridge", Ridge()),
-    ("Lasso", Lasso()),
-    ("DT", DecisionTreeRegressor()),
-    ("ElasticNet", ElasticNet()),
-    ("RF", RandomForestRegressor())
+    ("LR", LinearRegression),
+    ("Ridge", Ridge),
+    ("Lasso", Lasso),
+    ("DT", DecisionTreeRegressor),
+    ("ElasticNet", ElasticNet),
+    ("RF", RandomForestRegressor)
 ]
 
 
-def get_model_object_from_name(estimator_name: str) -> Any:
+def get_estimater_class_from_name(estimator_name: str) -> Any:
     for x, estimator in possible_estimators:
         if estimator_name == x:
             return estimator
     # TODO raise error
-    return ""
+    return None
 
+
+possible_actions = [
+    ("std", StandardScaler),
+    ("pca", PCA),
+    ("select_from_model", SelectFromModel),
+    ("k_best", SelectKBest),
+    ("percentile", SelectPercentile)
+]
+
+def get_action_class_from_name(action_name: str):
+    for x, action in possible_actions:
+        if action_name == x:
+            return action
+    # TODO raise error
+    return None
 
 class EstimatorWrapper:
     __name: str
@@ -59,7 +80,6 @@ class EstimatorWrapper:
         return self.__name
 
 
-
 class BaseConfigurationHandler(ABC):
     @abstractmethod
     def get_db_url(self) -> str:
@@ -70,92 +90,159 @@ class BaseConfigurationHandler(ABC):
         pass
 
 
-class AnalysisConfigurationHandler(BaseConfigurationHandler):
+@dataclass
+class GridSearch:
+    scoring: Union[str, list[str]]
+    refit: Optional[str]
+    verbose: Optional[int] = 1
+    cv: Optional[int] = 2
+
+
+@dataclass
+class Estimator:
+    name: str
+    params: dict
+
+
+@dataclass
+class PipelineStep:
+    step: str
+    action: str
+    params: dict
+    needs_estimator: Optional[bool] = False
+
+
+@dataclass
+class Pipeline:
+    for_estimators: list[str]
+    steps: list[PipelineStep]
+
+
+@dataclass
+class EstimatorHandler:
+    pipelines: List[Pipeline]
+    grid_search: GridSearch
+    estimators: list[Estimator]
+
+    def get_params(self):
+        all_step_names = []
+        parameter_grid = []
+        for estimator_config in self.estimators:
+            estimator = get_estimater_class_from_name(estimator_config.name)()
+            params_to_rename = estimator_config.params
+            params = {"estimator": [estimator]}
+
+            for pipeline in self.pipelines:
+                if estimator_config.name in pipeline.for_estimators:
+                    for step in pipeline.steps:
+                        # pipeline step name with prefix for compatible estimators e.g. dt_linear_scaler
+                        step_prefix = "_".join(pipeline.for_estimators) + "_"
+                        step_name = step_prefix + step.step
+
+                        # add step name to all pipeline steps list if not already present
+                        if step_name not in all_step_names:
+                            all_step_names.append(step_name)
+
+                        # initalize action with estimator as input if needed and add
+                        # to the parameter grid of the estimator. e.g. dt_select_from_model: [SelectFromModel(estimator)]
+                        action = get_action_class_from_name(step.action)
+                        if step.needs_estimator:
+                            params[step_name] = [action(estimator)]
+                        else:
+                            params[step_name] = [action()]
+
+                        # add all remaining grid params with pipeline
+                        for key, value in step.params.items():
+                            params[step_name + "__" + key] = value
+
+            for key, value in params_to_rename.items():
+                params["estimator__" + key] = value
+
+            parameter_grid.append(params)
+
+        # add estimator as last pipeline step
+        all_step_names.append("estimator")
+        # all pipeline steps
+        all_pipeline_steps = []
+        for step in all_step_names:
+            all_pipeline_steps.append((step, "passthrouh"))
+
+        return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid, "grid_search_params": GridSearch.Schema().dump(self.grid_search)}
+
+    def get_grid_search_parameter(self):
+        if self.grid_search.refit is not None :
+            return {
+                "key": "rank_test_" + self.grid_search.refit,
+                "values": ["mean_test_" + x for x in self.grid_search.scoring],
+                "names": self.grid_search.scoring
+            }
+        else:
+            # if refit is not set, then scoring has to be a single value
+            return {"key": "rank_test_score", "values": ["mean_test_score"],
+                      "names": [self.grid_search.scoring]}
+
+
+@dataclass
+class ConfigFile:
+    db: str
+    db_limit: int
+    features: list[str]
+    y: str
+    estimator_handler: EstimatorHandler
+    model_save_path: str
+    Schema: ClassVar[Type[Schema]] = Schema
+
+
+class AnalysisConfigurationHandlerNew(BaseConfigurationHandler):
+    __config_file_path: str
+    __config: ConfigFile
+
     def __init__(self, config_file_path: str):
-        self.__model_save_path = None
-        self.__y = None
-        self.__pipeline = None
-        self.__grid_search = None
-        self.__estimators: List[EstimatorWrapper] = []
-        self.__db_path = None
-        self.__features = None
+        self.__config = None
         self.__config_file_path = config_file_path
-        self.__db_limit = -1
 
     def load_config(self):
         root_dir = get_project_root()
         abs_file_path = root_dir / self.__config_file_path
         with open(abs_file_path) as config_file:
-            config = json.load(config_file)
-            self.__db_path = config["db"]
-            self.__features = config["features"]
-            self.__db_limit = config["db_limit"]
-            self.__y = config["y"]
-            self.__estimators = self.__get_estimators_from_config(config["estimators"])
-            self.__pipeline = config["pipeline"]
-            self.__grid_search = config["grid_search"]
-            self.__model_save_path = config["model_save_path"]
+            json_obj = json.load(config_file)
+            self.__config = ConfigFile.Schema().load(json_obj)
+            self.__log_config()
 
-        self.__log_config()
+    # TODO refactore to return initialized feature extractors
+    def get_feature_extractor_names(self):
+        return self.__config.features
 
-    def get_features(self):
-        return self.__features
+    def get_db_url(self) -> str:
+        return "sqlite:///" + self.__config.db
 
-    def get_db_url(self):
-        Path(self.__db_path).parent.mkdir(parents=True, exist_ok=True)
-        return "sqlite:///" + self.__db_path
+    def get_db_limit(self) -> int:
+        return self.__config.db_limit
+
+    def get_estimator_handler(self):
+        return self.__config.estimator_handler
+
+    def get_y_column_name(self):
+        return self.__config.y
+
+    def get_model_save_path(self):
+        return self.__config.model_save_path
+
+    def get_grid_search_dict(self):
+        return self.__config.estimator_handler.get_params()
 
     def __log_config(self):
         logging.info(
-            "################################################################"
-        )
+                "################################################################"
+            )
         logging.info(
             "################ Configuration successfully loaded #############"
         )
         logging.info(
             "################################################################\n"
         )
-        logging.info("db path: {}".format(self.__db_path))
-        logging.info("features: {}".format(self.__features))
-        logging.info("y column: {}".format(self.__y))
-        estimators_string = " ".join([str(elem) for elem in self.__estimators])
-        logging.info("estimators: {}".format(estimators_string))
-        logging.info("db limit: {}\n".format(self.__db_limit))
-        logging.info("pipeline: {}\n".format(self.__pipeline))
-        logging.info("grid search: {}\n".format(self.__grid_search))
-
-    def get_estimators(self):
-        return self.__estimators
-
-    def get_y_column_name(self):
-        return self.__y
-
-    def get_model_save_path(self):
-        return self.__model_save_path
-
-    def get_db_limit(self):
-        return self.__db_limit
-
-    def __get_estimators_from_config(self, param):
-        estimators = []
-        for estimator_config in param:
-            name = estimator_config["name"]
-            estimator = get_model_object_from_name(name)
-            grid_dict = {}
-            if "grid_dict" in estimator_config:
-                grid_dict = estimator_config["grid_dict"]
-            wrapper = EstimatorWrapper(name, estimator, grid_dict)
-            estimators.append(wrapper)
-        return estimators
-
-    def get_grid_search_parameter(self):
-        return self.__grid_search
-
-    def get_pipeline_parameters(self):
-        return self.__pipeline
-
-    def use_feature_selection(self):
-        return "feature_selection" in self.__pipeline
+        # TODO find a way to pretty print with logging
+        print(json.dumps(ConfigFile.Schema().dump(self.__config), indent=4))
 
 
 class ETLConfigurationHandler:
@@ -282,3 +369,16 @@ class WorkloadCharacterizationConfigHandler(BaseConfigurationHandler):
         logging.info("export folder: {}\n".format(self.__export_folder))
 
 
+def main(
+        config_file_path: str = "resources/config/analysis_config_pipeline_test.json"
+):
+    config_handler = AnalysisConfigurationHandlerNew(config_file_path)
+    config_handler.load_config()
+    # database = Database(config_handler)
+    #
+    # regression_analysis = RegressionAnalysis(config_handler, database)
+    # regression_analysis.start()
+
+
+if __name__ == "__main__":
+    typer.run(main)

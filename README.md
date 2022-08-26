@@ -69,7 +69,7 @@ a user input.
 ---
 To run the process call ```python logfile_etl.py``` or ```python logfile_etl.py --help```
 
-## regression_analysis
+## analysis
 
 The configuration for the analysis is done via the json file ```resources/configuration/analysis_config.json```. The
 following is an example for possible configurations.
@@ -102,4 +102,4 @@ are ```"LR", "Ridge", "Lasso", "ElasticNet","SGD", "MLP", "KNN", "AdaLR", "AdaDT
 
 
 ---
-To run the process call ```python regression_analysis.py```
+To run the process call ```python analysis.py```

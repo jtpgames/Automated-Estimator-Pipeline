@@ -8174,7 +8174,7 @@ Fitting 2 folds for each of 1200 candidates, totalling 2400 fits
 [CV 1/2] END estimator=DecisionTreeRegressor(), estimator__max_depth=5, estimator__max_features=sqrt, estimator__max_leaf_nodes=60, estimator__min_samples_leaf=3, estimator__min_weight_fraction_leaf=0.2;, score=(train=0.000, test=-0.000) total time=   0.2s
 [CV 2/2] END estimator=DecisionTreeRegressor(), estimator__max_depth=5, estimator__max_features=sqrt, estimator__max_leaf_nodes=60, estimator__min_samples_leaf=3, estimator__min_weight_fraction_leaf=0.2;, score=(train=0.000, test=-0.000) total time=   0.2s
 [CV 1/2] END estimator=DecisionTreeRegressor(), estimator__max_depth=11, estimator__max_features=sqrt, estimator__max_leaf_nodes=60, estimator__min_samples_leaf=5, estimator__min_weight_fraction_leaf=0.2;, score=(train=0.000, test=-0.000) total time=   0.2s
-/var/spool/slurm/ctld/job12298764/slurm_script: line 33: 263758 Killed                  python ../src/regression_analysis/regression_analysis.py
+/var/spool/slurm/ctld/job12298764/slurm_script: line 33: 263758 Killed                  python ../src/analysis/analysis.py
 
 Finished.
 

@@ -1,8 +1,7 @@
 from sqlalchemy import select, types, MetaData, Table, Column, Integer, String, \
     create_engine
 
-from src.configuration_handler import AnalysisConfigurationHandler, \
-    BaseConfigurationHandler
+from src.configuration_handler import BaseConfigurationHandler
 
 
 class Database:
