@@ -1,0 +1,43 @@
+
+The following have been reloaded with a version change:
+  1) palma/2019a => palma/2021a
+
+
+2022-08-24 10:40:51,085 INFO ################################################################
+2022-08-24 10:40:51,088 INFO ################ Configuration successfully loaded #############
+2022-08-24 10:40:51,088 INFO ################################################################
+
+2022-08-24 10:40:51,088 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-08-24 10:40:51,088 INFO features: ['cmd', 'PR 1', 'PR 3', 'List parallel requests start', 'List parallel requests finished', 'arrive time', 'response time']
+2022-08-24 10:40:51,088 INFO y column: response time
+2022-08-24 10:40:51,088 INFO models: [<src.configuration_handler.EstimatorWrapper object at 0x2afdb7029940>]
+2022-08-24 10:40:51,088 INFO db limit: -1
+
+2022-08-24 10:40:51,089 INFO pipeline: {'scaler': 'std'}
+
+2022-08-24 10:40:51,089 INFO grid search: {'scoring': ['r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error'], 'refit': 'r2', 'verbose': 3}
+
+2022-08-24 10:40:51,092 INFO number feature extractors: 7
+2022-08-24 10:40:51,092 INFO Loading values of extractor: cmd
+2022-08-24 10:41:04,648 INFO (5213877, 1)
+2022-08-24 10:41:04,648 INFO Loading values of extractor: PR 1
+2022-08-24 10:41:18,168 INFO (5213877, 2)
+2022-08-24 10:41:18,168 INFO Loading values of extractor: PR 3
+2022-08-24 10:41:30,534 INFO (5213877, 3)
+2022-08-24 10:41:30,539 INFO Loading values of extractor: List parallel requests start
+2022-08-24 10:42:39,251 INFO (5213877, 306)
+2022-08-24 10:42:39,254 INFO Loading values of extractor: List parallel requests finished
+2022-08-24 10:43:46,165 INFO (5213877, 609)
+2022-08-24 10:43:46,169 INFO Loading values of extractor: arrive time
+2022-08-24 10:44:00,189 INFO (5213877, 610)
+2022-08-24 10:44:00,192 INFO Loading values of extractor: response time
+2022-08-24 10:44:13,526 INFO (5213877, 611)
+2022-08-24 10:44:13,789 INFO Note: NumExpr detected 36 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2022-08-24 10:44:13,789 INFO NumExpr defaulting to 8 threads.
+2022-08-24 10:44:27,024 INFO memory consumption: 3217828864
+2022-08-24 10:53:16,008 INFO r2 only est: 0.5319373687371955 r2 with feature sel 0.522033237466826
+2022-08-24 10:53:16,011 INFO r2 only est: 0.5319373687371955 r2 with feature sel 0.522033237466826
+(5213877, 302)
+
+Finished.
+

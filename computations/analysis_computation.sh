@@ -2,14 +2,14 @@
 
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=5
-#SBATCH --mem=10gb		        # RAM memory to reserve
-#SBATCH --partition=express     # partition to submit job to # test node: express
-#SBATCH --time=2:00:00          # max wallclock time (i.e. job exec time limit)
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=160gb		        # RAM memory to reserve
+#SBATCH --partition=normal     # partition to submit job to # test node: express
+#SBATCH --time=1:00:00          # max wallclock time (i.e. job exec time limit)
 
 
-#SBATCH --job-name=test    # only ~30 characters shown when using squeue
-#SBATCH --output=test.dat   # important for debugging etc!! name individually
+#SBATCH --job-name=test_sklearn_parallel    # only ~30 characters shown when using squeue
+#SBATCH --output=test_10_cpu_n_jobs_10_job_%J.log   # important for debugging etc!! name individually
 #SBATCH --mail-type=ALL         # receive email for start | finish | abortion
 #SBATCH --mail-user=a_lier03@uni-muenster.de
 
@@ -24,6 +24,12 @@ module load scikit-learn/0.24
 
 
 echo    # functions like a print()-call; here, it creates a blank line, because no text is provided
+
+ 
+echo "------------------------------------------------------------"
+echo "SLURM JOB ID: $SLURM_JOBID"
+echo "Running on nodes: $SLURM_NODELIST"
+echo "------------------------------------------------------------"
 
 # run the application(s)
 

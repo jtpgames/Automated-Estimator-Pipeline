@@ -1,0 +1,38 @@
+
+The following have been reloaded with a version change:
+  1) palma/2019a => palma/2021a
+
+
+2022-08-24 10:55:34,679 INFO ################################################################
+2022-08-24 10:55:34,680 INFO ################ Configuration successfully loaded #############
+2022-08-24 10:55:34,680 INFO ################################################################
+
+2022-08-24 10:55:34,680 INFO db path: /scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db
+2022-08-24 10:55:34,680 INFO features: ['cmd', 'PR 1', 'PR 3', 'arrive time', 'response time']
+2022-08-24 10:55:34,680 INFO y column: response time
+2022-08-24 10:55:34,680 INFO models: [<src.configuration_handler.EstimatorWrapper object at 0x2ba62293b940>]
+2022-08-24 10:55:34,680 INFO db limit: -1
+
+2022-08-24 10:55:34,680 INFO pipeline: {'scaler': 'std'}
+
+2022-08-24 10:55:34,681 INFO grid search: {'scoring': ['r2', 'neg_mean_squared_error', 'neg_root_mean_squared_error'], 'refit': 'r2', 'verbose': 3}
+
+2022-08-24 10:55:34,684 INFO number feature extractors: 5
+2022-08-24 10:55:34,684 INFO Loading values of extractor: cmd
+2022-08-24 10:55:49,984 INFO (5213877, 1)
+2022-08-24 10:55:49,984 INFO Loading values of extractor: PR 1
+2022-08-24 10:56:05,303 INFO (5213877, 2)
+2022-08-24 10:56:05,309 INFO Loading values of extractor: PR 3
+2022-08-24 10:56:19,145 INFO (5213877, 3)
+2022-08-24 10:56:19,150 INFO Loading values of extractor: arrive time
+2022-08-24 10:56:33,226 INFO (5213877, 4)
+2022-08-24 10:56:33,226 INFO Loading values of extractor: response time
+2022-08-24 10:56:46,818 INFO (5213877, 5)
+2022-08-24 10:56:46,892 INFO Note: NumExpr detected 36 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2022-08-24 10:56:46,892 INFO NumExpr defaulting to 8 threads.
+2022-08-24 10:56:47,213 INFO memory consumption: 92822002
+2022-08-24 10:57:00,042 INFO r2 only est: 0.5901005587334286 r2 with feature sel 0.4613481518877003
+2022-08-24 10:57:00,042 INFO r2 only est: 0.5901005587334286 r2 with feature sel 0.4613481518877003
+
+Finished.
+
