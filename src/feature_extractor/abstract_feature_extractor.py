@@ -48,6 +48,9 @@ class AbstractAnalysisFeatureExtractor(ABC):
     def get_cmd_names_mapping(self):
         return self.__db.get_cmd_int_dict()
 
+    def get_int_cmd_mapping(self):
+        return self.__db.get_int_cmd_dict()
+
 
 class AbstractETLFeatureExtractor(ABC):
     def __init__(self, feature_name):
