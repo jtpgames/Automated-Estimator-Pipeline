@@ -190,7 +190,7 @@ class RegressionAnalysis:
 
 
 def main(
-        config_file_path: str = "resources/config/analysis_config_pipeline_test.json"
+        config_file_path: str = "resources/config/analysis_config.json"
 ):
     config_handler = AnalysisConfigurationHandler(config_file_path)
     config_handler.load_config()
