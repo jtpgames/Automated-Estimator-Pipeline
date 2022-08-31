@@ -30,7 +30,7 @@ echo    # functions like a print()-call; here, it creates a blank line, because 
 # explicit job to run, e.g. python
 
 #python ../src/test.py
-python ../src/regression_analysis/regression_analysis.py
+python ../src/analysis/regression_analysis.py
 
 
 
