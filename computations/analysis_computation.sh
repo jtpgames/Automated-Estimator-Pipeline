@@ -2,14 +2,14 @@
 
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=18
-#SBATCH --mem=80gb		        # RAM memory to reserve
+#SBATCH --cpus-per-task=5
+#SBATCH --mem=10gb		        # RAM memory to reserve
 #SBATCH --partition=express     # partition to submit job to # test node: express
 #SBATCH --time=2:00:00          # max wallclock time (i.e. job exec time limit)
 
 
-#SBATCH --job-name=create_model_dt_grid_search    # only ~30 characters shown when using squeue 
-#SBATCH --output=dt_estimator_n_jobs_-1.dat   # important for debugging etc!! name individually
+#SBATCH --job-name=test    # only ~30 characters shown when using squeue
+#SBATCH --output=test.dat   # important for debugging etc!! name individually
 #SBATCH --mail-type=ALL         # receive email for start | finish | abortion
 #SBATCH --mail-user=a_lier03@uni-muenster.de
 

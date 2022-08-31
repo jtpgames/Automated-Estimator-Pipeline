@@ -165,7 +165,7 @@ class EstimatorHandler:
         # all pipeline steps
         all_pipeline_steps = []
         for step in all_step_names:
-            all_pipeline_steps.append((step, "passthrouh"))
+            all_pipeline_steps.append((step, "passthrough"))
 
         return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid, "grid_search_params": GridSearch.Schema().dump(self.grid_search)}
 
