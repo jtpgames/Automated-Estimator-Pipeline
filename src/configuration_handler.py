@@ -16,7 +16,7 @@ from typing import List, Any, Optional, ClassVar, Type
 from sklearn.linear_model import (
     LinearRegression,
     Ridge,
-    Lasso, ElasticNet,
+    Lasso, ElasticNet, SGDRegressor,
 )
 from sklearn.tree import DecisionTreeRegressor
 from marshmallow import Schema
@@ -28,7 +28,8 @@ possible_estimators = [
     ("Lasso", Lasso),
     ("DT", DecisionTreeRegressor),
     ("ElasticNet", ElasticNet),
-    ("RF", RandomForestRegressor)
+    ("RF", RandomForestRegressor),
+    ("SGDR", SGDRegressor)
 ]
 
 
@@ -48,12 +49,14 @@ possible_actions = [
     ("percentile", SelectPercentile)
 ]
 
+
 def get_action_class_from_name(action_name: str):
     for x, action in possible_actions:
         if action_name == x:
             return action
     # TODO raise error
     return None
+
 
 class EstimatorWrapper:
     __name: str
@@ -96,6 +99,8 @@ class GridSearch:
     refit: Optional[str]
     verbose: Optional[int] = 1
     cv: Optional[int] = 2
+    n_jobs: Optional[int] = None
+    pre_dispatch: Union[Optional[int], Optional[str]] = "2*n_jobs"
 
 
 @dataclass
@@ -167,7 +172,8 @@ class EstimatorHandler:
         for step in all_step_names:
             all_pipeline_steps.append((step, "passthrough"))
 
-        return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid, "grid_search_params": GridSearch.Schema().dump(self.grid_search)}
+        return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid,
+                "grid_search_params": GridSearch.Schema().dump(self.grid_search)}
 
     def get_grid_search_parameter(self):
         # if multiple scoring metrices are defined, refit has to be set
@@ -180,7 +186,7 @@ class EstimatorHandler:
         else:
             # if refit is not set, then scoring has to be a single value
             return {"key": "rank_test_score", "values": ["mean_test_score"],
-                      "names": [self.grid_search.scoring]}
+                    "names": [self.grid_search.scoring]}
 
 
 @dataclass
@@ -234,8 +240,8 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
 
     def __log_config(self):
         logging.info(
-                "################################################################"
-            )
+            "################################################################"
+        )
         logging.info(
             "################ Configuration successfully loaded #############"
         )

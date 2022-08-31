@@ -7,5 +7,4 @@ scikit-learn~=1.1.2
 typing~=3.7.4.3
 plotly~=5.6.0
 marshmallow~=3.17.1
-marshmallow-dataclass~=8.5.8
-marshmallow-dataclass[enum,union]
+psutil~=5.9.1

@@ -26,7 +26,6 @@ class ListParallelRequestsFinishedAnalysisExtractor(
         result_mapping = self.get_cmd_names_mapping()
 
         shape = (len(result_data), len(result_mapping))
-        print(shape)
 
         array = np.zeros(
             shape=(len(result_data), len(result_mapping)),
