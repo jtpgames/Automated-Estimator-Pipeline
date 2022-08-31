@@ -12,8 +12,9 @@ from joblib import dump
 from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
-from src.configuration_handler import AnalysisConfigurationHandler
 from src.database import Database
+from src.configuration_handler import AnalysisConfigurationHandler
+
 
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis

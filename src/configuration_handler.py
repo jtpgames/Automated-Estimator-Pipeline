@@ -11,7 +11,7 @@ from typing import Union
 from sklearn.feature_selection import SelectFromModel, SelectKBest, SelectPercentile
 from sklearn.preprocessing import StandardScaler
 
-from utils import get_project_root
+from src.utils import get_project_root
 from typing import List, Any, Optional, ClassVar, Type
 from sklearn.linear_model import (
     LinearRegression,

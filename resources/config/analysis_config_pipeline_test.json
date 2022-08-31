@@ -5,48 +5,102 @@
     "cmd",
     "PR 1",
     "PR 3",
+    "List parallel requests start",
+    "List parallel requests finished",
     "arrive time",
     "response time"
   ],
   "y": "response time",
   "estimator_handler": {
-    "pipelines": [{
-      "for_estimators": ["DT"],
-      "steps": [{
-        "step": "scaling",
-        "action": "std",
-        "params": {}
-      },
-        {
-          "step": "pca",
-          "action": "pca",
-          "params": {
+    "pipelines": [
+      {
+        "for_estimators": [
+          "Lasso",
+          "Ridge",
+          "ElasticNet"
+        ],
+        "steps": [
+          {
+            "step": "scaling",
+            "action": "std",
+            "params": {}
+          },
+          {
+            "step": "pca",
+            "action": "pca",
+            "params": {
+              "n_components":  ["mle", 10,20,30,40,50]}
+          },
+          {
+            "step": "feature_selection",
+            "action": "select_from_model",
+            "params": {},
+            "needs_estimator": true
           }
-        },
-        {
-          "step": "feature_selection",
-          "action": "select_from_model",
-          "params": {},
-          "needs_estimator": true
-        }
-      ]}],
+        ]
+      }
+    ],
     "estimators": [
       {
-        "name": "DT",
+        "name": "Lasso",
         "params": {
-          "max_depth": [
-            7,
-            9,
-            11,
-            13,
-            15
-          ],
-          "min_samples_leaf": [
-            5,
-            7,
-            9,
-            11
+          "alpha": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            1
           ]
+        }
+      },
+      {
+        "name": "Ridge",
+        "params": {
+          "alpha": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            1
+          ]
+        }
+      },
+      {
+        "name": "ElasticNet",
+        "params": {
+          "alpha": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            1
+          ],
+          "l1_ratio": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            1]
         }
       }
     ],
