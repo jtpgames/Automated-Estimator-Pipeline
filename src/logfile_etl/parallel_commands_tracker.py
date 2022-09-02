@@ -2,7 +2,9 @@ class ParallelCommandsTracker:
     __started_commands = {}
     __commands_integer_mapping = {}
 
-    def command_count(self):
+    def command_count(self, except_one=False):
+        if except_one:
+            return len(self.__started_commands) - 1
         return len(self.__started_commands)
 
     def add_command(self, tid, timestamp, cmd):
@@ -20,18 +22,20 @@ class ParallelCommandsTracker:
             "parallelCommandsFinished": 0,
             "firstParallelCommandStart": self.__get_first_started_command(),
             "firstParallelCommandFinished": None,
-            "listParallelCommandsStart": self.__get_list_parallel_commands_start(),
-            "listParallelCommandsFinished": {}
+            "listParallelCommandsStart": self.get_list_parallel_commands(),
+            "listParallelCommandsFinished": {},
+            "listParallelCommandsEnd": {}
         }
 
-    def __get_list_parallel_commands_start(self):
+    def get_list_parallel_commands(self, tid_to_skip=None):
         started_command_list = {}
         for key, value in self.__started_commands.items():
             cmd = value["cmd"]
-            if cmd in started_command_list:
-                started_command_list[cmd] = started_command_list[cmd] + 1
-            else:
-                started_command_list[cmd] = 1
+            if key != tid_to_skip:
+                if cmd in started_command_list:
+                    started_command_list[cmd] = started_command_list[cmd] + 1
+                else:
+                    started_command_list[cmd] = 1
         return started_command_list
 
     def __get_first_started_command(self):
@@ -55,7 +59,6 @@ class ParallelCommandsTracker:
         return first_command_request_type
 
     def remove_command(self, tid):
-        # pop command
         cmd = self.__started_commands[tid]["cmd"]
         self.__started_commands.pop(tid)
         self.__add_finished_command_to_list_parallel_commands_finished(cmd)
@@ -79,9 +82,6 @@ class ParallelCommandsTracker:
             else:
                 value["listParallelCommandsFinished"][cmd] = 1
 
-    def get_command(self, tid):
-        pass
-
     def __contains__(self, item):
         return item in self.__started_commands
 
@@ -102,3 +102,11 @@ class ParallelCommandsTracker:
 
     def get_command_mapping(self):
         return self.__commands_integer_mapping
+
+    def __set_remaining_parallel_commands(self, cmd):
+        for key, value in self.__started_commands.items():
+            if cmd in value["listParallelCommandsFinished"]:
+                value["listParallelCommandsFinished"][cmd] = \
+                    value["listParallelCommandsFinished"][cmd] + 1
+            else:
+                value["listParallelCommandsFinished"][cmd] = 1

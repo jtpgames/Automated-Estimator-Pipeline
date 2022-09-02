@@ -15,7 +15,7 @@ import glob
 from os.path import join
 from re import search
 
-from utils import get_timestamp_from_string, contains_timestamp_with_ms
+from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 
@@ -86,7 +86,6 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker.add_command(
             tid, timestamp, self.__extract_command_name(line)
         )
-        # self.add_started_command_to_all_already_started_commands(tid)
 
         return
 
@@ -104,7 +103,8 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker[tid]["respondedAt"] = timestamp
         self.__parallel_commands_tracker[tid][
             "parallelCommandsEnd"
-        ] = self.__parallel_commands_tracker.command_count()
+        ] = self.__parallel_commands_tracker.command_count(except_one=True)
+        self.__parallel_commands_tracker[tid]["listParallelCommandsEnd"] = self.__parallel_commands_tracker.get_list_parallel_commands(tid)
         for extractor in self.__feature_extractors:
             self.__data[extractor.get_feature_name()].append(
                 extractor.extract_feature(self.__parallel_commands_tracker, tid)

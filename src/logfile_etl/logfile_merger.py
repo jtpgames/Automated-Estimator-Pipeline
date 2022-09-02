@@ -3,7 +3,7 @@ import logging
 from os.path import join
 
 from itertools import groupby
-from utils import get_date_from_string, get_timestamp_from_string
+from src.utils import get_date_from_string, get_timestamp_from_string
 from src.configuration_handler import ETLConfigurationHandler
 
 
