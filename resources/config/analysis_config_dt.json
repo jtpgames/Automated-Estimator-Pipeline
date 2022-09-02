@@ -1,0 +1,63 @@
+{
+  "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-07-29.db",
+  "db_limit": -1,
+  "features": [
+    "cmd",
+    "PR 1",
+    "PR 3",
+    "response time"
+  ],
+  "y": "response time",
+  "estimator_handler": {
+    "pipelines": [
+      {
+        "for_estimators": [
+          "DT"
+        ],
+        "steps": [
+          {
+            "step": "scaling",
+            "action": "std",
+            "params": {}
+          },
+          {
+            "step": "pca",
+            "action": "pca",
+            "params": {
+              "n_components": [
+                "mle",
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "step": "feature_selection",
+            "action": "select_from_model",
+            "params": {},
+            "needs_estimator": true
+          }
+        ]
+      }
+    ],
+    "estimators": [
+      {
+        "name": "DT",
+        "params": {}
+      }
+    ],
+    "grid_search": {
+      "scoring": [
+        "r2",
+        "neg_mean_squared_error",
+        "neg_root_mean_squared_error"
+      ],
+      "cv": 2,
+      "refit": "r2",
+      "verbose": 2,
+      "n_jobs": -1,
+      "pre_dispatch": 2
+    }
+  },
+  "model_save_path": "/scratch/tmp/a_lier03/logfile_analysis/resources/models"
+}
