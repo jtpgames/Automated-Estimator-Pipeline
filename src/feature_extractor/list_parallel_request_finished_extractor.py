@@ -24,9 +24,6 @@ class ListParallelRequestsFinishedAnalysisExtractor(
     def get_df(self) -> pd.DataFrame:
         result_data = self.get_column_data(self.get_column())
         result_mapping = self.get_cmd_names_mapping()
-
-        shape = (len(result_data), len(result_mapping))
-
         array = np.zeros(
             shape=(len(result_data), len(result_mapping)),
             dtype=uint8

@@ -1,7 +1,14 @@
+from sqlalchemy import Column, Integer
+
 from src.feature_extractor.abstract_feature_extractor import (
-    AbstractETLFeatureExtractor
+    AbstractETLFeatureExtractor, AbstractAnalysisFeatureExtractor
 )
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
+
+
+class PRTwoAnalysisExtractor(AbstractAnalysisFeatureExtractor):
+    def get_column(self) -> Column:
+        return Column(self.get_column_name(), Integer)
 
 
 class ParallelRequestsTwoETLExtractor(AbstractETLFeatureExtractor):

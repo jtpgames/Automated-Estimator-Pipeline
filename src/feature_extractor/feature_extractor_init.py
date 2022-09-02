@@ -1,24 +1,25 @@
-import logging
 from typing import Dict, List
 
+from src.feature_extractor.list_parallel_request_end_extractor import ListParallelRequestsEndAnalysisExtractor, \
+    ListParallelRequestsEndETLExtractor
 from src.feature_extractor.abstract_feature_extractor import AbstractAnalysisFeatureExtractor, \
     AbstractETLFeatureExtractor
-from src.feature_extractor.cmd_extractor import CMDETLExtractor, CMDAnalysisExtractor
+from src.feature_extractor.cmd_extractor import CMDETLExtractor, CMDAnalysisExtractor, CMDOneHotAnalysisExtractor
 from src.database import Database
 from src.feature_extractor.arrive_time_extractor import ArriveTimeAnalysisExtractor, \
     ArriveTimeETLExtractor
-from src.feature_extractor.first_parallel_command_finished_extractor import \
+from src.feature_extractor.first_parallel_request_finished_extractor import \
     FirstCommandEndAnalysisExtractor, FirstParallelRequestFinishedETLExtractor
-from src.feature_extractor.first_parallel_commands_start_extractor import \
+from src.feature_extractor.first_parallel_request_start_extractor import \
     FirstCommandStartAnalysisExtractor, FirstParallelRequestStartETLExtractor
-from src.feature_extractor.list_parallel_command_finished_extractor import \
+from src.feature_extractor.list_parallel_request_finished_extractor import \
     ListParallelRequestsFinishedAnalysisExtractor, \
     ListParallelRequestsFinishedETLExtractor
-from src.feature_extractor.list_parallel_command_start_extractor import \
+from src.feature_extractor.list_parallel_request_start_extractor import \
     ListParallelRequestsStartETLExtractor, \
     ListParallelRequestsStartAnalysisExtractor
 from src.feature_extractor.number_parallel_requests_end_extractor import \
-    ParallelRequestsTwoETLExtractor
+    ParallelRequestsTwoETLExtractor, PRTwoAnalysisExtractor
 from src.feature_extractor.number_parallel_requests_finished_extractor import \
     PRThreeAnalysisExtractor, ParallelRequestsThreeETLExtractor
 from src.feature_extractor.number_parallel_requests_start_extractor import \
@@ -27,16 +28,20 @@ from src.feature_extractor.response_time_extractor import \
     ResponseTimeAnalysisExtractor, ResponseTimeETLExtractor
 from src.feature_extractor.timestamp_extractor import TimestampETLExtractor
 
+
 analysis_extractor_generator_dict: Dict[
     str, AbstractAnalysisFeatureExtractor] = {
     'cmd': CMDAnalysisExtractor,
+    'cmd one hot': CMDOneHotAnalysisExtractor,
     'PR 1': PROneAnalysisExtractor,
+    'PR 2': PRTwoAnalysisExtractor,
     'PR 3': PRThreeAnalysisExtractor,
     'First Command Start': FirstCommandStartAnalysisExtractor,
     'First Command Finished': FirstCommandEndAnalysisExtractor,
     'response time': ResponseTimeAnalysisExtractor,
     'List parallel requests finished': ListParallelRequestsFinishedAnalysisExtractor,
     'List parallel requests start': ListParallelRequestsStartAnalysisExtractor,
+    'List parallel requests end': ListParallelRequestsEndAnalysisExtractor,
     'arrive time': ArriveTimeAnalysisExtractor,
 }
 
@@ -51,6 +56,7 @@ etl_extractor_generator_dict: Dict[
     'response time': ResponseTimeETLExtractor,
     'List parallel requests finished': ListParallelRequestsFinishedETLExtractor,
     'List parallel requests start': ListParallelRequestsStartETLExtractor,
+    'List parallel requests end': ListParallelRequestsEndETLExtractor,
     'arrive time': ArriveTimeETLExtractor,
     'Timestamp': TimestampETLExtractor,
 }
