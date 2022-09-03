@@ -1,20 +1,22 @@
 import json
 import logging
 import os
+from dask.distributed import Client
+import joblib
 import sys
 from datetime import datetime
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import typer
-from joblib import dump
+from joblib import dump, Parallel
 # explicitly require this experimental feature
 from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from src.database import Database
 from src.configuration_handler import AnalysisConfigurationHandler
-
+import time
 
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
@@ -82,7 +84,12 @@ class RegressionAnalysis:
         gs_params = params["grid_search_params"]
         pipe = Pipeline(steps)
         grid_search = GridSearchCV(pipe, estimator_params, **gs_params)
-        grid_search.fit(self.__df, y)
+        client = Client(processes=False)  # create local cluster
+        start = time.time()
+        with joblib.parallel_backend('dask'):
+            grid_search.fit(self.__df, y)
+        end = time.time()
+        logging.info("Exexution time for fit in min: {}".format(end - start))
         self.__save_results(grid_search)
 
     def __remove_outliers(self):
