@@ -12,7 +12,7 @@ import typer
 from joblib import dump, Parallel
 # explicitly require this experimental feature
 from sklearn.experimental import enable_halving_search_cv  # noqa
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 
 from src.feature_extractor.cmd_extractor import CMDAnalysisExtractor
@@ -22,7 +22,6 @@ import time
 
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
-
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -84,8 +83,11 @@ class RegressionAnalysis:
         steps = params["steps"]
         estimator_params = params["parameter_grid"]
         gs_params = params["grid_search_params"]
+        cv_params = params["cv_params"]
         pipe = Pipeline(steps)
-        grid_search = GridSearchCV(pipe, estimator_params, **gs_params)
+        cv = KFold(**cv_params)
+        print(cv)
+        grid_search = GridSearchCV(pipe, estimator_params, **gs_params, cv=cv)
         start = time.time()
         grid_search.fit(self.__df, y)
         end = time.time()
@@ -112,11 +114,10 @@ class RegressionAnalysis:
                     right_index=True
                 )
                 delete_cmd_after = True
-                print(self.__df.info())
-            self.__df = self.__df[~self.__df.groupby("cmd")[self.__config_handler.get_y_column_name()].apply(self.__is_outlier)]
+            self.__df = self.__df[
+                ~self.__df.groupby("cmd")[self.__config_handler.get_y_column_name()].apply(self.__is_outlier)]
             if delete_cmd_after:
-                print(self.__df.info())
-                self.__df.drop("cmd", axis=1)
+                self.__df.drop("cmd", axis=1, inplace=True)
         else:
             self.__df = self.__df[
                 np.abs(
@@ -125,7 +126,6 @@ class RegressionAnalysis:
                 ) <= (
                         self.__std_threshold * self.__df[
                     self.__config_handler.get_y_column_name()].std())]
-
 
     def __save_results(self, grid_search):
         self.__log_results(grid_search)
@@ -201,12 +201,14 @@ class RegressionAnalysis:
         logging.info("dump file {}".format(path_to_dump_file))
         dump(grid_search.best_estimator_, path_to_dump_file)
 
+# get_feature_names_out(input_features=None)[source]
     def __log_results(self, grid_search):
         logging.info("best_parameter: {}".format(grid_search.best_params_))
         logging.info("best_score: {}".format(grid_search.best_score_))
         # if self.__config_handler.use_feature_selection():
         #     featurelist = list(self.__df.columns.values)
-        #     skb_step = grid_search.best_estimator_.named_steps["feature_selection"]
+        #     skb_step = grid_search.best_estimator_.named_steps["Ridge_feature_selection"]
+        #     print(skb_step)
         #     feature_scores = ['%.2f' % elem for elem in skb_step.scores_]
         #     feature_scores_pvalues = ['%.3f' % elem for elem in skb_step.pvalues_]
         #     features_selected_tuple = [(featurelist[i + 1], feature_scores[i],

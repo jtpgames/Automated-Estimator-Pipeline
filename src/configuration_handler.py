@@ -98,7 +98,6 @@ class GridSearch:
     scoring: Union[str, list[str]]
     refit: Optional[str]
     verbose: Optional[int] = 1
-    cv: Optional[int] = 2
     n_jobs: Optional[int] = None
     pre_dispatch: Union[Optional[int], Optional[str]] = "2*n_jobs"
 
@@ -122,12 +121,19 @@ class Pipeline:
     for_estimators: list[str]
     steps: list[PipelineStep]
 
+@dataclass
+class CrossValidation:
+    n_splits: Optional[int] = 5
+    shuffle: Optional[bool] = False
+    random_state: Optional[int] = None
+
 
 @dataclass
 class EstimatorHandler:
     pipelines: List[Pipeline]
     grid_search: GridSearch
     estimators: list[Estimator]
+    cross_validation: Optional[CrossValidation]
 
     def get_params(self):
         all_step_names = []
@@ -173,7 +179,7 @@ class EstimatorHandler:
             all_pipeline_steps.append((step, "passthrough"))
 
         return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid,
-                "grid_search_params": GridSearch.Schema().dump(self.grid_search)}
+                "grid_search_params": GridSearch.Schema().dump(self.grid_search), "cv_params": CrossValidation.Schema().dump(self.cross_validation)}
 
     def get_grid_search_parameter(self):
         # if multiple scoring metrices are defined, refit has to be set
@@ -187,6 +193,11 @@ class EstimatorHandler:
             # if refit is not set, then scoring has to be a single value
             return {"key": "rank_test_score", "values": ["mean_test_score"],
                     "names": [self.grid_search.scoring]}
+
+    def uses_feature_selector(self):
+        pipeline_steps = [step.step for pipeline in self.pipelines for step in pipeline.steps]
+        print("feature_selection" in pipeline_steps)
+        return "feature_selection" in pipeline_steps
 
 
 @dataclass
@@ -253,6 +264,9 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
         )
         # TODO find a way to pretty print with logging
         print(json.dumps(ConfigFile.Schema().dump(self.__config), indent=4))
+
+    def use_feature_selection(self):
+        return self.__config.estimator_handler.uses_feature_selector()
 
 
 class ETLConfigurationHandler:
