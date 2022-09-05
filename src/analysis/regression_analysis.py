@@ -86,10 +86,8 @@ class RegressionAnalysis:
         gs_params = params["grid_search_params"]
         pipe = Pipeline(steps)
         grid_search = GridSearchCV(pipe, estimator_params, **gs_params)
-        client = Client(processes=False)  # create local cluster
         start = time.time()
-        with joblib.parallel_backend('dask'):
-            grid_search.fit(self.__df, y)
+        grid_search.fit(self.__df, y)
         end = time.time()
         logging.info("Exexution time for fit in min: {}".format(end - start))
         self.__save_results(grid_search)
