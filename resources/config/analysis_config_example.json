@@ -11,6 +11,7 @@
     "response time"
   ],
   "y": "response time",
+  "outlier_detection_based_on_cmd_type": true,
   "estimator_handler": {
     "pipelines": [
       {

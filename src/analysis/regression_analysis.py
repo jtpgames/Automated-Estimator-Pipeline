@@ -14,6 +14,8 @@ from joblib import dump, Parallel
 from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
+
+from feature_extractor.cmd_extractor import CMDAnalysisExtractor
 from src.database import Database
 from src.configuration_handler import AnalysisConfigurationHandler
 import time
@@ -92,14 +94,39 @@ class RegressionAnalysis:
         logging.info("Exexution time for fit in min: {}".format(end - start))
         self.__save_results(grid_search)
 
+    def __is_outlier(self, s):
+        lower_limit = s.mean() - (s.std() * 3)
+        upper_limit = s.mean() + (s.std() * 3)
+        return ~s.between(lower_limit, upper_limit)
+
+    # TODO vernünftig machen
     def __remove_outliers(self):
-        self.__df = self.__df[
-            np.abs(
-                self.__df[self.__config_handler.get_y_column_name()] - self.__df[
-                    self.__config_handler.get_y_column_name()].mean()
-            ) <= (
-                    self.__std_threshold * self.__df[
-                self.__config_handler.get_y_column_name()].std())]
+        if self.__config_handler.get_outlier_detection_type():
+            delete_cmd_after = False
+            if "cmd" not in self.__df.columns.values:
+                extractor = CMDAnalysisExtractor(self.__db, "cmd")
+                new_df = extractor.get_df()
+                self.__df = pd.merge(
+                    self.__df,
+                    new_df,
+                    how="inner",
+                    left_index=True,
+                    right_index=True
+                )
+                delete_cmd_after = True
+                print(self.__df.info())
+            self.__df = self.__df[~self.__df.groupby("cmd")[self.__config_handler.get_y_column_name()].apply(self.__is_outlier)]
+            if delete_cmd_after:
+                print(self.__df.info())
+                self.__df.drop("cmd", axis=1)
+        else:
+            self.__df = self.__df[
+                np.abs(
+                    self.__df[self.__config_handler.get_y_column_name()] - self.__df[
+                        self.__config_handler.get_y_column_name()].mean()
+                ) <= (
+                        self.__std_threshold * self.__df[
+                    self.__config_handler.get_y_column_name()].std())]
 
 
     def __save_results(self, grid_search):

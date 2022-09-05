@@ -197,7 +197,7 @@ class ConfigFile:
     y: str
     estimator_handler: EstimatorHandler
     model_save_path: str
-    Schema: ClassVar[Type[Schema]] = Schema
+    outlier_detection_based_on_cmd_type: bool
 
 
 class AnalysisConfigurationHandler(BaseConfigurationHandler):
@@ -237,6 +237,9 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
 
     def get_grid_search_dict(self):
         return self.__config.estimator_handler.get_params()
+
+    def get_outlier_detection_type(self):
+        return self.__config.outlier_detection_based_on_cmd_type
 
     def __log_config(self):
         logging.info(
