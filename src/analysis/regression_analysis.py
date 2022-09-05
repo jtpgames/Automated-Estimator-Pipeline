@@ -15,7 +15,7 @@ from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 
-from feature_extractor.cmd_extractor import CMDAnalysisExtractor
+from src.feature_extractor.cmd_extractor import CMDAnalysisExtractor
 from src.database import Database
 from src.configuration_handler import AnalysisConfigurationHandler
 import time
