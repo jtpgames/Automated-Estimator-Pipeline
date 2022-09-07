@@ -1,5 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
+from dataclasses import field
 from pathlib import Path
 
 import typer
@@ -118,8 +119,8 @@ class PipelineStep:
 
 @dataclass
 class Pipeline:
-    for_estimators: list[str]
-    steps: list[PipelineStep]
+    for_estimators: Optional[list[str]] = field(default_factory=list)
+    steps: list[PipelineStep] = field(default_factory=list)
 
 @dataclass
 class CrossValidation:
@@ -130,14 +131,19 @@ class CrossValidation:
 
 @dataclass
 class EstimatorHandler:
-    pipelines: List[Pipeline]
+    pipelines: list[Pipeline]
     grid_search: GridSearch
     estimators: list[Estimator]
     cross_validation: Optional[CrossValidation]
 
+    def __set_pipeline_for_estimators(self):
+        if len(self.pipelines) == 1:
+            self.pipelines[0].for_estimators = [estimator.name for estimator in self.estimators]
+
     def get_params(self):
         all_step_names = []
         parameter_grid = []
+        self.__set_pipeline_for_estimators()
         for estimator_config in self.estimators:
             estimator = get_estimater_class_from_name(estimator_config.name)()
             params_to_rename = estimator_config.params
