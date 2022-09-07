@@ -126,7 +126,7 @@ class Pipeline:
 class CrossValidation:
     n_splits: Optional[int] = 5
     shuffle: Optional[bool] = False
-    random_state: Optional[int] = None
+    random_state: Optional[int] = 42
 
 
 @dataclass
