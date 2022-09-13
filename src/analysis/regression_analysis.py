@@ -86,7 +86,7 @@ class RegressionAnalysis:
         cv_params = params["cv_params"]
         pipe = Pipeline(steps)
         cv = KFold(**cv_params)
-        print(cv)
+
         grid_search = GridSearchCV(pipe, estimator_params, **gs_params, cv=cv)
         start = time.time()
         grid_search.fit(self.__df, y)
@@ -201,7 +201,7 @@ class RegressionAnalysis:
         logging.info("dump file {}".format(path_to_dump_file))
         dump(grid_search.best_estimator_, path_to_dump_file)
 
-# get_feature_names_out(input_features=None)[source]
+    # get_feature_names_out(input_features=None)[source]
     def __log_results(self, grid_search):
         logging.info("best_parameter: {}".format(grid_search.best_params_))
         logging.info("best_score: {}".format(grid_search.best_score_))

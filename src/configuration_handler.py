@@ -122,10 +122,11 @@ class Pipeline:
     for_estimators: Optional[list[str]] = field(default_factory=list)
     steps: list[PipelineStep] = field(default_factory=list)
 
+
 @dataclass
 class CrossValidation:
     n_splits: Optional[int] = 5
-    shuffle: Optional[bool] = False
+    shuffle: Optional[bool] = True
     random_state: Optional[int] = 42
 
 
@@ -185,7 +186,8 @@ class EstimatorHandler:
             all_pipeline_steps.append((step, "passthrough"))
 
         return {"steps": all_pipeline_steps, "parameter_grid": parameter_grid,
-                "grid_search_params": GridSearch.Schema().dump(self.grid_search), "cv_params": CrossValidation.Schema().dump(self.cross_validation)}
+                "grid_search_params": GridSearch.Schema().dump(self.grid_search),
+                "cv_params": CrossValidation.Schema().dump(self.cross_validation)}
 
     def get_grid_search_parameter(self):
         # if multiple scoring metrices are defined, refit has to be set

@@ -1,3 +1,5 @@
+from re import search
+
 import numpy as np
 from marshmallow_dataclass import dataclass
 from sklearn import datasets, linear_model
@@ -9,12 +11,10 @@ from sklearn.pipeline import Pipeline
 from sqlalchemy import engine, create_engine
 import pandas as pd
 
-@dataclass
-class RandomObject:
-    name: str
-    count: int
+def get_timestamp_from_string(line: str):
+    return search(r"\s*\d*-\d*-\d*\s\d*:\d*:\d*\.?\d*", line).group().strip()
 
-
-
-test_list = [RandomObject("test", 1), RandomObject("test2", 2)]
-print(test_list[0])
+test_str = "[2020-12-21 00:00:09,165000] (PR:  0/ 1/ 0) ID_REQ_CMD_GETSERVERTIMESTR        : Response time 15 ms"
+search_pattern = r"\s*\d*-\d*-\d*\s\d*:\d*:\d*\.?\d*"
+search_ret = search(search_pattern, test_str)
+print(search_ret.group().strip())
