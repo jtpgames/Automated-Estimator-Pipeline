@@ -1,0 +1,10 @@
+--cpus-per-task=X
+kein setzen von n_jobs und pre_dispatch funktioniert einigermaßen. Es werden immer wieder X threads von Gridsearch verwendet
+
+
+--cpus-per-task=X
+export OMP_PROC_BIND=TRUE
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export NUMEXPR_MAX_THREADS=$SLURM_CPUS_PER_TASK
+kein setzen von n_jobs und pre_dispatch funktioniert ebenfalls einigermaßen. Die Load average ist höher als bei der einfachen Verwendung von cpus-per-task. Aber bei htop werden nie alle Threads ausgelastet.
+

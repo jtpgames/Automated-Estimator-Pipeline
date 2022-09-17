@@ -2,9 +2,10 @@
   "db": "/scratch/tmp/a_lier03/logfile_analysis/resources/export/db/trainingdata_2022-09-02.db",
   "db_limit": -1,
   "features": [
-    "cmd",
-    "PR 1",
-    "PR 3",
+    "cmd one hot",
+    "List parallel requests start",
+    "List parallel requests finished",
+    "List parallel requests end",
     "response time"
   ],
   "y": "response time",
@@ -12,7 +13,7 @@
     "pipelines": [
       {
         "for_estimators": [
-          "DT"
+          "Lasso"
         ],
         "steps": [
           {
@@ -21,20 +22,30 @@
             "params": {}
           },
           {
-            "step": "pca",
-            "action": "pca",
-            "params": {
-              "n_components": [
-                "mle",
-                1,
-                2
-              ]
-            }
-          },
-          {
             "step": "feature_selection",
             "action": "select_from_model",
-            "params": {},
+            "params": {
+              "max_features": [
+                50,
+                100,
+                150,
+                200,
+                250,
+                300,
+                350,
+                400,
+                450,
+                500,
+                550,
+                600,
+                650,
+                700,
+                750,
+                800,
+                850,
+                900
+              ]
+            },
             "needs_estimator": true
           }
         ]
@@ -42,7 +53,7 @@
     ],
     "estimators": [
       {
-        "name": "DT",
+        "name": "Lasso",
         "params": {}
       }
     ],
@@ -54,9 +65,7 @@
       ],
       "cv": 2,
       "refit": "r2",
-      "verbose": 2,
-      "n_jobs": -1,
-      "pre_dispatch": 2
+      "verbose": 2
     }
   },
   "model_save_path": "/scratch/tmp/a_lier03/logfile_analysis/resources/models"
