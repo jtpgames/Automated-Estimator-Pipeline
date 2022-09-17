@@ -135,6 +135,7 @@ class RegressionAnalysis:
         self.__save_estimator(grid_search, path_to_folder)
         self.__save_cmd_names_mapping(path_to_folder)
         self.__save_cv_results(grid_search, path_to_folder)
+        self.__save_config(path_to_folder)
 
     def __create_folder_for_estimator_saving(self, grid_search):
         today = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -221,6 +222,13 @@ class RegressionAnalysis:
         #     logging.info(' ')
         #     logging.info('Selected Features, Scores, P-Values')
         #     logging.info(features_selected_tuple)
+
+    def __save_config(self, path_to_folder):
+        conf = self.__config_handler.get_config()
+        file = Path(path_to_folder) / "config.json"
+        with open(file, 'w', encoding='utf-8') as f:
+            json.dump(conf, f, ensure_ascii=False, indent=4)
+
 
 
 def main(
