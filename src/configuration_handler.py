@@ -276,6 +276,13 @@ class AnalysisConfigurationHandler(BaseConfigurationHandler):
     def use_feature_selection(self):
         return self.__config.estimator_handler.uses_feature_selector()
 
+    def get_config(self):
+        root_dir = get_project_root()
+        abs_file_path = root_dir / self.__config_file_path
+        with open(abs_file_path) as config_file:
+            json_obj = json.load(config_file)
+            return json_obj
+
 
 class ETLConfigurationHandler:
     def __init__(self, config_file_path: str):
