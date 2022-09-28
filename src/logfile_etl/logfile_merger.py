@@ -3,12 +3,13 @@ import logging
 from os.path import join
 
 from itertools import groupby
+
+from src.single_config_handler import ConfigurationHandler
 from src.utils import get_date_from_string, get_timestamp_from_string
-from src.configuration_handler import ETLConfigurationHandler
 
 
 class LogMerger:
-    def __init__(self, config_handler: ETLConfigurationHandler):
+    def __init__(self, config_handler: ConfigurationHandler):
         self.__reading_directory = config_handler.get_processed_logfile_dir()
 
     def merge_logfiles(self):

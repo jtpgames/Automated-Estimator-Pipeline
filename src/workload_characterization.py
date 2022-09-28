@@ -8,8 +8,8 @@ import plotly.express as px
 import typer
 from sqlalchemy import Column, Integer, DateTime
 
-from configuration_handler import WorkloadCharacterizationConfigHandler
 from database import Database
+from single_config_handler import ConfigurationHandler
 from utils import get_date_from_string
 
 logging.basicConfig(
@@ -21,6 +21,7 @@ logging.basicConfig(
 class WorkloadCharacterization:
     __database: Database
     __mapping: dict
+    # TODO also config based
     __remove_response_time_outliers: bool
 
     def __init__(self, database, config_handler, remove_response_time_outliers):
@@ -192,9 +193,10 @@ class WorkloadCharacterization:
 
 
 def main(
-        config_file_path: str = "resources/config/characterization_config.json", remove_response_time_outliers: bool = False
+        config_file_path: str = "resources/config/config.json",
+        remove_response_time_outliers: bool = False
 ):
-    config_handler = WorkloadCharacterizationConfigHandler(config_file_path)
+    config_handler = ConfigurationHandler(config_file_path)
     config_handler.load_config()
     database = Database(config_handler)
 

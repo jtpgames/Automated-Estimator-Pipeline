@@ -2,15 +2,15 @@ import logging
 import shutil
 from pathlib import Path
 
-from src.logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
 from src.logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
-from src.configuration_handler import ETLConfigurationHandler
+from src.logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
+from src.single_config_handler import ConfigurationHandler
 
 
 class LogfileConverter:
     __converters = [WSLogConverter(), ARSLogConverter()]
 
-    def __init__(self, config_handler: ETLConfigurationHandler):
+    def __init__(self, config_handler: ConfigurationHandler):
         self.__input_dir = config_handler.get_unprocessed_logfile_dir()
         self.__output_dir = config_handler.get_processed_logfile_dir()
         self.__create_dirs_if_necessary()

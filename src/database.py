@@ -1,11 +1,11 @@
-from sqlalchemy import select, types, MetaData, Table, Column, Integer, String, \
+from sqlalchemy import select, MetaData, Table, Column, Integer, String, \
     create_engine
 
-from src.configuration_handler import BaseConfigurationHandler
+from src.single_config_handler import ConfigurationHandler
 
 
 class Database:
-    def __init__(self, config_handler: BaseConfigurationHandler):
+    def __init__(self, config_handler: ConfigurationHandler):
         self.__db_url = config_handler.get_db_url()
         self.__db_limit = config_handler.get_db_limit()
 
@@ -67,6 +67,3 @@ class Database:
         if self.__db_limit != -1 and row_limitation:
             query = query.limit(self.__db_limit)
         return con.execute(query)
-
-
-

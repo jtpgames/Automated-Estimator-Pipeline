@@ -1,6 +1,13 @@
+import glob
 import logging
 from datetime import datetime
+from os.path import join
+from pathlib import Path
+from re import search
 from typing import List, Tuple
+
+import pandas as pd
+from sqlalchemy import create_engine
 
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractETLFeatureExtractor,
@@ -8,29 +15,23 @@ from src.feature_extractor.abstract_feature_extractor import (
 from src.feature_extractor.feature_extractor_init import (
     get_feature_extractors_by_name_etl,
 )
-
-from src.logfile_etl.exporter import Exporter
-from src.configuration_handler import ETLConfigurationHandler
-import glob
-from os.path import join
-from re import search
-
-from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
+from src.single_config_handler import ConfigurationHandler
+from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 
 
 class MergedLogProcessor:
     __feature_extractors: List[AbstractETLFeatureExtractor] = []
     __data = {}
 
-    def __init__(self, config_handler: ETLConfigurationHandler):
+    def __init__(self, config_handler: ConfigurationHandler):
         self.__force = config_handler.get_force()
         self.__reading_directory = config_handler.get_processed_logfile_dir()
         self.__feature_extractors = get_feature_extractors_by_name_etl(
             config_handler.get_extractors()
         )
         self.__parallel_commands_tracker = ParallelCommandsTracker()
-        self.__exporter = Exporter(config_handler)
+        self.__db_export_folder = config_handler.get_db_config()
         self.__initialize_data()
 
     def process_merged_logs(self):
@@ -104,7 +105,8 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker[tid][
             "parallelCommandsEnd"
         ] = self.__parallel_commands_tracker.command_count(except_one=True)
-        self.__parallel_commands_tracker[tid]["listParallelCommandsEnd"] = self.__parallel_commands_tracker.get_list_parallel_commands(tid)
+        self.__parallel_commands_tracker[tid][
+            "listParallelCommandsEnd"] = self.__parallel_commands_tracker.get_list_parallel_commands(tid)
         for extractor in self.__feature_extractors:
             self.__data[extractor.get_feature_name()].append(
                 extractor.extract_feature(self.__parallel_commands_tracker, tid)
@@ -121,8 +123,31 @@ class MergedLogProcessor:
     def __cleanup(self):
         self.__parallel_commands_tracker.reset()
 
+    # TODO Refactor to use db
     def save_features_to_db(self):
-        self.__exporter.export(self.__data, self.__parallel_commands_tracker.get_command_mapping())
+        logging.info("Start exporting extracted features")
+        df_data = pd.DataFrame(self.__data)
+        df_mapping = pd.DataFrame.from_dict(
+            self.__parallel_commands_tracker.get_command_mapping(),
+            orient="index",
+            columns=["mapping"]
+        )
+
+        today = datetime.now().strftime("%Y-%m-%d")
+        file_name = "trainingdata_{}.db".format(today)
+
+        # makes sure that folder exists
+        db_folder = Path(self.__db_export_folder)
+        db_folder.mkdir(parents=True, exist_ok=True)
+        db_path = db_folder / file_name
+
+        con = create_engine("sqlite:///" + db_path.as_posix())
+        df_data.to_sql("gs_training_data", con=con, if_exists="replace")
+        df_mapping.to_sql(
+            "gs_training_cmd_mapping",
+            con=con,
+            if_exists="replace"
+        )
 
     @staticmethod
     def __extract_command_name(line: str):

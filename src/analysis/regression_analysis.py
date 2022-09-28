@@ -1,25 +1,23 @@
 import json
 import logging
 import os
-from dask.distributed import Client
-import joblib
-import sys
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
+import sys
+import time
 import typer
-from joblib import dump, Parallel
+from joblib import dump
 # explicitly require this experimental feature
 from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 
-from src.feature_extractor.cmd_extractor import CMDAnalysisExtractor
+from single_config_handler import ConfigurationHandler
 from src.database import Database
-from src.configuration_handler import AnalysisConfigurationHandler
-import time
-
+from src.feature_extractor.cmd_extractor import CMDAnalysisExtractor
 from src.feature_extractor.feature_extractor_init import \
     get_feature_extractors_by_name_analysis
 
@@ -35,11 +33,11 @@ class RegressionAnalysis:
     __df: pd.DataFrame
     __db: Database
     __grid_search_params: dict
-    __config_handler: AnalysisConfigurationHandler
+    __config_handler: ConfigurationHandler
 
     def __init__(
             self,
-            config_handler: AnalysisConfigurationHandler,
+            config_handler: ConfigurationHandler,
             db: Database
     ):
         self.__feature_extractors = None
@@ -230,11 +228,10 @@ class RegressionAnalysis:
             json.dump(conf, f, ensure_ascii=False, indent=4)
 
 
-
 def main(
-        config_file_path: str = "resources/config/analysis_config.json"
+        config_file_path: str = "resources/config/config.json"
 ):
-    config_handler = AnalysisConfigurationHandler(config_file_path)
+    config_handler = ConfigurationHandler(config_file_path)
     config_handler.load_config()
     database = Database(config_handler)
 
