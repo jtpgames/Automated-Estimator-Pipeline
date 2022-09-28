@@ -55,6 +55,7 @@ def run(config_file_path: str = "resources/config/etl_config.json"):
     log_merger = LogMerger(config_handler)
     log_merger.merge_logfiles()
 
+    # TODO rename
     feature_extractor = MergedLogProcessor(config_handler)
     feature_extractor.process_merged_logs()
     feature_extractor.save_features_to_db()
