@@ -9,11 +9,10 @@ import pandas as pd
 import sys
 import time
 from joblib import dump
-# explicitly require this experimental feature
-from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 
+from analysis.pipeline_parameter_wrapper import PipelineParameterWrapper
 from configuration import Configuration
 from factory.factories import DatabaseFeatureExtractorFactory
 from src.database import Database
@@ -71,7 +70,8 @@ class EstimatorPipeline:
 
     def __create_models(self):
         y = self.__df.pop(self.__config_handler.get_y_column_name())
-        params = self.__config_handler.get_estimator_handler().get_params()
+        pipeline_parameter_wrapper = PipelineParameterWrapper(self.__config_handler)
+        params = pipeline_parameter_wrapper.get_params()
         steps = params["steps"]
         estimator_params = params["parameter_grid"]
         gs_params = params["grid_search_params"]
@@ -182,11 +182,7 @@ class EstimatorPipeline:
         with open(path_to_mapping_file, "w") as file:
             json.dump(self.__db.get_cmd_int_dict(), file)
 
-    def __save_estimator(
-            self,
-            grid_search,
-            path_to_folder
-    ):
+    def __save_estimator(self, grid_search, path_to_folder):
         estimator_name = grid_search.best_estimator_.named_steps["estimator"].__class__.__name__
         dump_file_name = "{}_model.joblib".format(estimator_name)
         path_to_dump_file = Path(path_to_folder) / dump_file_name
