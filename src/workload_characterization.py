@@ -5,32 +5,29 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import plotly.express as px
-import typer
 from sqlalchemy import Column, Integer, DateTime
 
+from configuration import Configuration
 from database import Database
-from single_config_handler import ConfigurationHandler
 from utils import get_date_from_string
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s",
-    level=logging.INFO
-)
 
 
 class WorkloadCharacterization:
     __database: Database
     __mapping: dict
+    __db_url: str
+    __db_export_folder: str
     # TODO also config based
     __remove_response_time_outliers: bool
 
-    def __init__(self, database, config_handler, remove_response_time_outliers):
+    def __init__(self, config_handler: Configuration, database: Database):
         self.__database = database
         self.__mapping = database.get_int_cmd_dict()
-        self.__config_handler = config_handler
-        self.__remove_response_time_outliers = remove_response_time_outliers
+        self.__db_url = config_handler.get_db_url()
+        self.__db_export_folder = config_handler.get_export_folder()
+        self.__remove_response_time_outliers = config_handler.get_response_time_outliers_config()
 
-    def start_characterization(self):
+    def run(self):
         logging.info("begin loading data from db")
         timestamp_col = Column("Timestamp", DateTime)
         cmd_col = Column("cmd", Integer)
@@ -140,7 +137,7 @@ class WorkloadCharacterization:
         return request_types_with_response_time_mean
 
     def __get_export_date_suffix(self):
-        db_path = Path(self.__config_handler.get_db_url())
+        db_path = Path(self.__db_url)
         return get_date_from_string(db_path.stem)
 
     def __get_export_name_outlier_str(self):
@@ -153,7 +150,7 @@ class WorkloadCharacterization:
         request_rates_df = self.__get_request_rates_df(training_data)
         request_types_response_time_df = self.__get_request_type_response_time_df(training_data)
         filename = "statistics_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".xlsx"
-        filepath = Path(self.__config_handler.get_export_folder()) / filename
+        filepath = Path(self.__db_export_folder) / filename
         excel_writer = pd.ExcelWriter(path=filepath, engine="xlsxwriter")
         request_types_response_time_df.to_excel(
             excel_writer,
@@ -172,7 +169,7 @@ class WorkloadCharacterization:
         fig_requests_per_hour = px.bar(requests_per_hour, x="hour", y="count", color="weekday", barmode="group")
         fig_requests_per_hour.update_xaxes(type="category")
         request_per_hour_filename = "rph_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".pdf"
-        filepath = Path(self.__config_handler.get_export_folder()) / request_per_hour_filename
+        filepath = Path(self.__db_export_folder) / request_per_hour_filename
         fig_requests_per_hour.write_image(filepath)
 
         requests_count_per_day = training_data[
@@ -188,21 +185,5 @@ class WorkloadCharacterization:
         )
         fig_req_per_day.update_xaxes(type="category")
         req_per_day = "rpd_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".pdf"
-        filepath = Path(self.__config_handler.get_export_folder()) / req_per_day
+        filepath = Path(self.__db_export_folder) / req_per_day
         fig_req_per_day.write_image(filepath)
-
-
-def main(
-        config_file_path: str = "resources/config/config.json",
-        remove_response_time_outliers: bool = False
-):
-    config_handler = ConfigurationHandler(config_file_path)
-    config_handler.load_config()
-    database = Database(config_handler)
-
-    workload_characterization = WorkloadCharacterization(database, config_handler, remove_response_time_outliers)
-    workload_characterization.start_characterization()
-
-
-if __name__ == "__main__":
-    typer.run(main)

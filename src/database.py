@@ -1,13 +1,43 @@
+import logging
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
 from sqlalchemy import select, MetaData, Table, Column, Integer, String, \
     create_engine
 
-from src.single_config_handler import ConfigurationHandler
 
-
+# TODO better method names, no duplication
 class Database:
-    def __init__(self, config_handler: ConfigurationHandler):
-        self.__db_url = config_handler.get_db_url()
-        self.__db_limit = config_handler.get_db_limit()
+    def __init__(self, db_export_folder, db_url, db_limit):
+        self.__db_export_folder = db_export_folder
+        self.__db_url = db_url
+        self.__db_limit = db_limit
+
+    def save_features(self, data, cmd_names_mapping):
+        logging.info("Start exporting extracted features")
+        df_data = pd.DataFrame(data)
+        df_mapping = pd.DataFrame.from_dict(
+            cmd_names_mapping,
+            orient="index",
+            columns=["mapping"]
+        )
+
+        today = datetime.now().strftime("%Y-%m-%d")
+        file_name = "trainingdata_{}.db".format(today)
+
+        # makes sure that folder exists
+        db_folder = Path(self.__db_export_folder)
+        db_folder.mkdir(parents=True, exist_ok=True)
+        db_path = db_folder / file_name
+
+        con = create_engine("sqlite:///" + db_path.as_posix())
+        df_data.to_sql("gs_training_data", con=con, if_exists="replace")
+        df_mapping.to_sql(
+            "gs_training_cmd_mapping",
+            con=con,
+            if_exists="replace"
+        )
 
     def get_cmd_int_dict(self):
         metadata_obj = MetaData()

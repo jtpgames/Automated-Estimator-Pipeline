@@ -4,7 +4,7 @@ from typing import Union
 
 from marshmallow_dataclass import dataclass
 
-from src.factory.factories import get_estimater_class_from_name, get_action_class_from_name
+from src.factory.factories import EstimatorFactory, EstimatorPipelineActionFactory
 
 
 @dataclass
@@ -58,8 +58,10 @@ class EstimatorHandler:
         all_step_names = []
         parameter_grid = []
         self.__set_pipeline_for_estimators()
+        estimator_factory = EstimatorFactory()
+        action_factory = EstimatorPipelineActionFactory()
         for estimator_config in self.estimators:
-            estimator = get_estimater_class_from_name(estimator_config.name)()
+            estimator = estimator_factory.get(estimator_config.name)()
             params_to_rename = estimator_config.params
             params = {"estimator": [estimator]}
 
@@ -76,7 +78,7 @@ class EstimatorHandler:
 
                         # initalize action with estimator as input if needed and add
                         # to the parameter grid of the estimator. e.g. dt_select_from_model: [SelectFromModel(estimator)]
-                        action = get_action_class_from_name(step.action)
+                        action = action_factory.get(step.action)
                         if step.needs_estimator:
                             params[step_name] = [action(estimator)]
                         else:
@@ -102,6 +104,12 @@ class EstimatorHandler:
                 "grid_search_params": GridSearch.Schema().dump(self.grid_search),
                 "cv_params": CrossValidation.Schema().dump(self.cross_validation)}
 
+    def __initialize_estimators(self):
+        pass
+
+    def __initalize_actions(self):
+        pass
+
     def get_grid_search_parameter(self):
         # if multiple scoring metrices are defined, refit has to be set
         if self.grid_search.refit is not None:
@@ -125,7 +133,6 @@ class EstimatorHandler:
 class LogfileExtractorConfig:
     unprocessed_logfiles: str
     processed_logfiles: str
-    db_export_folder: str
     extractors: list[str]
     force: bool
 
@@ -133,6 +140,7 @@ class LogfileExtractorConfig:
 @dataclass
 class WorkloadCharacterizationConfig:
     export_folder: str
+    remove_response_time_outliers: bool = True
 
 
 @dataclass

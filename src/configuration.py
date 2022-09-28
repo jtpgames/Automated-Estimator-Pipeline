@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+from typing import List
 
 import sys
 
@@ -14,7 +15,9 @@ logging.basicConfig(
 handler = logging.StreamHandler(sys.stdout)
 
 
-class ConfigurationHandler:
+# TODO newest db feature
+# TODO beter method names
+class Configuration:
     __config_file_path: str
     __config: ConfigFile
 
@@ -22,7 +25,7 @@ class ConfigurationHandler:
         self.__config = None
         self.__config_file_path = config_file_path
 
-    def load_config(self):
+    def load(self):
         root_dir = get_project_root()
         abs_file_path = root_dir / self.__config_file_path
         with open(abs_file_path) as config_file:
@@ -68,9 +71,9 @@ class ConfigurationHandler:
         return Path(self.__config.logfile.processed_logfiles)
 
     def get_db_config(self):
-        return self.__config.logfile.db_export_folder
+        return self.__config.database.folder
 
-    def get_extractors(self):
+    def get_logfile_feature_extractor_names(self) -> List[str]:
         return self.__config.logfile.extractors
 
     def get_force(self):
@@ -115,3 +118,6 @@ class ConfigurationHandler:
 
     def get_export_folder(self):
         return self.__config.workload.export_folder
+
+    def get_response_time_outliers_config(self):
+        return self.__config.workload.remove_response_time_outliers

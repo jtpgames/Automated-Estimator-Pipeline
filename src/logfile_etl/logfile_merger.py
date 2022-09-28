@@ -4,12 +4,12 @@ from os.path import join
 
 from itertools import groupby
 
-from src.single_config_handler import ConfigurationHandler
+from src.configuration import Configuration
 from src.utils import get_date_from_string, get_timestamp_from_string
 
 
 class LogMerger:
-    def __init__(self, config_handler: ConfigurationHandler):
+    def __init__(self, config_handler: Configuration):
         self.__reading_directory = config_handler.get_processed_logfile_dir()
 
     def merge_logfiles(self):

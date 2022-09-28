@@ -8,55 +8,49 @@ import numpy as np
 import pandas as pd
 import sys
 import time
-import typer
 from joblib import dump
 # explicitly require this experimental feature
 from sklearn.experimental import enable_halving_search_cv  # noqa
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 
-from single_config_handler import ConfigurationHandler
+from configuration import Configuration
+from factory.factories import DatabaseFeatureExtractorFactory
 from src.database import Database
 from src.feature_extractor.cmd_extractor import CMDAnalysisExtractor
-from src.feature_extractor.feature_extractor_init import \
-    get_feature_extractors_by_name_analysis
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s",
-    level=logging.INFO
-)
-handler = logging.StreamHandler(sys.stdout)
 
 
-class RegressionAnalysis:
+class EstimatorPipeline:
+    # TODO in config
     __std_threshold = 3
     __df: pd.DataFrame
     __db: Database
     __grid_search_params: dict
-    __config_handler: ConfigurationHandler
+    __config_handler: Configuration
+    __feature_extractors = []
 
     def __init__(
             self,
-            config_handler: ConfigurationHandler,
+            config_handler: Configuration,
             db: Database
     ):
-        self.__feature_extractors = None
         self.__config_handler = config_handler
         self.__db = db
         self.__df = pd.DataFrame()
 
-    def start(self):
-        self.setup_feature_extractors()
-        self.load_data()
-        self.create_models()
+    def run(self):
+        self.__setup_feature_extractors()
+        self.__load_data()
+        self.__create_models()
 
-    def setup_feature_extractors(self):
-        self.__feature_extractors = get_feature_extractors_by_name_analysis(
-            self.__db,
-            self.__config_handler.get_feature_extractor_names()
-        )
+    def __setup_feature_extractors(self):
+        factory = DatabaseFeatureExtractorFactory()
+        for name in self.__config_handler.get_feature_extractor_names():
+            extractor_class = factory.get(name)
+            extractor_object = extractor_class(self.__db, name)
+            self.__feature_extractors.append(extractor_object)
 
-    def load_data(self):
+    def __load_data(self):
         for extractor in self.__feature_extractors:
             if self.__df.empty:
                 self.__df = extractor.get_df()
@@ -75,7 +69,7 @@ class RegressionAnalysis:
         self.__remove_outliers()
         logging.info("memory consumption: {}".format(sys.getsizeof(self.__df)))
 
-    def create_models(self):
+    def __create_models(self):
         y = self.__df.pop(self.__config_handler.get_y_column_name())
         params = self.__config_handler.get_estimator_handler().get_params()
         steps = params["steps"]
@@ -90,7 +84,6 @@ class RegressionAnalysis:
         grid_search.fit(self.__df, y)
         end = time.time()
         logging.info("Exexution time for fit in min: {}".format(end - start))
-        self.__save_results(grid_search)
 
     def __is_outlier(self, s):
         lower_limit = s.mean() - (s.std() * 3)
@@ -226,18 +219,3 @@ class RegressionAnalysis:
         file = Path(path_to_folder) / "config.json"
         with open(file, 'w', encoding='utf-8') as f:
             json.dump(conf, f, ensure_ascii=False, indent=4)
-
-
-def main(
-        config_file_path: str = "resources/config/config.json"
-):
-    config_handler = ConfigurationHandler(config_file_path)
-    config_handler.load_config()
-    database = Database(config_handler)
-
-    regression_analysis = RegressionAnalysis(config_handler, database)
-    regression_analysis.start()
-
-
-if __name__ == "__main__":
-    typer.run(main)

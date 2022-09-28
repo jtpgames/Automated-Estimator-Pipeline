@@ -58,7 +58,6 @@
   "logfile": {
     "unprocessed_logfiles": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed_test/",
     "processed_logfiles": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed_test/",
-    "db_export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db/",
     "extractors": [
       "Timestamp",
       "PR 1",
