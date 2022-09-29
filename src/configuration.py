@@ -16,7 +16,8 @@ handler = logging.StreamHandler(sys.stdout)
 
 
 # TODO newest db feature
-# TODO beter method names
+# TODO better method names
+
 class Configuration:
     __config_file_path: str
     __config: ConfigFile
@@ -87,19 +88,13 @@ class Configuration:
         return self.__config.analysis.estimator_handler
 
     def get_y_column_name(self):
-        return self.__config.analysis.y
+        return self.__config.data_preparation.y_column
 
     def get_model_save_path(self):
         return self.__config.analysis.model_save_path
 
-    def get_grid_search_dict(self):
-        return self.__config.analysis.estimator_handler.get_params()
-
     def get_outlier_detection_type(self):
-        return self.__config.analysis.outlier_detection_based_on_cmd_type
-
-    def use_feature_selection(self):
-        return self.__config.analysis.estimator_handler.uses_feature_selector()
+        return self.__config.data_preparation.outlier_modus
 
     # TODO refactore to return initialized feature extractors
     def get_feature_extractor_names(self):
@@ -120,4 +115,10 @@ class Configuration:
         return self.__config.workload.export_folder
 
     def get_response_time_outliers_config(self):
-        return self.__config.workload.remove_response_time_outliers
+        return self.__config.data_preparation.remove_outlier
+
+    def get_outlier_modus(self):
+        return self.__config.data_preparation.outlier_modus
+
+    def get_outlier_std_threshold(self):
+        return self.__config.data_preparation.std_threshold

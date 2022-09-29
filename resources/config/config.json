@@ -4,6 +4,12 @@
     "name": "trainingdata_2022-09-12.db",
     "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db"
   },
+  "data_preparation": {
+    "remove_outlier": true,
+    "outlier_modus": "CMD",
+    "y_column": "response time",
+    "std_threshold": 3
+  },
   "analysis": {
     "features": [
       "cmd one hot",
@@ -11,8 +17,6 @@
       "PR 3",
       "response time"
     ],
-    "y": "response time",
-    "outlier_detection_based_on_cmd_type": true,
     "estimator_handler": {
       "pipelines": [
         {

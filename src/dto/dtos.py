@@ -60,16 +60,21 @@ class LogfileExtractorConfig:
 @dataclass
 class WorkloadCharacterizationConfig:
     export_folder: str
-    remove_response_time_outliers: bool = True
 
 
 @dataclass
 class AnalysisConfig:
     features: list[str]
-    y: str
     estimator_handler: EstimatorHandler
     model_save_path: str
-    outlier_detection_based_on_cmd_type: bool
+
+
+@dataclass
+class DataPreparation:
+    remove_outlier: bool = True
+    outlier_modus: str = "CMD"  # possible values : "CMD" and "Y"
+    y_column: str = "Y"
+    std_threshold: int = 3
 
 
 @dataclass
@@ -81,6 +86,7 @@ class Database:
 
 @dataclass
 class ConfigFile:
+    data_preparation: DataPreparation
     database: Database
     analysis: AnalysisConfig
     logfile: LogfileExtractorConfig

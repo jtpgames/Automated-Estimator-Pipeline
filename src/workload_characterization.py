@@ -17,7 +17,6 @@ class WorkloadCharacterization:
     __mapping: dict
     __db_url: str
     __db_export_folder: str
-    # TODO also config based
     __remove_response_time_outliers: bool
 
     def __init__(self, config_handler: Configuration, database: Database):
