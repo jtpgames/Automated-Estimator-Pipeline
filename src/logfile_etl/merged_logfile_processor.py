@@ -1,36 +1,33 @@
+import glob
 import logging
 from datetime import datetime
+from os.path import join
+from re import search
 from typing import List, Tuple
 
+from dto.dtos import LogfileETLPipelineDTO
+from src.database import Database
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractETLFeatureExtractor,
 )
-from src.feature_extractor.feature_extractor_init import (
-    get_feature_extractors_by_name_etl,
-)
-
-from src.logfile_etl.exporter import Exporter
-from src.configuration_handler import ETLConfigurationHandler
-import glob
-from os.path import join
-from re import search
-
-from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
+from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 
 
 class MergedLogProcessor:
     __feature_extractors: List[AbstractETLFeatureExtractor] = []
     __data = {}
+    __parallel_commands_tracker = ParallelCommandsTracker()
+    __reading_directory: str
+    __db: Database
+    __force: bool
 
-    def __init__(self, config_handler: ETLConfigurationHandler):
-        self.__force = config_handler.get_force()
-        self.__reading_directory = config_handler.get_processed_logfile_dir()
-        self.__feature_extractors = get_feature_extractors_by_name_etl(
-            config_handler.get_extractors()
-        )
-        self.__parallel_commands_tracker = ParallelCommandsTracker()
-        self.__exporter = Exporter(config_handler)
+    def __init__(self, config: LogfileETLPipelineDTO, database: Database,
+                 feature_extractors: List[AbstractETLFeatureExtractor]):
+        self.__force = config.force
+        self.__reading_directory = config.processed_logfiles_folder
+        self.__feature_extractors = feature_extractors
+        self.__db = database
         self.__initialize_data()
 
     def process_merged_logs(self):
@@ -104,7 +101,8 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker[tid][
             "parallelCommandsEnd"
         ] = self.__parallel_commands_tracker.command_count(except_one=True)
-        self.__parallel_commands_tracker[tid]["listParallelCommandsEnd"] = self.__parallel_commands_tracker.get_list_parallel_commands(tid)
+        self.__parallel_commands_tracker[tid][
+            "listParallelCommandsEnd"] = self.__parallel_commands_tracker.get_list_parallel_commands(tid)
         for extractor in self.__feature_extractors:
             self.__data[extractor.get_feature_name()].append(
                 extractor.extract_feature(self.__parallel_commands_tracker, tid)
@@ -122,7 +120,7 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker.reset()
 
     def save_features_to_db(self):
-        self.__exporter.export(self.__data, self.__parallel_commands_tracker.get_command_mapping())
+        self.__db.write(self.__data, self.__parallel_commands_tracker.get_command_mapping())
 
     @staticmethod
     def __extract_command_name(line: str):
@@ -136,9 +134,7 @@ class MergedLogProcessor:
         # format: [tid] yyyy-MM-dd hh-mm-ss.f
 
         tid = MergedLogProcessor.__get_thread_id_from_line_optimized(line)
-
         timestamp = MergedLogProcessor.__get_timestamp_from_line(line)
-
         return tid, timestamp
 
     @staticmethod

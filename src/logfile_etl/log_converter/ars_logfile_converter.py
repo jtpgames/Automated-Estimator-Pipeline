@@ -1,11 +1,12 @@
 import logging
 import re
+
 from src.logfile_etl.log_converter.abstract_logfile_converter import (
-    AbstractLogFileConverter,
+    AbstractLogfileConverter,
 )
 
 
-class ARSLogConverter(AbstractLogFileConverter):
+class ARSLogConverter(AbstractLogfileConverter):
     def does_applies_for_file(self, filename) -> bool:
         match = re.search("Koppel-cmd", filename)
         return match is not None

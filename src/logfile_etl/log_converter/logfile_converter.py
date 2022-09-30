@@ -2,17 +2,19 @@ import logging
 import shutil
 from pathlib import Path
 
-from src.logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
-from src.logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
-from src.configuration_handler import ETLConfigurationHandler
+from dto.dtos import LogfileETLPipelineDTO
+from factory.factories import ConverterFactory
+from logfile_etl.log_converter.abstract_logfile_converter import AbstractLogfileConverter
 
 
 class LogfileConverter:
-    __converters = [WSLogConverter(), ARSLogConverter()]
+    __converters: list[AbstractLogfileConverter]
 
-    def __init__(self, config_handler: ETLConfigurationHandler):
-        self.__input_dir = config_handler.get_unprocessed_logfile_dir()
-        self.__output_dir = config_handler.get_processed_logfile_dir()
+    def __init__(self, config: LogfileETLPipelineDTO):
+        factory = ConverterFactory()
+        self.__converters = [factory.get(x)() for x in config.converter]
+        self.__input_dir_path = Path(config.unprocessed_logfiles_folder)
+        self.__output_dir_path = Path(config.processed_logfiles_folder)
         self.__create_dirs_if_necessary()
 
     def convert_logfiles(self):
@@ -25,7 +27,7 @@ class LogfileConverter:
             for converter in self.__converters:
                 if converter.does_applies_for_file(file.name):
                     converter.convert_log_file(
-                        file.name, self.__input_dir / file, self.__output_dir
+                        file.name, self.__input_dir_path / file, self.__output_dir_path
                     )
                     converted_files.append(file)
 
@@ -39,19 +41,18 @@ class LogfileConverter:
         logging.info("Copying remaining files to processed directory")
         file_counter = 0
         for file in unconverted_files:
-            input_path = self.__input_dir / file.name
-            output_path = self.__output_dir / file.name
-            # TODO create folder based on the creation date
+            input_path = self.__input_dir_path / file.name
+            output_path = self.__output_dir_path / file.name
             shutil.copyfile(input_path, output_path)
             logging.info(
                 "File {} of {} copied".format(file_counter, len(unconverted_files))
             )
 
     def load_files_in_input_dir(self):
-        p = self.__input_dir.glob("**/*")
+        p = self.__input_dir_path.glob("**/*")
         files = [x for x in p if x.is_file()]
         return files
 
     def __create_dirs_if_necessary(self):
-        Path(self.__input_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.__output_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.__input_dir_path).mkdir(parents=True, exist_ok=True)
+        Path(self.__output_dir_path).mkdir(parents=True, exist_ok=True)

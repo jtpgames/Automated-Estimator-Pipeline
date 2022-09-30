@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 
-class AbstractLogFileConverter(ABC):
+class AbstractLogfileConverter(ABC):
     def __init__(self):
         super().__init__()
 
@@ -12,6 +12,6 @@ class AbstractLogFileConverter(ABC):
 
     @abstractmethod
     def convert_log_file(
-        self, filename, file_path: Path, writing_directory: Path
+            self, filename, file_path: Path, writing_directory: Path
     ) -> bool:
         pass

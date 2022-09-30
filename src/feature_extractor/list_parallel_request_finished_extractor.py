@@ -1,8 +1,9 @@
+import json
+
 import numpy as np
 import pandas as pd
 from numpy import uint8
 from sqlalchemy import Column
-import json
 
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
@@ -18,7 +19,7 @@ class ListParallelRequestsFinishedAnalysisExtractor(
     def get_column(self) -> Column:
         return Column(self.get_column_name(), JSONEncodedDict)
 
-    def df_post_production(self, df: pd.DataFrame) -> pd.DataFrame:
+    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     def get_df(self) -> pd.DataFrame:
