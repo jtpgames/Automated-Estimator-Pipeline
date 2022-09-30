@@ -7,6 +7,8 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet, SGD
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
+from logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
+from logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
 from src.feature_extractor.arrive_time_extractor import ArriveTimeAnalysisExtractor, \
     ArriveTimeETLExtractor
 from src.feature_extractor.cmd_extractor import CMDETLExtractor, CMDAnalysisExtractor, CMDOneHotAnalysisExtractor
@@ -29,8 +31,21 @@ from src.feature_extractor.number_parallel_requests_finished_extractor import \
 from src.feature_extractor.number_parallel_requests_start_extractor import \
     PROneAnalysisExtractor, ParallelRequestsOneETLExtractor
 from src.feature_extractor.response_time_extractor import \
-    ResponseTimeAnalysisExtractor, ResponseTimeETLExtractor
+    ResponseTimeMilliSecAnalysisExtractor, ResponseTimeETLExtractor, ResponseTimeSecAnalysisExtractor
 from src.feature_extractor.timestamp_extractor import TimestampETLExtractor
+
+
+class ConverterFactory:
+    __converter = {
+        "WS": WSLogConverter,
+        "ARS": ARSLogConverter
+    }
+
+    def get(self, name):
+        converter = self.__converter.get(name)
+        if not converter:
+            raise ValueError(name)
+        return converter
 
 
 class EstimatorFactory:
@@ -76,7 +91,8 @@ class DatabaseFeatureExtractorFactory:
         'PR 3': PRThreeAnalysisExtractor,
         'First Command Start': FirstCommandStartAnalysisExtractor,
         'First Command Finished': FirstCommandEndAnalysisExtractor,
-        'response time': ResponseTimeAnalysisExtractor,
+        'response time milli': ResponseTimeMilliSecAnalysisExtractor,
+        'response time sec': ResponseTimeSecAnalysisExtractor,
         'List parallel requests finished': ListParallelRequestsFinishedAnalysisExtractor,
         'List parallel requests start': ListParallelRequestsStartAnalysisExtractor,
         'List parallel requests end': ListParallelRequestsEndAnalysisExtractor,

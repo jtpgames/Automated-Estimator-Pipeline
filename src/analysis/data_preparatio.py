@@ -4,18 +4,22 @@ from typing import List
 import pandas as pd
 
 from database import Database
+from dto.dtos import EstimatorPipelineDTO
 from factory.factories import DatabaseFeatureExtractorFactory
 
 
 class DataPreparation:
 
-    def __init__(self, feature_names: List[str], database: Database):
-        self.__feature_names = feature_names
+    def __init__(self, config: EstimatorPipelineDTO, database: Database):
+        self.__feature_names = config.features
+        self.__y_column = config.y_column
         self.__db = database
 
-    def get_feature_df(self):
+    def get_dataset(self):
         feature_extractors = self.__setup_feature_extractors()
-        return self.__load_data(feature_extractors)
+        df = self.__load_data(feature_extractors)
+        y = df.pop(self.__y_column)
+        return df, y
 
     def __setup_feature_extractors(self) -> List:
         factory = DatabaseFeatureExtractorFactory()

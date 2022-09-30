@@ -6,22 +6,31 @@ from src.database import Database
 
 
 class EstimatorPipeline:
-    __db: Database
-    __config_handler: Configuration
+    __outlier_detection: OutlierDetection
+    __data_preparation: DataPreparation
+    __grid_search: GridSearchWrapper
 
-    def __init__(self, config_handler: Configuration, db: Database):
-        self.__config_handler = config_handler
-        self.__db = db
+    def __init__(self, config: Configuration):
+        db = Database(config.for_database())
+        self.__data_preparation = DataPreparation(config.for_estimator_pipeline(), db)
+        self.__outlier_detection = OutlierDetection(config.for_outlier_detection(), db)
+        self.__grid_search = GridSearchWrapper(config.for_estimator_pipeline().grid_search_wrapper, db,
+                                               config.get_config())
 
     def run(self):
-        data_preparation = DataPreparation(self.__config_handler.get_feature_extractor_names(), self.__db)
-        df = data_preparation.get_feature_df()
+        X, y = self.__data_preparation.get_dataset()
+        print("------------------------------------------")
+        print("           before outlier removal         ")
+        print("------------------------------------------")
+        print(X.info())
+        print(y)
+        X, y = self.__outlier_detection.remove_outliers(X, y)
 
-        outlier_detection = OutlierDetection(self.__config_handler, self.__db)
-        df = outlier_detection.remove_outliers_inplace(df)
-        
-        grid_search = GridSearchWrapper(self.__config_handler, self.__db)
-        grid_search.setup()
-        y = df.pop(self.__config_handler.get_y_column_name())
-        grid_search.fit(df, y)
-        grid_search.save_results()
+        print("------------------------------------------")
+        print("            after outlier removal         ")
+        print("------------------------------------------")
+        print(X.info())
+        print(y)
+        self.__grid_search.setup()
+        self.__grid_search.fit(X, y)
+        self.__grid_search.save_results()

@@ -2,36 +2,32 @@ import calendar
 import logging
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import plotly.express as px
 from sqlalchemy import Column, Integer, DateTime
 
+from analysis.outlier_detection import OutlierDetection
 from configuration import Configuration
 from database import Database
-from utils import get_date_from_string
 
 
 class WorkloadCharacterization:
-    __database: Database
+    __db: Database
     __mapping: dict
-    __db_url: str
-    __db_export_folder: str
-    __remove_response_time_outliers: bool
+    __export_folder: str
 
-    def __init__(self, config_handler: Configuration, database: Database):
-        self.__database = database
-        self.__mapping = database.get_int_cmd_dict()
-        self.__db_url = config_handler.get_db_url()
-        self.__db_export_folder = config_handler.get_export_folder()
-        self.__remove_response_time_outliers = config_handler.get_response_time_outliers_config()
+    def __init__(self, config: Configuration):
+        self.__db = Database(config.for_database())
+        self.__mapping = self.__db.get_cmd_mapping(cmd_key=False)
+        self.__outlier_detection = OutlierDetection(config.for_outlier_detection(), self.__db)
+        self.__export_folder = config.for_workload_characterization().export_folder
 
     def run(self):
         logging.info("begin loading data from db")
         timestamp_col = Column("Timestamp", DateTime)
         cmd_col = Column("cmd", Integer)
         response_time_col = Column("response time", Integer)
-        training_data_db_result = self.__database.get_training_data_cursor_result(
+        training_data_db_result = self.__db.get_training_data_cursor_result_columns(
             [timestamp_col, cmd_col, response_time_col]
         )
         training_data = pd.DataFrame.from_records(
@@ -40,8 +36,9 @@ class WorkloadCharacterization:
             columns=["index", "Timestamp", "cmd", "response time"]
         )
         training_data = training_data.sort_values("response time", ascending=False)
-        if self.__remove_response_time_outliers is True:
-            training_data = self.__remove_outliers(training_data)
+        y = training_data.pop("response time")
+        X, y = self.__outlier_detection.remove_outliers(training_data, y)
+        training_data = X.merge(y, left_index=True, right_index=True)
 
         training_data["weekday"] = training_data["Timestamp"].apply(
             lambda x: calendar.day_name[x.weekday()]
@@ -52,20 +49,11 @@ class WorkloadCharacterization:
         logging.info("start exporting excel")
         self.__export_excel(training_data)
 
-    def __remove_outliers(self, training_data, std_threshold: int = 3):
-        logging.info("removing response time outliers")
-        row_count_before = training_data.__len__()
-        training_data = training_data[
-            np.abs(training_data["response time"] - training_data["response time"].mean()) <= (
-                    std_threshold * training_data["response time"].std())]
-        row_count_after = training_data.__len__()
-        logging.info("removed {} of {} rows".format(row_count_before - row_count_after, row_count_before))
-        return training_data
-
     def __format_request_type(self, int_cmd):
         return self.__mapping[int_cmd]
 
-    def __get_request_rates_df(self, training_data: pd.DataFrame):
+    @staticmethod
+    def __get_request_rates_df(training_data: pd.DataFrame):
         training_data_statistic_df = training_data[["Timestamp", "cmd"]].rename(
             columns={"cmd": "count"}
         )
@@ -135,21 +123,16 @@ class WorkloadCharacterization:
 
         return request_types_with_response_time_mean
 
-    def __get_export_date_suffix(self):
-        db_path = Path(self.__db_url)
-        return get_date_from_string(db_path.stem)
-
-    def __get_export_name_outlier_str(self):
-        outlier_str = "removed_outliers"
-        if not self.__remove_response_time_outliers:
-            outlier_str = "with_outliers"
-        return outlier_str
+    def __get_filename_suffix(self):
+        date = self.__db.get_date_from_db_name()
+        infos = self.__outlier_detection.get_string_containing_outlier_info()
+        return f"for_db_{date}_{infos}"
 
     def __export_excel(self, training_data: pd.DataFrame):
         request_rates_df = self.__get_request_rates_df(training_data)
         request_types_response_time_df = self.__get_request_type_response_time_df(training_data)
-        filename = "statistics_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".xlsx"
-        filepath = Path(self.__db_export_folder) / filename
+        filename = f"statistics_{self.__get_filename_suffix()}.xlsx"
+        filepath = Path(self.__export_folder) / filename
         excel_writer = pd.ExcelWriter(path=filepath, engine="xlsxwriter")
         request_types_response_time_df.to_excel(
             excel_writer,
@@ -167,8 +150,8 @@ class WorkloadCharacterization:
 
         fig_requests_per_hour = px.bar(requests_per_hour, x="hour", y="count", color="weekday", barmode="group")
         fig_requests_per_hour.update_xaxes(type="category")
-        request_per_hour_filename = "rph_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".pdf"
-        filepath = Path(self.__db_export_folder) / request_per_hour_filename
+        request_per_hour_filename = f"rph_{self.__get_filename_suffix()}.pdf"
+        filepath = Path(self.__export_folder) / request_per_hour_filename
         fig_requests_per_hour.write_image(filepath)
 
         requests_count_per_day = training_data[
@@ -183,6 +166,6 @@ class WorkloadCharacterization:
             text="count"
         )
         fig_req_per_day.update_xaxes(type="category")
-        req_per_day = "rpd_" + self.__get_export_name_outlier_str() + "_for_db_" + self.__get_export_date_suffix() + ".pdf"
-        filepath = Path(self.__db_export_folder) / req_per_day
+        req_per_day = f"rpd_{self.__get_filename_suffix()}.pdf"
+        filepath = Path(self.__export_folder) / req_per_day
         fig_req_per_day.write_image(filepath)

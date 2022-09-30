@@ -1,48 +1,32 @@
 {
   "database": {
-    "limit": 1000,
-    "name": "trainingdata_2022-09-12.db",
+    "row_limit": -1,
+    "name": "NEWEST",
     "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db"
   },
-  "data_preparation": {
+  "outlier_detection": {
     "remove_outlier": true,
     "outlier_modus": "CMD",
-    "y_column": "response time",
     "std_threshold": 3
   },
-  "analysis": {
+  "estimator_pipe": {
     "features": [
-      "cmd one hot",
+      "cmd",
       "PR 1",
       "PR 3",
-      "response time"
+      "response time milli"
     ],
-    "estimator_handler": {
+    "y_column": "response time milli",
+    "grid_search_wrapper": {
       "pipelines": [
         {
           "steps": [
-            {
-              "step": "scaling",
-              "action": "std",
-              "params": {}
-            },
-            {
-              "step": "feature_selection",
-              "action": "select_from_model",
-              "params": {
-              },
-              "needs_estimator": true
-            }
           ]
         }
       ],
       "estimators": [
         {
           "name": "DT",
-          "params": {}
-        },
-        {
-          "name": "Lasso",
           "params": {}
         }
       ],
@@ -55,13 +39,13 @@
         "refit": "r2",
         "verbose": 2,
         "pre_dispatch": 1
-      }
-    },
-    "model_save_path": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/models"
+      },
+      "export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/models"
+    }
   },
-  "logfile": {
-    "unprocessed_logfiles": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed_test/",
-    "processed_logfiles": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed_test/",
+  "logfile_etl_pipe": {
+    "unprocessed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed/",
+    "processed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed/",
     "extractors": [
       "Timestamp",
       "PR 1",
@@ -76,7 +60,11 @@
       "List parallel requests end",
       "arrive time"
     ],
-    "force": "True"
+    "force": true,
+    "converter": [
+      "ARS",
+      "WS"
+    ]
   },
   "workload": {
     "export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/statistics"

@@ -12,7 +12,7 @@
   ],
   "y": "response time",
   "outlier_detection_based_on_cmd_type": true,
-  "estimator_handler": {
+  "pipeline_config": {
     "pipelines": [
       {
         "for_estimators": [
@@ -30,7 +30,15 @@
             "step": "pca",
             "action": "pca",
             "params": {
-              "n_components":  ["mle", 10,20,30,40,50]}
+              "n_components": [
+                "mle",
+                10,
+                20,
+                30,
+                40,
+                50
+              ]
+            }
           },
           {
             "step": "feature_selection",
@@ -101,7 +109,8 @@
             0.7,
             0.8,
             0.9,
-            1]
+            1
+          ]
         }
       }
     ],

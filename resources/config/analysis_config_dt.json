@@ -8,7 +8,7 @@
     "response time"
   ],
   "y": "response time",
-  "estimator_handler": {
+  "pipeline_config": {
     "pipelines": [
       {
         "for_estimators": [

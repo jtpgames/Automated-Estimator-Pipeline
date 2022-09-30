@@ -1,4 +1,5 @@
 import json
+
 import numpy as np
 import pandas as pd
 from numpy import uint8
@@ -19,7 +20,7 @@ class ListParallelRequestsStartAnalysisExtractor(
     def get_column(self) -> Column:
         return Column(self.get_column_name(), JSONEncodedDict)
 
-    def df_post_production(self, df: pd.DataFrame) -> pd.DataFrame:
+    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     def get_df(self) -> pd.DataFrame:

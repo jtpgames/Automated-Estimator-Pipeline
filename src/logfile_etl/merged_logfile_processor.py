@@ -5,7 +5,7 @@ from os.path import join
 from re import search
 from typing import List, Tuple
 
-from src.configuration import Configuration
+from dto.dtos import LogfileETLPipelineDTO
 from src.database import Database
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractETLFeatureExtractor,
@@ -17,13 +17,16 @@ from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 class MergedLogProcessor:
     __feature_extractors: List[AbstractETLFeatureExtractor] = []
     __data = {}
+    __parallel_commands_tracker = ParallelCommandsTracker()
+    __reading_directory: str
+    __db: Database
+    __force: bool
 
-    def __init__(self, config_handler: Configuration, database: Database,
+    def __init__(self, config: LogfileETLPipelineDTO, database: Database,
                  feature_extractors: List[AbstractETLFeatureExtractor]):
-        self.__force = config_handler.get_force()
-        self.__reading_directory = config_handler.get_processed_logfile_dir()
+        self.__force = config.force
+        self.__reading_directory = config.processed_logfiles_folder
         self.__feature_extractors = feature_extractors
-        self.__parallel_commands_tracker = ParallelCommandsTracker()
         self.__db = database
         self.__initialize_data()
 
@@ -117,7 +120,7 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker.reset()
 
     def save_features_to_db(self):
-        self.__db.save_features(self.__data, self.__parallel_commands_tracker.get_command_mapping())
+        self.__db.write(self.__data, self.__parallel_commands_tracker.get_command_mapping())
 
     @staticmethod
     def __extract_command_name(line: str):
@@ -131,9 +134,7 @@ class MergedLogProcessor:
         # format: [tid] yyyy-MM-dd hh-mm-ss.f
 
         tid = MergedLogProcessor.__get_thread_id_from_line_optimized(line)
-
         timestamp = MergedLogProcessor.__get_timestamp_from_line(line)
-
         return tid, timestamp
 
     @staticmethod

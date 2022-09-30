@@ -4,7 +4,6 @@ import typer
 
 from analysis.estimator_pipeline import EstimatorPipeline
 from configuration import Configuration
-from database import Database
 from logfile_etl.logfile_etl_pipeline import LogfileETLPipeline
 from workload_characterization import WorkloadCharacterization
 
@@ -16,7 +15,6 @@ logging.basicConfig(
 app = typer.Typer()
 
 config: Configuration = None
-database: Database = None
 
 
 @app.command()
@@ -31,19 +29,19 @@ def run(skip_convert: bool = typer.Option(False, help="skips the logfile convert
 def logfile(skip_convert: bool = typer.Option(False, help="skips the logfile convert phase in the logfile etl process"),
             skip_merge: bool = typer.Option(False, help="skips the logfile merge process in the logfile etl process")):
     skip_stages = {"converter": skip_convert, "merger": skip_merge}
-    logfile_etl = LogfileETLPipeline(config, database, skip_stages)
+    logfile_etl = LogfileETLPipeline(config, skip_stages)
     logfile_etl.run()
 
 
 @app.command()
 def estimator():
-    estimator_pipeline = EstimatorPipeline(config, database)
+    estimator_pipeline = EstimatorPipeline(config)
     estimator_pipeline.run()
 
 
 @app.command()
 def workload():
-    workload_characterization = WorkloadCharacterization(config, database)
+    workload_characterization = WorkloadCharacterization(config)
     workload_characterization.run()
 
 
@@ -51,11 +49,9 @@ def workload():
 @app.callback()
 def callback(config_file: str = "resources/config/config.json"):
     global config
-    global database
 
     config = Configuration(config_file)
     config.load()
-    database = Database(config.get_db_config(), config.get_db_url(), config.get_db_limit())
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from marshmallow_dataclass import dataclass
 
 
 @dataclass
-class GridSearch:
+class GridSearchDTO:
     scoring: Union[str, list[str]]
     refit: Optional[str]
     verbose: Optional[int] = 1
@@ -15,13 +15,13 @@ class GridSearch:
 
 
 @dataclass
-class Estimator:
+class EstimatorDTO:
     name: str
     params: dict
 
 
 @dataclass
-class PipelineStep:
+class PipelineStepDTO:
     step: str
     action: str
     params: dict
@@ -29,65 +29,66 @@ class PipelineStep:
 
 
 @dataclass
-class Pipeline:
+class PipelineDTO:
     for_estimators: Optional[list[str]] = field(default_factory=list)
-    steps: list[PipelineStep] = field(default_factory=list)
+    steps: list[PipelineStepDTO] = field(default_factory=list)
 
 
 @dataclass
-class CrossValidation:
+class CrossValidationDTO:
     n_splits: Optional[int] = 5
     shuffle: Optional[bool] = True
     random_state: Optional[int] = 42
 
 
 @dataclass
-class EstimatorHandler:
-    pipelines: list[Pipeline]
-    grid_search: GridSearch
-    estimators: list[Estimator]
-    cross_validation: Optional[CrossValidation]
-
-
-@dataclass
-class LogfileExtractorConfig:
-    unprocessed_logfiles: str
-    processed_logfiles: str
-    extractors: list[str]
-    force: bool
-
-
-@dataclass
-class WorkloadCharacterizationConfig:
+class GridSearchWrapperDTO:
+    pipelines: list[PipelineDTO]
+    grid_search: GridSearchDTO
+    estimators: list[EstimatorDTO]
+    cross_validation: Optional[CrossValidationDTO]
     export_folder: str
 
 
 @dataclass
-class AnalysisConfig:
-    features: list[str]
-    estimator_handler: EstimatorHandler
-    model_save_path: str
+class LogfileETLPipelineDTO:
+    unprocessed_logfiles_folder: str
+    processed_logfiles_folder: str
+    extractors: list[str]
+    force: bool
+    converter: list[str]
 
 
 @dataclass
-class DataPreparation:
+class WorkloadCharacterizationDTO:
+    export_folder: str
+
+
+@dataclass
+class EstimatorPipelineDTO:
+    features: list[str]
+    y_column: str
+    grid_search_wrapper: GridSearchWrapperDTO
+
+
+@dataclass
+class OutlierDetectionDTO:
     remove_outlier: bool = True
     outlier_modus: str = "CMD"  # possible values : "CMD" and "Y"
-    y_column: str = "Y"
     std_threshold: int = 3
 
 
 @dataclass
-class Database:
+class DatabaseDTO:
     name: str
     folder: str
-    limit: int = -1
+    row_limit: int = -1
 
 
 @dataclass
 class ConfigFile:
-    data_preparation: DataPreparation
-    database: Database
-    analysis: AnalysisConfig
-    logfile: LogfileExtractorConfig
-    workload: WorkloadCharacterizationConfig
+    outlier_detection: OutlierDetectionDTO
+    database: DatabaseDTO
+    estimator_pipe: EstimatorPipelineDTO
+    logfile_etl_pipe: LogfileETLPipelineDTO
+    workload: WorkloadCharacterizationDTO

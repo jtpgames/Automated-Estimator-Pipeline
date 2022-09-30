@@ -2,8 +2,9 @@ import logging
 import re
 from os import SEEK_SET
 from pathlib import Path
+
 from src.logfile_etl.log_converter.abstract_logfile_converter import (
-    AbstractLogFileConverter,
+    AbstractLogfileConverter,
 )
 from src.utils import get_date_from_string
 
@@ -15,7 +16,7 @@ def peek_line(f):
     return line
 
 
-class WSLogConverter(AbstractLogFileConverter):
+class WSLogConverter(AbstractLogfileConverter):
     def __init__(self):
         super().__init__()
 
@@ -26,7 +27,7 @@ class WSLogConverter(AbstractLogFileConverter):
         return evaluation
 
     def convert_log_file(
-        self, filename, file_path: Path, writing_directory: Path
+            self, filename, file_path: Path, writing_directory: Path
     ) -> bool:
         if "Worker-cmd" not in filename and "WSCmd" not in filename:
             logging.info("Either WSCmd or Worker-cmd should be part of the filename")

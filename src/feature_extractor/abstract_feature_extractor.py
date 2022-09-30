@@ -1,9 +1,10 @@
-import pandas as pd
 from abc import ABC, abstractmethod
+
+import pandas as pd
 from numpy import short
 from sqlalchemy import Column
-from src.database import Database
 
+from src.database import Database
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 trainings_data_table_name = "gs_training_data"
@@ -23,18 +24,15 @@ class AbstractAnalysisFeatureExtractor(ABC):
     def get_column_name(self) -> str:
         return self.__column_name
 
-    # TODO change name
-    def df_post_production(self, df: pd.DataFrame) -> pd.DataFrame:
+    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
         df[self.get_column_name()].fillna(value=0, axis=0, inplace=True)
         return df.astype(short)
 
     def get_df(self) -> pd.DataFrame:
-        result = self.__db.get_training_data_cursor_result_columns(self.get_column())
+        result = self.__db.get_training_data_cursor_result_column(self.get_column())
         df = self.get_df_from_db_column_data(result)
-        return self.df_post_production(df)
+        return self.df_post_creation_hook(df)
 
-    # TODO why do i need get column_data and df_from_column_data
-    # one returns db_result and the other one df
     def get_df_from_db_column_data(self, db_result):
         return pd.DataFrame.from_records(
             db_result,
@@ -43,13 +41,13 @@ class AbstractAnalysisFeatureExtractor(ABC):
         )
 
     def get_column_data(self, column):
-        return self.__db.get_training_data_cursor_result_columns(column).all()
+        return self.__db.get_training_data_cursor_result_column(column).all()
 
     def get_cmd_names_mapping(self):
-        return self.__db.get_cmd_int_dict()
+        return self.__db.get_cmd_mapping(cmd_key=True)
 
     def get_int_cmd_mapping(self):
-        return self.__db.get_int_cmd_dict()
+        return self.__db.get_cmd_mapping(cmd_key=False)
 
 
 class AbstractETLFeatureExtractor(ABC):

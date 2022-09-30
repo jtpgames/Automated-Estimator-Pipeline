@@ -4,13 +4,13 @@ from os.path import join
 
 from itertools import groupby
 
-from src.configuration import Configuration
+from dto.dtos import LogfileETLPipelineDTO
 from src.utils import get_date_from_string, get_timestamp_from_string
 
 
 class LogMerger:
-    def __init__(self, config_handler: Configuration):
-        self.__reading_directory = config_handler.get_processed_logfile_dir()
+    def __init__(self, config_handler: LogfileETLPipelineDTO):
+        self.__reading_directory = config_handler.processed_logfiles_folder
 
     def merge_logfiles(self):
         logging.info(
