@@ -35,7 +35,7 @@ class ListParallelRequestsStartAnalysisExtractor(
         for index, col in result_data:
             if len(col) > 0:
                 for key, val in col.items():
-                    # index in cmd names mapping starts at 1, so plus 1
+                    # index in cmd names mapping starts at 1, so minus 1
                     array[int(index), int(key) - 1] = val
 
         int_cmd_dict = self.get_int_cmd_mapping()
@@ -53,3 +53,19 @@ class ListParallelRequestsStartETLExtractor(AbstractETLFeatureExtractor):
         return json.dumps(
             parallel_commands_tracker[tid]["listParallelCommandsStart"]
         )
+
+
+class HashListPR1TypesETLExtractor(AbstractETLFeatureExtractor):
+    def extract_feature(
+            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
+    ):
+        arr = [int(x) for x in parallel_commands_tracker[tid]["listParallelCommandsStart"].keys()]
+        return hash(frozenset(arr))
+
+
+class HashListPR1TypesWithCountETLExtractor(AbstractETLFeatureExtractor):
+    def extract_feature(
+            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
+    ):
+        arr = [(int(key), value) for key, value in parallel_commands_tracker[tid]["listParallelCommandsStart"].items()]
+        return hash(frozenset(arr))

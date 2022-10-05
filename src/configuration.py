@@ -5,8 +5,6 @@ from src.dto.dtos import ConfigFile, EstimatorPipelineDTO
 from src.utils import get_project_root
 
 
-# TODO newest db feature
-
 class Configuration:
     __config_file_path: str
     __config: ConfigFile

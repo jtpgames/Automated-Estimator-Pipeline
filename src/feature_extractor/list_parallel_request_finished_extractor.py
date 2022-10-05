@@ -50,3 +50,20 @@ class ListParallelRequestsFinishedETLExtractor(AbstractETLFeatureExtractor):
         return json.dumps(
             parallel_commands_tracker[tid]["listParallelCommandsFinished"]
         )
+
+
+class HashListPR3TypesETLExtractor(AbstractETLFeatureExtractor):
+    def extract_feature(
+            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
+    ):
+        arr = [int(x) for x in parallel_commands_tracker[tid]["listParallelCommandsFinished"].keys()]
+        return hash(frozenset(arr))
+
+
+class HashListPR3TypesWithCountETLExtractor(AbstractETLFeatureExtractor):
+    def extract_feature(
+            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
+    ):
+        arr = [(int(key), value) for key, value in
+               parallel_commands_tracker[tid]["listParallelCommandsFinished"].items()]
+        return hash(frozenset(arr))

@@ -7,7 +7,7 @@ from sqlalchemy import select, MetaData, Table, Column, Integer, String, \
     create_engine
 
 from dto.dtos import DatabaseDTO
-from utils import get_date_from_string
+from utils import get_date_from_string, does_string_contains_date
 
 
 class Database:
@@ -92,12 +92,12 @@ class Database:
         return get_date_from_string(self.__name)
 
     def __resolve_newest_database(self, name) -> str:
-        if not name == "NEWEST":
+        if name != "NEWEST":
             return name
 
         potential_dbs = Path(self.__folder).glob("*.sqlite")
         name = ""
-        files = [x.name for x in potential_dbs if x.is_file()]
+        files = [x.name for x in potential_dbs if x.is_file() and does_string_contains_date(x.name)]
         if len(files) > 0:
             data = sorted(files, key=get_date_from_string, reverse=True)
             name = data[0]

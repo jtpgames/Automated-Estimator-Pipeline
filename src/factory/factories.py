@@ -17,13 +17,13 @@ from src.feature_extractor.first_parallel_request_finished_extractor import \
 from src.feature_extractor.first_parallel_request_start_extractor import \
     FirstCommandStartAnalysisExtractor, FirstParallelRequestStartETLExtractor
 from src.feature_extractor.list_parallel_request_end_extractor import ListParallelRequestsEndAnalysisExtractor, \
-    ListParallelRequestsEndETLExtractor
+    ListParallelRequestsEndETLExtractor, HashListPR2TypesWithCountETLExtractor, HashListPR2TypesETLExtractor
 from src.feature_extractor.list_parallel_request_finished_extractor import \
     ListParallelRequestsFinishedAnalysisExtractor, \
-    ListParallelRequestsFinishedETLExtractor
+    ListParallelRequestsFinishedETLExtractor, HashListPR3TypesWithCountETLExtractor, HashListPR3TypesETLExtractor
 from src.feature_extractor.list_parallel_request_start_extractor import \
     ListParallelRequestsStartETLExtractor, \
-    ListParallelRequestsStartAnalysisExtractor
+    ListParallelRequestsStartAnalysisExtractor, HashListPR1TypesWithCountETLExtractor, HashListPR1TypesETLExtractor
 from src.feature_extractor.number_parallel_requests_end_extractor import \
     ParallelRequestsTwoETLExtractor, PRTwoAnalysisExtractor
 from src.feature_extractor.number_parallel_requests_finished_extractor import \
@@ -85,18 +85,18 @@ class EstimatorPipelineActionFactory:
 class DatabaseFeatureExtractorFactory:
     __extractors = {
         'cmd': CMDAnalysisExtractor,
-        'cmd one hot': CMDOneHotAnalysisExtractor,
-        'PR 1': PROneAnalysisExtractor,
-        'PR 2': PRTwoAnalysisExtractor,
-        'PR 3': PRThreeAnalysisExtractor,
-        'First Command Start': FirstCommandStartAnalysisExtractor,
-        'First Command Finished': FirstCommandEndAnalysisExtractor,
-        'response time milli': ResponseTimeMilliSecAnalysisExtractor,
-        'response time sec': ResponseTimeSecAnalysisExtractor,
-        'List parallel requests finished': ListParallelRequestsFinishedAnalysisExtractor,
-        'List parallel requests start': ListParallelRequestsStartAnalysisExtractor,
-        'List parallel requests end': ListParallelRequestsEndAnalysisExtractor,
-        'arrive time': ArriveTimeAnalysisExtractor,
+        'cmd_one_hot': CMDOneHotAnalysisExtractor,
+        'pr_1': PROneAnalysisExtractor,
+        'pr_2': PRTwoAnalysisExtractor,
+        'pr_3': PRThreeAnalysisExtractor,
+        'first_pr_1': FirstCommandStartAnalysisExtractor,
+        'first_pr_3': FirstCommandEndAnalysisExtractor,
+        'response_time_milli': ResponseTimeMilliSecAnalysisExtractor,
+        'response_time_sec': ResponseTimeSecAnalysisExtractor,
+        'list_pr_3': ListParallelRequestsFinishedAnalysisExtractor,
+        'list_pr_1': ListParallelRequestsStartAnalysisExtractor,
+        'list_pr_2': ListParallelRequestsEndAnalysisExtractor,
+        'arrive_interval': ArriveTimeAnalysisExtractor,
     }
 
     def get(self, name: str):
@@ -109,17 +109,23 @@ class DatabaseFeatureExtractorFactory:
 class LogfileFeatureExtractorFactory:
     __extractors = {
         'cmd': CMDETLExtractor,
-        'PR 1': ParallelRequestsOneETLExtractor,
-        'PR 2': ParallelRequestsTwoETLExtractor,
-        'PR 3': ParallelRequestsThreeETLExtractor,
-        'First Command Start': FirstParallelRequestStartETLExtractor,
-        'First Command Finished': FirstParallelRequestFinishedETLExtractor,
-        'response time': ResponseTimeETLExtractor,
-        'List parallel requests finished': ListParallelRequestsFinishedETLExtractor,
-        'List parallel requests start': ListParallelRequestsStartETLExtractor,
-        'List parallel requests end': ListParallelRequestsEndETLExtractor,
-        'arrive time': ArriveTimeETLExtractor,
-        'Timestamp': TimestampETLExtractor,
+        'pr_1': ParallelRequestsOneETLExtractor,
+        'pr_2': ParallelRequestsTwoETLExtractor,
+        'pr_3': ParallelRequestsThreeETLExtractor,
+        'first_pr_1': FirstParallelRequestStartETLExtractor,
+        'first_pr_3': FirstParallelRequestFinishedETLExtractor,
+        'response_time': ResponseTimeETLExtractor,
+        'list_pr_3': ListParallelRequestsFinishedETLExtractor,
+        'list_pr_1': ListParallelRequestsStartETLExtractor,
+        'list_pr_2': ListParallelRequestsEndETLExtractor,
+        'hash_list_pr_3': HashListPR3TypesWithCountETLExtractor,
+        'hash_list_pr_1': HashListPR1TypesWithCountETLExtractor,
+        'hash_list_pr_2': HashListPR2TypesWithCountETLExtractor,
+        'hash_list_type_pr_3': HashListPR3TypesETLExtractor,
+        'hash_list_type_pr_1': HashListPR1TypesETLExtractor,
+        'hash_list_type_pr_2': HashListPR2TypesETLExtractor,
+        'arrive_interval': ArriveTimeETLExtractor,
+        'arrive_timestamp': TimestampETLExtractor,
     }
 
     def get(self, name: str):

@@ -9,13 +9,13 @@ from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
 class ResponseTimeMilliSecAnalysisExtractor(AbstractAnalysisFeatureExtractor):
     def get_column(self) -> Column:
-        return Column("response time", Integer)
+        return Column("response_time", Integer)
 
 
 class ResponseTimeSecAnalysisExtractor(AbstractAnalysisFeatureExtractor):
 
     def get_column(self) -> Column:
-        return Column("response time", Float)
+        return Column("response_time", Float)
 
     def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
         df[self.get_column_name()].fillna(value=0, axis=0, inplace=True)
