@@ -12,6 +12,8 @@ class FirstCommandEndAnalysisExtractor(AbstractAnalysisFeatureExtractor):
 
 
 class FirstParallelRequestFinishedETLExtractor(AbstractETLFeatureExtractor):
+    def get_column(self) -> Column:
+        return Column(self.get_feature_name(), Integer)
 
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str

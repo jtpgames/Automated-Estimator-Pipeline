@@ -20,14 +20,6 @@ class EstimatorPipeline:
     def run(self):
         X, y = self.__data_preparation.get_dataset()
         X, y = self.__outlier_detection.remove_outliers(X, y)
-        df = X.merge(y, left_index=True, right_index=True)
-        df = df[df["response time sec"] != 0]
-        # df.drop(inplace=True)
-        # means = df.groupby('cmd')[y.name].mean()
-        # df['cmd'] = df['cmd'].map(means)
-        y = df.pop(y.name)
-        X = df
-        # print(df.head())
         print(X.info())
         self.__grid_search.setup()
         self.__grid_search.fit(X, y)

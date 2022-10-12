@@ -37,7 +37,7 @@ class ModifiedDatabase:
         return self.execute_query(data)
 
     def execute_query(self, table, data=True):
-        db_url = r"sqlite:///C:\Users\lierm\IdeaProjects\logfile_analysis\resources\export\db\trainingdata_full_short_names.sqlite"
+        db_url = r"sqlite:///C:\Users\lierm\IdeaProjects\logfile_analysis\resources\export\db\trainingdata_2022-10-05.sqlite"
         engine = create_engine(db_url)
         con = engine.connect()
 

@@ -1,7 +1,7 @@
 {
   "database": {
-    "row_limit": -1,
-    "name": "NEWEST",
+    "row_limit": 1000000,
+    "name": "trainingdata_2022-10-05.sqlite",
     "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db"
   },
   "outlier_detection": {
@@ -11,12 +11,12 @@
   },
   "estimator_pipe": {
     "features": [
-      "cmd_one_hot",
+      "cmd_target_encoding",
       "pr_1",
       "pr_3",
       "response_time_sec"
     ],
-    "y_column": "response time sec",
+    "y_column": "response_time_sec",
     "grid_search_wrapper": {
       "pipelines": [
         {
@@ -27,6 +27,18 @@
       "estimators": [
         {
           "name": "DT",
+          "params": {}
+        },
+        {
+          "name": "LR",
+          "params": {}
+        },
+        {
+          "name": "Ridge",
+          "params": {}
+        },
+        {
+          "name": "Lasso",
           "params": {}
         }
       ],
@@ -50,7 +62,7 @@
   },
   "logfile_etl_pipe": {
     "unprocessed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed_test/",
+    "processed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed/",
     "extractors": [
       "arrive_timestamp",
       "pr_1",

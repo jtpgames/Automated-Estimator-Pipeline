@@ -17,6 +17,7 @@ from src.utils import get_timestamp_from_string, contains_timestamp_with_ms
 class MergedLogProcessor:
     __feature_extractors: List[AbstractETLFeatureExtractor] = []
     __data = {}
+    __data_arr = []
     __parallel_commands_tracker = ParallelCommandsTracker()
     __reading_directory: str
     __db: Database
@@ -84,8 +85,6 @@ class MergedLogProcessor:
             tid, timestamp, self.__extract_command_name(line)
         )
 
-        return
-
     def __process_end_line(self, line, tid, timestamp, logfile):
 
         if tid not in self.__parallel_commands_tracker:
@@ -103,10 +102,14 @@ class MergedLogProcessor:
         ] = self.__parallel_commands_tracker.command_count(except_one=True)
         self.__parallel_commands_tracker[tid][
             "listParallelCommandsEnd"] = self.__parallel_commands_tracker.get_list_parallel_commands(tid)
+
+        entry = {}
         for extractor in self.__feature_extractors:
-            self.__data[extractor.get_feature_name()].append(
-                extractor.extract_feature(self.__parallel_commands_tracker, tid)
-            )
+            entry[extractor.get_feature_name()] = extractor.extract_feature(self.__parallel_commands_tracker, tid)
+            # self.__data[extractor.get_feature_name()].append(
+            #     extractor.extract_feature(self.__parallel_commands_tracker, tid)
+            # )
+        self.__data_arr.append(entry)
         self.__parallel_commands_tracker.remove_command(tid)
 
     def __handle_remaining_commands(self):
@@ -120,7 +123,9 @@ class MergedLogProcessor:
         self.__parallel_commands_tracker.reset()
 
     def save_features_to_db(self):
-        self.__db.write(self.__data, self.__parallel_commands_tracker.get_command_mapping())
+        # self.__db.write(self.__data, self.__parallel_commands_tracker.get_command_mapping())
+        feature_columns = [feature.get_column() for feature in self.__feature_extractors]
+        self.__db.write_arr(feature_columns, self.__data_arr, self.__parallel_commands_tracker.get_command_mapping())
 
     @staticmethod
     def __extract_command_name(line: str):

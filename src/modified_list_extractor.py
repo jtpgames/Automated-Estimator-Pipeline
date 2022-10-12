@@ -3,7 +3,7 @@ import pandas as pd
 from numpy import uint8, uint16
 from sqlalchemy import Column
 
-from feature_extractor.json_encoder.dict_encoder import JSONEncodedDict
+from feature_extractor.encoder.dict_encoder import JSONEncodedDict
 from modified_db import ModifiedDatabase
 
 

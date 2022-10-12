@@ -1,6 +1,7 @@
 import pandas as pd
-from sqlalchemy import Column, Integer, Float
+from sqlalchemy import Column, Integer
 
+from feature_extractor.encoder.seconds_encoder import MilliSecondsEncoder
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )
@@ -15,23 +16,16 @@ class ResponseTimeMilliSecAnalysisExtractor(AbstractAnalysisFeatureExtractor):
 class ResponseTimeSecAnalysisExtractor(AbstractAnalysisFeatureExtractor):
 
     def get_column(self) -> Column:
-        return Column("response_time", Float)
+        return Column("response_time", MilliSecondsEncoder)
 
     def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
-        df[self.get_column_name()].fillna(value=0, axis=0, inplace=True)
         return df.astype(float)
-
-    def get_df(self) -> pd.DataFrame:
-        result_data = self.get_column_data(self.get_column())
-        array = []
-        for index, col in result_data:
-            array.append(col / 1000)
-
-        df = pd.DataFrame(array, dtype=float, columns=[self.get_column_name()])
-        return df
 
 
 class ResponseTimeETLExtractor(AbstractETLFeatureExtractor):
+    def get_column(self) -> Column:
+        return Column(self.get_feature_name(), Integer)
+
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):

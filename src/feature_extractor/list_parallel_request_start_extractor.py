@@ -1,14 +1,12 @@
-import json
-
 import numpy as np
 import pandas as pd
 from numpy import uint8
-from sqlalchemy import Column
+from sqlalchemy import Column, Integer
 
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )
-from src.feature_extractor.json_encoder.dict_encoder import \
+from src.feature_extractor.encoder.dict_encoder import \
     JSONEncodedDict
 from src.logfile_etl.parallel_commands_tracker import ParallelCommandsTracker
 
@@ -45,17 +43,37 @@ class ListParallelRequestsStartAnalysisExtractor(
         return df
 
 
+class HashListPR1TypesAnalysisExtractor(AbstractAnalysisFeatureExtractor):
+    def get_column(self) -> Column:
+        return Column(self.get_column_name(), Integer)
+
+    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
+        return df
+
+
+class HashListPR1TypesWithCountAnalysisExtractor(AbstractAnalysisFeatureExtractor):
+
+    def get_column(self) -> Column:
+        return Column(self.get_column_name(), Integer)
+
+    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
+        return df
+
+
 class ListParallelRequestsStartETLExtractor(AbstractETLFeatureExtractor):
+    def get_column(self) -> Column:
+        return Column(self.get_feature_name(), JSONEncodedDict)
 
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):
-        return json.dumps(
-            parallel_commands_tracker[tid]["listParallelCommandsStart"]
-        )
+        return parallel_commands_tracker[tid]["listParallelCommandsStart"]
 
 
 class HashListPR1TypesETLExtractor(AbstractETLFeatureExtractor):
+    def get_column(self) -> Column:
+        return Column(self.get_feature_name(), Integer)
+
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):
@@ -64,6 +82,10 @@ class HashListPR1TypesETLExtractor(AbstractETLFeatureExtractor):
 
 
 class HashListPR1TypesWithCountETLExtractor(AbstractETLFeatureExtractor):
+
+    def get_column(self) -> Column:
+        return Column(self.get_feature_name(), Integer)
+
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):

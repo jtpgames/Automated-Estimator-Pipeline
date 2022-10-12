@@ -11,19 +11,23 @@ from logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
 from logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
 from src.feature_extractor.arrive_time_extractor import ArriveTimeAnalysisExtractor, \
     ArriveTimeETLExtractor
-from src.feature_extractor.cmd_extractor import CMDETLExtractor, CMDAnalysisExtractor, CMDOneHotAnalysisExtractor
+from src.feature_extractor.cmd_extractor import CMDETLExtractor, CMDAnalysisExtractor, CMDOneHotAnalysisExtractor, \
+    CMDTargetEncodingAnalysisExtractor
 from src.feature_extractor.first_parallel_request_finished_extractor import \
     FirstCommandEndAnalysisExtractor, FirstParallelRequestFinishedETLExtractor
 from src.feature_extractor.first_parallel_request_start_extractor import \
     FirstCommandStartAnalysisExtractor, FirstParallelRequestStartETLExtractor
 from src.feature_extractor.list_parallel_request_end_extractor import ListParallelRequestsEndAnalysisExtractor, \
-    ListParallelRequestsEndETLExtractor, HashListPR2TypesWithCountETLExtractor, HashListPR2TypesETLExtractor
+    ListParallelRequestsEndETLExtractor, HashListPR2TypesWithCountETLExtractor, HashListPR2TypesETLExtractor, \
+    HashListPR2TypesWithCountAnalysisExtractor, HashListPR2TypesAnalysisExtractor
 from src.feature_extractor.list_parallel_request_finished_extractor import \
     ListParallelRequestsFinishedAnalysisExtractor, \
-    ListParallelRequestsFinishedETLExtractor, HashListPR3TypesWithCountETLExtractor, HashListPR3TypesETLExtractor
+    ListParallelRequestsFinishedETLExtractor, HashListPR3TypesWithCountETLExtractor, HashListPR3TypesETLExtractor, \
+    HashListPR3TypesWithCountAnalysisExtractor, HashListPR3TypesAnalysisExtractor
 from src.feature_extractor.list_parallel_request_start_extractor import \
     ListParallelRequestsStartETLExtractor, \
-    ListParallelRequestsStartAnalysisExtractor, HashListPR1TypesWithCountETLExtractor, HashListPR1TypesETLExtractor
+    ListParallelRequestsStartAnalysisExtractor, HashListPR1TypesWithCountETLExtractor, HashListPR1TypesETLExtractor, \
+    HashListPR1TypesWithCountAnalysisExtractor, HashListPR1TypesAnalysisExtractor
 from src.feature_extractor.number_parallel_requests_end_extractor import \
     ParallelRequestsTwoETLExtractor, PRTwoAnalysisExtractor
 from src.feature_extractor.number_parallel_requests_finished_extractor import \
@@ -85,6 +89,7 @@ class EstimatorPipelineActionFactory:
 class DatabaseFeatureExtractorFactory:
     __extractors = {
         'cmd': CMDAnalysisExtractor,
+        'cmd_target_encoding': CMDTargetEncodingAnalysisExtractor,
         'cmd_one_hot': CMDOneHotAnalysisExtractor,
         'pr_1': PROneAnalysisExtractor,
         'pr_2': PRTwoAnalysisExtractor,
@@ -96,6 +101,12 @@ class DatabaseFeatureExtractorFactory:
         'list_pr_3': ListParallelRequestsFinishedAnalysisExtractor,
         'list_pr_1': ListParallelRequestsStartAnalysisExtractor,
         'list_pr_2': ListParallelRequestsEndAnalysisExtractor,
+        'hash_list_pr_3': HashListPR3TypesWithCountAnalysisExtractor,
+        'hash_list_pr_1': HashListPR1TypesWithCountAnalysisExtractor,
+        'hash_list_pr_2': HashListPR2TypesWithCountAnalysisExtractor,
+        'hash_list_type_pr_3': HashListPR3TypesAnalysisExtractor,
+        'hash_list_type_pr_1': HashListPR1TypesAnalysisExtractor,
+        'hash_list_type_pr_2': HashListPR2TypesAnalysisExtractor,
         'arrive_interval': ArriveTimeAnalysisExtractor,
     }
 

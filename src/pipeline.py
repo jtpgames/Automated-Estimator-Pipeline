@@ -1,4 +1,5 @@
 import logging
+import os
 
 import typer
 
@@ -6,6 +7,9 @@ from analysis.estimator_pipeline import EstimatorPipeline
 from configuration import Configuration
 from logfile_etl.logfile_etl_pipeline import LogfileETLPipeline
 from workload_characterization import WorkloadCharacterization
+
+# needed to get reproducible hash values for objects
+os.environ["PYTHONHASHSEED"] = "0"
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
