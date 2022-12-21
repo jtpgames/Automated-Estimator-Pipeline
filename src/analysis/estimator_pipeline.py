@@ -19,18 +19,8 @@ class EstimatorPipeline:
 
     def run(self):
         X, y = self.__data_preparation.get_dataset()
-        print("------------------------------------------")
-        print("           before outlier removal         ")
-        print("------------------------------------------")
-        print(X.info())
-        print(y)
         X, y = self.__outlier_detection.remove_outliers(X, y)
-
-        print("------------------------------------------")
-        print("            after outlier removal         ")
-        print("------------------------------------------")
         print(X.info())
-        print(y)
         self.__grid_search.setup()
         self.__grid_search.fit(X, y)
         self.__grid_search.save_results()

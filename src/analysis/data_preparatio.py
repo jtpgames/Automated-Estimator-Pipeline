@@ -18,6 +18,11 @@ class DataPreparation:
     def get_dataset(self):
         feature_extractors = self.__setup_feature_extractors()
         df = self.__load_data(feature_extractors)
+        print("before remove")
+        print(df.info())
+        df = df[df[self.__y_column] != 0]
+        print("after remove")
+        print(df.info())
         y = df.pop(self.__y_column)
         return df, y
 

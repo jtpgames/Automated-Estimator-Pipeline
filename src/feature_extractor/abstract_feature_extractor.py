@@ -14,7 +14,7 @@ cmd_mapping_table_name = "gs_training_cmd_mapping"
 class AbstractAnalysisFeatureExtractor(ABC):
 
     def __init__(self, db: Database, column_name):
-        self.__db = db
+        self.db = db
         self.__column_name = column_name
 
     @abstractmethod
@@ -29,7 +29,7 @@ class AbstractAnalysisFeatureExtractor(ABC):
         return df.astype(short)
 
     def get_df(self) -> pd.DataFrame:
-        result = self.__db.get_training_data_cursor_result_column(self.get_column())
+        result = self.db.get_training_data_cursor_result_column(self.get_column())
         df = self.get_df_from_db_column_data(result)
         return self.df_post_creation_hook(df)
 
@@ -41,18 +41,27 @@ class AbstractAnalysisFeatureExtractor(ABC):
         )
 
     def get_column_data(self, column):
-        return self.__db.get_training_data_cursor_result_column(column).all()
+        return self.db.get_training_data_cursor_result_column(column).all()
 
     def get_cmd_names_mapping(self):
-        return self.__db.get_cmd_mapping(cmd_key=True)
+        return self.db.get_cmd_mapping(cmd_key=True)
 
     def get_int_cmd_mapping(self):
-        return self.__db.get_cmd_mapping(cmd_key=False)
+        return self.db.get_cmd_mapping(cmd_key=False)
 
 
 class AbstractETLFeatureExtractor(ABC):
     def __init__(self, feature_name):
         self.__feature_name = feature_name
+
+    def __str__(self):
+        return self.__feature_name
+
+    def __repr__(self):
+        return self.__feature_name
+
+    def get_column(self):
+        pass
 
     def get_feature_name(self) -> str:
         return self.__feature_name

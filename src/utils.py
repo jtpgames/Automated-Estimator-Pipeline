@@ -6,6 +6,11 @@ def get_project_root() -> Path:
     return Path(__file__).parent.parent
 
 
+def does_string_contains_date(line):
+    result = search(r"\d*-\d*-\d*", line)
+    return result is not None
+
+
 def get_date_from_string(line):
     return search(r"\d*-\d*-\d*", line).group().strip()
 

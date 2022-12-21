@@ -15,6 +15,9 @@ class ArriveTimeETLExtractor(AbstractETLFeatureExtractor):
     intervals_per_hour = 4
     minutes_per_interval = 60 / intervals_per_hour
 
+    def get_column(self):
+        return Column(self.get_feature_name(), Integer)
+
     def extract_feature(
             self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
     ):
