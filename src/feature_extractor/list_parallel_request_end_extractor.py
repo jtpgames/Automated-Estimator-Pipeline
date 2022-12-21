@@ -1,7 +1,9 @@
+import category_encoders.hashing
 import numpy as np
 import pandas as pd
 from numpy import uint8
-from sqlalchemy import Column, Integer
+from sklearn.feature_extraction import FeatureHasher
+from sqlalchemy import Column, Integer, Text
 
 from src.feature_extractor.abstract_feature_extractor import AbstractAnalysisFeatureExtractor, \
     AbstractETLFeatureExtractor
@@ -40,20 +42,22 @@ class ListParallelRequestsEndAnalysisExtractor(
         return df
 
 
-class HashListPR2TypesAnalysisExtractor(AbstractAnalysisFeatureExtractor):
-    def get_column(self) -> Column:
-        return Column(self.get_column_name(), Integer)
-
-    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
-        return df
-
-
 class HashListPR2TypesWithCountAnalysisExtractor(AbstractAnalysisFeatureExtractor):
     def get_column(self) -> Column:
-        return Column(self.get_column_name(), Integer)
+        return Column("list_pr_2", JSONEncodedDict)
 
     def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
+
+    def get_df(self) -> pd.DataFrame:
+        result_data = self.get_column_data(self.get_column())
+        df = self.get_df_from_db_column_data(result_data)
+
+        feature_hasher = FeatureHasher(n_features=10)
+        test = feature_hasher.fit_transform(df[self.get_column_name()])
+        test_df = pd.DataFrame.sparse.from_spmatrix(test)
+        print(test_df)
+        return test_df
 
 
 class ListParallelRequestsEndETLExtractor(AbstractETLFeatureExtractor):
@@ -65,24 +69,3 @@ class ListParallelRequestsEndETLExtractor(AbstractETLFeatureExtractor):
     ):
         return parallel_commands_tracker[tid]["listParallelCommandsEnd"]
 
-
-class HashListPR2TypesETLExtractor(AbstractETLFeatureExtractor):
-    def get_column(self) -> Column:
-        return Column(self.get_feature_name(), Integer)
-
-    def extract_feature(
-            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
-    ):
-        arr = [int(x) for x in parallel_commands_tracker[tid]["listParallelCommandsEnd"].keys()]
-        return hash(frozenset(arr))
-
-
-class HashListPR2TypesWithCountETLExtractor(AbstractETLFeatureExtractor):
-    def get_column(self) -> Column:
-        return Column(self.get_feature_name(), Integer)
-
-    def extract_feature(
-            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
-    ):
-        arr = [(int(key), value) for key, value in parallel_commands_tracker[tid]["listParallelCommandsEnd"].items()]
-        return hash(frozenset(arr))

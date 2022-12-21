@@ -81,7 +81,7 @@ class GridSearchWrapper:
             self.__all_pipeline_steps.append((step, "passthrough"))
 
     def fit(self, X, y):
-        self.__column_names = ", ".join(X.columns.values)
+        self.__column_names = ", ".join([str(x) for x in X.columns.values])
         self.__grid_search.fit(X, y)
 
     def __set_pipeline_for_estimators(self):

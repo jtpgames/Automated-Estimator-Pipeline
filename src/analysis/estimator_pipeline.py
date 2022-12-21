@@ -1,7 +1,7 @@
-from analysis.data_preparatio import DataPreparation
-from analysis.grid_search_wrapper import GridSearchWrapper
-from analysis.outlier_detection import OutlierDetection
-from configuration import Configuration
+from src.analysis.data_preparatio import DataPreparation
+from src.analysis.grid_search_wrapper import GridSearchWrapper
+from src.analysis.outlier_detection import OutlierDetection
+from src.configuration import Configuration
 from src.database import Database
 
 

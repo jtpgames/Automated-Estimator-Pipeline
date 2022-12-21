@@ -51,7 +51,7 @@ def workload():
 
 # TODO is also executed when calling --help on subcommand or on error
 @app.callback()
-def callback(config_file: str = "resources/config/config.json"):
+def callback(config_file: str = "resources/config/hash_test_config.json"):
     global config
 
     config = Configuration(config_file)

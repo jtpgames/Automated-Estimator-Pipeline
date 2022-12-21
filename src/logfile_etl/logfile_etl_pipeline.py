@@ -1,5 +1,5 @@
-from dto.dtos import LogfileETLPipelineDTO
-from factory.factories import LogfileFeatureExtractorFactory
+from src.dto.dtos import LogfileETLPipelineDTO
+from src.factory.factories import LogfileFeatureExtractorFactory
 from src.configuration import Configuration
 from src.database import Database
 from src.logfile_etl.log_converter.logfile_converter import LogfileConverter

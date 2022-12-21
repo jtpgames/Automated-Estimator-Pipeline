@@ -1,0 +1,98 @@
+{
+  "database": {
+    "row_limit": -1,
+    "name": "trainingdata_2022-12-09.sqlite",
+    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
+  },
+  "outlier_detection": {
+    "remove_outlier": true,
+    "outlier_modus": "CMD",
+    "std_threshold": 3
+  },
+  "estimator_pipe": {
+    "features": [
+      "cmd_target_encoding",
+      "pr_1",
+      "pr_3",
+      "response_time_sec"
+    ],
+    "y_column": "response_time_sec",
+    "grid_search_wrapper": {
+      "pipelines": [
+        {
+          "steps": [
+          ]
+        }
+      ],
+      "estimators": [
+        {
+          "name": "DT",
+          "params": {
+
+          }
+        },
+        {
+          "name": "LR",
+          "params": {}
+        },
+        {
+          "name": "Ridge",
+          "params": {}
+        },
+        {
+          "name": "Lasso",
+          "params": {}
+        }
+      ],
+      "grid_search": {
+        "scoring": [
+          "r2",
+          "neg_mean_squared_error",
+          "neg_root_mean_squared_error"
+        ],
+        "refit": "r2",
+        "verbose": 2,
+        "pre_dispatch": "2*n_jobs",
+        "n_jobs": 4
+      },
+      "cross_validation": {
+        "n_splits": 10,
+        "shuffle": true,
+        "random_state": 42
+      },
+      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
+    }
+  },
+  "logfile_etl_pipe": {
+    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
+    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
+    "extractors": [
+      "arrive_timestamp",
+      "pr_1",
+      "pr_2",
+      "pr_3",
+      "cmd",
+      "response_time",
+      "first_pr_1",
+      "first_pr_3",
+      "list_pr_3",
+      "list_pr_1",
+      "list_pr_2",
+      "hash_list_pr_1",
+      "hash_list_type_pr_1",
+      "hash_list_pr_2",
+      "hash_list_type_pr_2",
+      "hash_list_pr_3",
+      "hash_list_type_pr_3",
+      "arrive_interval"
+    ],
+    "force": true,
+    "converter": [
+      "ARS",
+      "WS"
+    ]
+  },
+  "workload": {
+    "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/statistics"
+  }
+}

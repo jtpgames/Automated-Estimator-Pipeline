@@ -3,9 +3,9 @@ from typing import List
 
 import pandas as pd
 
-from database import Database
-from dto.dtos import EstimatorPipelineDTO
-from factory.factories import DatabaseFeatureExtractorFactory
+from src.database import Database
+from src.dto.dtos import EstimatorPipelineDTO
+from src.factory.factories import DatabaseFeatureExtractorFactory
 
 
 class DataPreparation:
