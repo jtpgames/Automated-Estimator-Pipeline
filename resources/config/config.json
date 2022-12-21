@@ -1,8 +1,8 @@
 {
   "database": {
-    "row_limit": 1000000,
-    "name": "trainingdata_2022-10-05.sqlite",
-    "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db"
+    "row_limit": -1,
+    "name": "trainingdata_2022-12-09.sqlite",
+    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
   },
   "outlier_detection": {
     "remove_outlier": true,
@@ -27,7 +27,9 @@
       "estimators": [
         {
           "name": "DT",
-          "params": {}
+          "params": {
+
+          }
         },
         {
           "name": "LR",
@@ -50,19 +52,20 @@
         ],
         "refit": "r2",
         "verbose": 2,
-        "pre_dispatch": 1
+        "pre_dispatch": "2*n_jobs",
+        "n_jobs": 4
       },
       "cross_validation": {
-        "n_splits": 2,
+        "n_splits": 10,
         "shuffle": true,
         "random_state": 42
       },
-      "export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/models"
+      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
     }
   },
   "logfile_etl_pipe": {
-    "unprocessed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed/",
+    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
+    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
     "extractors": [
       "arrive_timestamp",
       "pr_1",
@@ -90,6 +93,6 @@
     ]
   },
   "workload": {
-    "export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/statistics"
+    "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/statistics"
   }
 }

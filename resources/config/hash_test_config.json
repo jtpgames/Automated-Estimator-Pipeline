@@ -1,6 +1,6 @@
 {
   "database": {
-    "row_limit": -1,
+    "row_limit": 5000000,
     "name": "trainingdata_2022-12-09.sqlite",
     "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
   },
@@ -12,35 +12,25 @@
   "estimator_pipe": {
     "features": [
       "cmd_target_encoding",
-      "pr_1",
-      "pr_3",
+      "hash_list_pr_1",
+      "hash_list_pr_3",
       "response_time_sec"
     ],
     "y_column": "response_time_sec",
     "grid_search_wrapper": {
       "pipelines": [
         {
-          "steps": [
+          "steps": [{
+            "step": "pca",
+            "action": "pca",
+            "params": {}
+          }
           ]
         }
       ],
       "estimators": [
         {
-          "name": "DT",
-          "params": {
-
-          }
-        },
-        {
           "name": "LR",
-          "params": {}
-        },
-        {
-          "name": "Ridge",
-          "params": {}
-        },
-        {
-          "name": "Lasso",
           "params": {}
         }
       ],
@@ -56,7 +46,7 @@
         "n_jobs": 4
       },
       "cross_validation": {
-        "n_splits": 10,
+        "n_splits": 5,
         "shuffle": true,
         "random_state": 42
       },
