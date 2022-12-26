@@ -29,15 +29,19 @@ class ListParallelRequestsEndAnalysisExtractor(
             dtype=uint8
         )
 
+        indices = []
+        counter = 0
         for index, col in result_data:
+            indices.append(index)
             if len(col) > 0:
                 for key, val in col.items():
                     # index in cmd names mapping starts at 1, so minus 1
-                    array[int(index), int(key) - 1] = val
+                    array[int(counter), int(key) - 1] = val
+                    counter = counter + 1
 
         int_cmd_dict = self.get_int_cmd_mapping()
         column_names = ["{}__end".format(name) for name in int_cmd_dict.values()]
-        df = pd.DataFrame(array, dtype=uint8, columns=column_names)
+        df = pd.DataFrame(array, index=indices, dtype=uint8, columns=column_names)
 
         return df
 
