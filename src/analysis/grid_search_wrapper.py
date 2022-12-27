@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 from joblib import dump
+from sklearn.feature_selection import f_regression, mutual_info_regression, SelectPercentile
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 
@@ -15,6 +16,8 @@ from factory.factories import EstimatorFactory, EstimatorPipelineActionFactory
 
 
 # TODO Cleanup
+
+score_funcs = [f_regression, mutual_info_regression, SelectPercentile]
 
 class GridSearchWrapper:
     __column_names = None
@@ -66,7 +69,15 @@ class GridSearchWrapper:
                             params[step_name] = [action()]
                         # add all remaining grid params with pipeline
                         for key, value in step.params.items():
-                            params[step_name + "__" + key] = value
+                            if isinstance(value, list):
+                                arr = []
+                                for x in value:
+                                    arr.append(self.__eval_str_value_else_return(x))
+                                params[step_name + "__" + key] = arr
+                            else:
+                                params[step_name + "__" + key] = self.__eval_str_value_else_return(value)
+
+
 
             for key, value in params_to_rename.items():
                 params["estimator__" + key] = value
@@ -79,6 +90,14 @@ class GridSearchWrapper:
         self.__all_pipeline_steps = []
         for step in all_step_names:
             self.__all_pipeline_steps.append((step, "passthrough"))
+
+    @staticmethod
+    def __eval_str_value_else_return(x):
+        if isinstance(x, str):
+            return eval(x)
+        else:
+            return x
+
 
     def fit(self, X, y):
         self.__column_names = ", ".join([str(x) for x in X.columns.values])
