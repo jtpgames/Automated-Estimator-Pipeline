@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.4">
+	<Header>
+		<Application name="SkLearn2PMML package" version="0.90.2"/>
+		<Timestamp>2023-01-22T10:43:04Z</Timestamp>
+	</Header>
+	<MiningBuildTask>
+		<Extension name="repr">PMMLPipeline(steps=[('estimator', SGDRegressor(alpha=0.0003, learning_rate='adaptive', penalty='elasticnet'))])</Extension>
+	</MiningBuildTask>
+	<DataDictionary>
+		<DataField name="y" optype="continuous" dataType="double"/>
+		<DataField name="x1" optype="continuous" dataType="double"/>
+		<DataField name="x2" optype="continuous" dataType="double"/>
+		<DataField name="x3" optype="continuous" dataType="double"/>
+	</DataDictionary>
+	<RegressionModel functionName="regression" algorithmName="sklearn.linear_model._stochastic_gradient.SGDRegressor">
+		<MiningSchema>
+			<MiningField name="y" usageType="target"/>
+			<MiningField name="x1"/>
+			<MiningField name="x2"/>
+			<MiningField name="x3"/>
+		</MiningSchema>
+		<RegressionTable intercept="0.021505063877883326">
+			<NumericPredictor name="x1" coefficient="2.658611317039204E-4"/>
+			<NumericPredictor name="x2" coefficient="-0.0010139631554247337"/>
+			<NumericPredictor name="x3" coefficient="0.002193044660835564"/>
+		</RegressionTable>
+	</RegressionModel>
+</PMML>

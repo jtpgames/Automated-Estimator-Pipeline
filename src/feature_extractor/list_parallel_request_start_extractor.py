@@ -1,6 +1,8 @@
+import category_encoders
 import numpy as np
 import pandas as pd
 from numpy import uint8
+from sklearn.feature_extraction import FeatureHasher
 from sqlalchemy import Column, Integer
 
 from src.feature_extractor.abstract_feature_extractor import (
@@ -30,34 +32,39 @@ class ListParallelRequestsStartAnalysisExtractor(
             dtype=uint8
         )
 
+        indices = []
+        counter = 0
         for index, col in result_data:
+            indices.append(index)
             if len(col) > 0:
                 for key, val in col.items():
                     # index in cmd names mapping starts at 1, so minus 1
-                    array[int(index), int(key) - 1] = val
+                    array[int(counter), int(key) - 1] = val
+                    counter = counter + 1
 
         int_cmd_dict = self.get_int_cmd_mapping()
         column_names = ["{}__start".format(name) for name in int_cmd_dict.values()]
-        df = pd.DataFrame(array, dtype=uint8, columns=column_names)
+        df = pd.DataFrame(array, index=indices, dtype=uint8, columns=column_names)
 
         return df
-
-
-class HashListPR1TypesAnalysisExtractor(AbstractAnalysisFeatureExtractor):
-    def get_column(self) -> Column:
-        return Column(self.get_column_name(), Integer)
-
-    def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
-        return df
-
 
 class HashListPR1TypesWithCountAnalysisExtractor(AbstractAnalysisFeatureExtractor):
 
     def get_column(self) -> Column:
-        return Column(self.get_column_name(), Integer)
+        return Column("list_pr_1", JSONEncodedDict)
 
     def df_post_creation_hook(self, df: pd.DataFrame) -> pd.DataFrame:
         return df
+
+    def get_df(self) -> pd.DataFrame:
+        result_data = self.get_column_data(self.get_column())
+        df = self.get_df_from_db_column_data(result_data)
+
+        feature_hasher = FeatureHasher(n_features=10)
+        test = feature_hasher.fit_transform(df[self.get_column_name()])
+        test_df = pd.DataFrame.sparse.from_spmatrix(test)
+        print(test_df)
+        return test_df
 
 
 class ListParallelRequestsStartETLExtractor(AbstractETLFeatureExtractor):
@@ -69,25 +76,3 @@ class ListParallelRequestsStartETLExtractor(AbstractETLFeatureExtractor):
     ):
         return parallel_commands_tracker[tid]["listParallelCommandsStart"]
 
-
-class HashListPR1TypesETLExtractor(AbstractETLFeatureExtractor):
-    def get_column(self) -> Column:
-        return Column(self.get_feature_name(), Integer)
-
-    def extract_feature(
-            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
-    ):
-        arr = [int(x) for x in parallel_commands_tracker[tid]["listParallelCommandsStart"].keys()]
-        return hash(frozenset(arr))
-
-
-class HashListPR1TypesWithCountETLExtractor(AbstractETLFeatureExtractor):
-
-    def get_column(self) -> Column:
-        return Column(self.get_feature_name(), Integer)
-
-    def extract_feature(
-            self, parallel_commands_tracker: ParallelCommandsTracker, tid: str
-    ):
-        arr = [(int(key), value) for key, value in parallel_commands_tracker[tid]["listParallelCommandsStart"].items()]
-        return hash(frozenset(arr))

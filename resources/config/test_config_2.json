@@ -1,0 +1,22 @@
+{
+  "database": {...},
+  "outlier_detection": {...},
+  "estimator_pipe": {
+    "features": [...],
+    "y_column": "response_time_sec",
+    "grid_search_wrapper": {
+      "pipelines": [...],
+      "estimators": [...],
+      "grid_search": {...},
+      "cross_validation": {...},
+      "export_folder":
+    }
+  },
+  "logfile_etl_pipe": {
+    "unprocessed_logfiles_folder":
+    "processed_logfiles_folder":
+    "extractors": [...],
+    "force": true,
+    "converter": []
+  }
+}

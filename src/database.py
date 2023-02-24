@@ -44,7 +44,7 @@ class Database:
 
         base = declarative_base()
         base.metadata.create_all(bind=engine)
-        data_table.drop(bind=engine)
+        #data_table.drop(bind=engine)
         data_table.create(bind=engine)
 
         index = 0

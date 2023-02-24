@@ -3,9 +3,9 @@ from typing import List
 
 import pandas as pd
 
-from database import Database
-from dto.dtos import EstimatorPipelineDTO
-from factory.factories import DatabaseFeatureExtractorFactory
+from src.database import Database
+from src.dto.dtos import EstimatorPipelineDTO
+from src.factory.factories import DatabaseFeatureExtractorFactory
 
 
 class DataPreparation:
@@ -18,11 +18,7 @@ class DataPreparation:
     def get_dataset(self):
         feature_extractors = self.__setup_feature_extractors()
         df = self.__load_data(feature_extractors)
-        print("before remove")
-        print(df.info())
         df = df[df[self.__y_column] != 0]
-        print("after remove")
-        print(df.info())
         y = df.pop(self.__y_column)
         return df, y
 

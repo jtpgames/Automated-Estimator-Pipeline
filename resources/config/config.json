@@ -1,8 +1,8 @@
 {
   "database": {
-    "row_limit": 1000000,
-    "name": "trainingdata_2022-10-05.sqlite",
-    "folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/db"
+    "row_limit": -1,
+    "name": "trainingdata_without_zero_response_2022-12-09.sqlite",
+    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
   },
   "outlier_detection": {
     "remove_outlier": true,
@@ -13,7 +13,6 @@
     "features": [
       "cmd_target_encoding",
       "pr_1",
-      "pr_3",
       "response_time_sec"
     ],
     "y_column": "response_time_sec",
@@ -26,20 +25,10 @@
       ],
       "estimators": [
         {
-          "name": "DT",
-          "params": {}
-        },
-        {
           "name": "LR",
-          "params": {}
-        },
-        {
-          "name": "Ridge",
-          "params": {}
-        },
-        {
-          "name": "Lasso",
-          "params": {}
+          "params": {
+
+          }
         }
       ],
       "grid_search": {
@@ -50,38 +39,33 @@
         ],
         "refit": "r2",
         "verbose": 2,
-        "pre_dispatch": 1
+        "pre_dispatch": "2*n_jobs",
+        "n_jobs": 4
       },
       "cross_validation": {
-        "n_splits": 2,
+        "n_splits": 10,
         "shuffle": true,
         "random_state": 42
       },
-      "export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/models"
+      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
     }
   },
   "logfile_etl_pipe": {
-    "unprocessed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/logfiles/processed/",
+    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
+    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
     "extractors": [
-      "arrive_timestamp",
+      "cmd",
       "pr_1",
       "pr_2",
       "pr_3",
-      "cmd",
-      "response_time",
       "first_pr_1",
       "first_pr_3",
+      "response_time",
       "list_pr_3",
       "list_pr_1",
       "list_pr_2",
-      "hash_list_pr_1",
-      "hash_list_type_pr_1",
-      "hash_list_pr_2",
-      "hash_list_type_pr_2",
-      "hash_list_pr_3",
-      "hash_list_type_pr_3",
-      "arrive_interval"
+      "arrive_interval",
+      "arrive_timestamp"
     ],
     "force": true,
     "converter": [
@@ -90,6 +74,6 @@
     ]
   },
   "workload": {
-    "export_folder": "C:/Users/lierm/IdeaProjects/logfile_analysis/resources/export/statistics"
+    "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/statistics"
   }
 }

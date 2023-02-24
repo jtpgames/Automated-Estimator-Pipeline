@@ -3,10 +3,10 @@ import os
 
 import typer
 
-from analysis.estimator_pipeline import EstimatorPipeline
-from configuration import Configuration
-from logfile_etl.logfile_etl_pipeline import LogfileETLPipeline
-from workload_characterization import WorkloadCharacterization
+from src.analysis.estimator_pipeline import EstimatorPipeline
+from src.configuration import Configuration
+from src.logfile_etl.logfile_etl_pipeline import LogfileETLPipeline
+from src.workload_characterization import WorkloadCharacterization
 
 # needed to get reproducible hash values for objects
 os.environ["PYTHONHASHSEED"] = "0"
@@ -26,7 +26,7 @@ def run(skip_convert: bool = typer.Option(False, help="skips the logfile convert
         skip_merge: bool = typer.Option(False, help="skips the logfile merge process in the logfile etl process")):
     logfile(skip_convert, skip_merge)
     estimator()
-    workload()
+    #workload()
 
 
 @app.command()
@@ -51,7 +51,7 @@ def workload():
 
 # TODO is also executed when calling --help on subcommand or on error
 @app.callback()
-def callback(config_file: str = "resources/config/config.json"):
+def callback(config_file: str = "resources/config/gs_without_sel_dt.json"):
     global config
 
     config = Configuration(config_file)

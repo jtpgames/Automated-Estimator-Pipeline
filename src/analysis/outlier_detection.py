@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-from database import Database
-from dto.dtos import OutlierDetectionDTO
-from feature_extractor.cmd_extractor import CMDAnalysisExtractor
+from src.database import Database
+from src.dto.dtos import OutlierDetectionDTO
+from src.feature_extractor.cmd_extractor import CMDAnalysisExtractor
 
 
 class OutlierDetection:
