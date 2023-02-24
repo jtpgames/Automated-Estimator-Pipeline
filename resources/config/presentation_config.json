@@ -2,7 +2,7 @@
   "database": {
     "row_limit": -1,
     "name": "NEWEST",
-    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db/pra"
+    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db/presentation"
   },
   "outlier_detection": {
     "remove_outlier": true,
@@ -13,21 +13,43 @@
     "features": [
       "cmd_target_encoding",
       "pr_1",
+      "pr_3",
       "response_time_sec"
     ],
     "y_column": "response_time_sec",
     "grid_search_wrapper": {
       "pipelines": [
         {
-          "steps": [
+          "steps": [{
+            "step": "std",
+            "action": "std",
+            "params": {}
+          }
           ]
         }
       ],
       "estimators": [
         {
           "name": "LR",
+          "params": {}
+        },
+        {
+          "name": "Ridge",
           "params": {
-
+            "alpha": [
+              0.2,
+              0.4,
+              0.6,
+              0.8,
+              1,
+              2,
+              4,
+              8,
+              10,
+              12,
+              14,
+              50
+            ]
           }
         }
       ],
@@ -40,19 +62,19 @@
         "refit": "r2",
         "verbose": 2,
         "pre_dispatch": "2*n_jobs",
-        "n_jobs": 4
+        "n_jobs": 32
       },
       "cross_validation": {
         "n_splits": 10,
         "shuffle": true,
         "random_state": 42
       },
-      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
+      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models/presentation"
     }
   },
   "logfile_etl_pipe": {
-    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
+    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/presentation",
+    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/presentation",
     "extractors": [
       "cmd",
       "pr_1",

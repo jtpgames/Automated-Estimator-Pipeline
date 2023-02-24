@@ -1,8 +1,8 @@
 {
   "database": {
-    "row_limit": 100000,
-    "name": "trainingdata_without_zero_response_2022-12-09.sqlite",
-    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
+    "row_limit": -1,
+    "name": "real_25_low_2023-01-20.sqlite",
+    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db/teastore"
   },
   "outlier_detection": {
     "remove_outlier": true,
@@ -11,8 +11,9 @@
   },
   "estimator_pipe": {
     "features": [
-      "cmd_one_hot",
-      "list_pr_1",
+      "cmd",
+      "pr_1",
+      "pr_3",
       "response_time_sec"
     ],
     "y_column": "response_time_sec",
@@ -27,7 +28,10 @@
         {
           "name": "DT",
           "params": {
-
+            "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
+            "max_depth": [2,4,6,8,10,12],
+            "min_samples_split": [2,4,6,8,10,12],
+            "min_samples_leaf": [1,2,3,4,5]
           }
         },
         {
@@ -36,11 +40,91 @@
         },
         {
           "name": "Ridge",
-          "params": {}
+          "params": {
+            "alpha": [
+              0.2,
+              0.4,
+              0.6,
+              0.8,
+              1,
+              2,
+              4,
+              8,
+              10,
+              12,
+              14,
+              50
+            ]
+          }
         },
         {
           "name": "Lasso",
-          "params": {}
+          "params": {
+            "alpha": [
+              0.2,
+              0.4,
+              0.6,
+              0.8,
+              1,
+              2,
+              4,
+              8,
+              10
+            ]
+          }
+        },
+        {
+          "name": "ElasticNet",
+          "params": {
+            "alpha": [
+              0.2,
+              0.4,
+              0.6,
+              0.8,
+              1,
+              2,
+              4,
+              8,
+              10
+            ],
+            "l1_ratio": [
+              0.2,
+              0.4,
+              0.6,
+              0.8
+            ]
+          }
+        },
+        {
+          "name": "SGDR",
+          "params": {
+            "penalty": [
+              "l2",
+              "l1",
+              "elasticnet"
+            ],
+            "alpha": [
+              0.00002,
+              0.00004,
+              0.00006,
+              0.00008,
+              0.0001,
+              0.00012,
+              0.00014,
+              0.00016,
+              0.00018,
+              0.0002,
+              0.0003,
+              0.0004,
+              0.0005
+            ],
+            "learning_rate": [
+              "constant",
+              "optimal",
+              "invscaling",
+              "adaptive"
+            ]
+          }
         }
       ],
       "grid_search": {
@@ -52,38 +136,32 @@
         "refit": "r2",
         "verbose": 2,
         "pre_dispatch": "2*n_jobs",
-        "n_jobs": 4
+        "n_jobs": -1
       },
       "cross_validation": {
-        "n_splits": 10,
+        "n_splits": 5,
         "shuffle": true,
         "random_state": 42
       },
-      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
+      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models/teastore"
     }
   },
   "logfile_etl_pipe": {
-    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
+    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/teastore_unprocessed/",
+    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/teastore_processed/",
     "extractors": [
-      "arrive_timestamp",
+      "cmd",
       "pr_1",
       "pr_2",
       "pr_3",
-      "cmd",
-      "response_time",
       "first_pr_1",
       "first_pr_3",
+      "response_time",
       "list_pr_3",
       "list_pr_1",
       "list_pr_2",
-      "hash_list_pr_1",
-      "hash_list_type_pr_1",
-      "hash_list_pr_2",
-      "hash_list_type_pr_2",
-      "hash_list_pr_3",
-      "hash_list_type_pr_3",
-      "arrive_interval"
+      "arrive_interval",
+      "arrive_timestamp"
     ],
     "force": true,
     "converter": [

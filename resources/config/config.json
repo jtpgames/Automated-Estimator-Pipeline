@@ -1,6 +1,6 @@
 {
   "database": {
-    "row_limit": 100000,
+    "row_limit": -1,
     "name": "trainingdata_without_zero_response_2022-12-09.sqlite",
     "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
   },
@@ -11,8 +11,8 @@
   },
   "estimator_pipe": {
     "features": [
-      "cmd_one_hot",
-      "list_pr_1",
+      "cmd_target_encoding",
+      "pr_1",
       "response_time_sec"
     ],
     "y_column": "response_time_sec",
@@ -25,22 +25,10 @@
       ],
       "estimators": [
         {
-          "name": "DT",
+          "name": "LR",
           "params": {
 
           }
-        },
-        {
-          "name": "LR",
-          "params": {}
-        },
-        {
-          "name": "Ridge",
-          "params": {}
-        },
-        {
-          "name": "Lasso",
-          "params": {}
         }
       ],
       "grid_search": {
@@ -66,24 +54,18 @@
     "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
     "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
     "extractors": [
-      "arrive_timestamp",
+      "cmd",
       "pr_1",
       "pr_2",
       "pr_3",
-      "cmd",
-      "response_time",
       "first_pr_1",
       "first_pr_3",
+      "response_time",
       "list_pr_3",
       "list_pr_1",
       "list_pr_2",
-      "hash_list_pr_1",
-      "hash_list_type_pr_1",
-      "hash_list_pr_2",
-      "hash_list_type_pr_2",
-      "hash_list_pr_3",
-      "hash_list_type_pr_3",
-      "arrive_interval"
+      "arrive_interval",
+      "arrive_timestamp"
     ],
     "force": true,
     "converter": [
