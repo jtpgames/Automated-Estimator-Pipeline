@@ -17,131 +17,102 @@ if __name__ == "__main__":
     db_file = db_folder / file_name
     model_folder = resource_folder / "models"
 
-    etl_config = {
-        "unprocessed_logfiles": unprocessed_folder.as_posix(),
-        "processed_logfiles": processed_folder.as_posix(),
-        "export_methods": ["db", "csv"],
-        "db": {
+    config_file = {
+        "database": {
+            "row_limit": -1,
+            "name": "NEWEST",
             "folder": db_folder.as_posix()
         },
-        "csv": {
-            "folder": csv_folder.as_posix()
+        "outlier_detection": {
+            "remove_outlier": True,
+            "outlier_modus": "CMD",
+            "std_threshold": 3
         },
-        "extractors": [
-            "Timestamp", "PR 1", "PR 2", "PR 3", "cmd", "response time",
-            "First Command Start", "First Command Finished",
-            "List parallel requests start", "List parallel requests finished"
-        ],
-        "force": "True"
-    }
-
-    analysis_config = {
-        "db": db_file.as_posix(),
-        "db_limit": -1,
-        "features": ["PR 1", "PR 3", "cmd", "First Command Start",
-                     "First Command Finished", "response time"],
-        "y": "response time",
-        "pipeline": {
-            "scaler": "std",
-            "feature_selection": "kbest"
-        },
-        "grid_search": {
-            "scoring": [
-                "r2",
-                "neg_mean_squared_error",
-                "neg_root_mean_squared_error"
+        "estimator_pipe": {
+            "features": [
+                "cmd_target_encoding",
+                "pr_1",
+                "response_time_sec"
             ],
-            "refit": "r2",
-            "verbose": 3
-        },
-        "estimators": [
-            {
-                "name": "DT",
-                "grid_dict": {
-                    "max_depth": [
-                        1,
-                        5,
-                        9,
-                        12,
-                        14,
-                        16
+            "y_column": "response_time_sec",
+            "grid_search_wrapper": {
+                "pipelines": [
+                    {
+                        "steps": [{
+                            "step": "std",
+                            "action": "std",
+                            "params": {}
+                        }],
+                    }
+                ],
+                "estimators": [
+                    {
+                        "name": "LR",
+                        "params": {}
+                    },
+                    {
+                        "name": "DT",
+                        "params": {
+                            "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
+                            "max_depth": [2,4,6,8,10,12],
+                            "min_samples_split": [2,4,6,8,10,12],
+                            "min_samples_leaf": [1,2,3,4,5]
+                        }
+                    }
+                ],
+                "grid_search": {
+                    "scoring": [
+                        "r2",
+                        "neg_mean_squared_error",
+                        "neg_root_mean_squared_error"
                     ],
-                    "min_samples_leaf": [
-                        1,
-                        3,
-                        5,
-                        7,
-                        9
-                    ]
-                }
-            },
-            {
-                "name": "LR"
-            },
-            {
-                "name": "Ridge",
-                "grid_dict": {
-                    "alpha": [
-                        0.1,
-                        0.2,
-                        0.3,
-                        0.4,
-                        0.5
-                    ]
-                }
-            },
-            {
-                "name": "Lasso",
-                "grid_dict": {
-                    "alpha": [
-                        0.1,
-                        0.2,
-                        0.3,
-                        0.4,
-                        0.5
-                    ]
-                }
-            },
-            {
-                "name": "ElasticNet",
-                "grid_dict": {
-                    "alpha": [
-                        0.1,
-                        0.2,
-                        0.3,
-                        0.4,
-                        0.5
-                    ],
-                    "l1_ratio": [
-                        0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1
-                    ]
-                }
+                    "refit": "r2",
+                    "verbose": 2,
+                    "pre_dispatch": "2*n_jobs",
+                    "n_jobs": 4
+                },
+                "cross_validation": {
+                    "n_splits": 10,
+                    "shuffle": True,
+                    "random_state": 42
+                },
+                "export_folder": export_folder.as_posix()
             }
-        ],
-        "model_save_path": model_folder.as_posix()
+        },
+        "logfile_etl_pipe": {
+            "unprocessed_logfiles_folder": unprocessed_folder.as_posix(),
+            "processed_logfiles_folder": processed_folder.as_posix(),
+            "extractors": [
+                "cmd",
+                "pr_1",
+                "pr_2",
+                "pr_3",
+                "response_time",
+                "list_pr_3",
+                "list_pr_1",
+                "list_pr_2",
+                "arrive_interval",
+                "arrive_timestamp"
+            ],
+            "force": True,
+            "converter": [
+                "ARS",
+                "WS"
+            ]
+        },
+        "workload": {
+            "export_folder": statistics_folder.as_posix()
+        }
     }
 
-    characterization_config = {
-        "db": db_file.as_posix(),
-        "db_limit": -1,
-        "export_folder": statistics_folder.as_posix()
-    }
     configuration_folder = resource_folder / "config"
 
-    analysis_config_file_path = configuration_folder / "analysis_config.json"
-    etl_config_file_path = configuration_folder / "etl_config.json"
-    characterization_config_file_path = configuration_folder / "characterization_config.json"
+    user_config_file_path = configuration_folder / "config.json"
 
     os.makedirs(configuration_folder.as_posix(), exist_ok=True)
 
-    with open(analysis_config_file_path, 'w+') as fp:
-        json.dump(analysis_config, fp)
-
-    with open(etl_config_file_path, 'w+') as fp:
-        json.dump(etl_config, fp)
-
-    with open(characterization_config_file_path, 'w+') as fp:
-        json.dump(characterization_config, fp)
+    with open(user_config_file_path, 'w+') as fp:
+        json.dump(config_file, fp)
 
     print("Configuration files created in: {}".format(configuration_folder))
 

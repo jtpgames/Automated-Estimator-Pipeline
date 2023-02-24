@@ -8,8 +8,6 @@ from src.configuration import Configuration
 from src.logfile_etl.logfile_etl_pipeline import LogfileETLPipeline
 from src.workload_characterization import WorkloadCharacterization
 
-# needed to get reproducible hash values for objects
-os.environ["PYTHONHASHSEED"] = "0"
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -51,7 +49,7 @@ def workload():
 
 # TODO is also executed when calling --help on subcommand or on error
 @app.callback()
-def callback(config_file: str = "resources/config/gs_without_sel_dt.json"):
+def callback(config_file: str = "resources/config/config.json"):
     global config
 
     config = Configuration(config_file)

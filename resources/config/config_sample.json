@@ -1,7 +1,7 @@
 {
   "database": {
     "row_limit": -1,
-    "name": "trainingdata_without_zero_response_2022-12-09.sqlite",
+    "name": "NEWEST",
     "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
   },
   "outlier_detection": {
