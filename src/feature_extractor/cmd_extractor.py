@@ -2,7 +2,7 @@ import category_encoders as ce
 import pandas as pd
 from sqlalchemy import Column, Integer
 
-from feature_extractor.encoder.seconds_encoder import MilliSecondsEncoder
+from src.feature_extractor.encoder.seconds_encoder import MilliSecondsEncoder
 from src.feature_extractor.abstract_feature_extractor import (
     AbstractAnalysisFeatureExtractor, AbstractETLFeatureExtractor
 )

@@ -10,9 +10,9 @@ from sklearn.feature_selection import f_regression, mutual_info_regression, Sele
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.pipeline import Pipeline
 
-from database import Database
-from dto.dtos import GridSearchDTO, CrossValidationDTO, GridSearchWrapperDTO
-from factory.factories import EstimatorFactory, EstimatorPipelineActionFactory
+from src.database import Database
+from src.dto.dtos import GridSearchDTO, CrossValidationDTO, GridSearchWrapperDTO
+from src.factory.factories import EstimatorFactory, EstimatorPipelineActionFactory
 
 
 # TODO Cleanup
@@ -150,7 +150,7 @@ class GridSearchWrapper:
     def __save_cv_results(self, grid_search, path_to_folder):
         df = pd.DataFrame.from_records(grid_search.cv_results_)
         logging.info("save cv results")
-        mapping_name = "cv_results_100000.xlsx"
+        mapping_name = "cv_results.xlsx"
         path_to_mapping_file = Path(path_to_folder) / mapping_name
         df.to_excel(path_to_mapping_file)
         log_file_name = "infos.txt"

@@ -1,7 +1,7 @@
 {
   "database": {
-    "row_limit": 5000000,
-    "name": "trainingdata_2022-12-09.sqlite",
+    "row_limit": -1,
+    "name": "trainingdata_without_zero_response_2022-12-09.sqlite",
     "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
   },
   "outlier_detection": {
@@ -12,26 +12,27 @@
   "estimator_pipe": {
     "features": [
       "cmd_target_encoding",
-      "hash_list_pr_1",
-      "hash_list_pr_3",
+      "pr_1",
+      "pr_3",
       "response_time_sec"
     ],
     "y_column": "response_time_sec",
     "grid_search_wrapper": {
       "pipelines": [
         {
-          "steps": [{
-            "step": "pca",
-            "action": "pca",
-            "params": {}
-          }
+          "steps": [
           ]
         }
       ],
       "estimators": [
         {
-          "name": "LR",
-          "params": {}
+          "name": "DT",
+          "params": {
+            "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
+            "max_depth": [2,4,6,8,10,12],
+            "min_samples_split": [2,4,6,8,10,12],
+            "min_samples_leaf": [1,2,3,4,5]
+          }
         }
       ],
       "grid_search": {
@@ -42,11 +43,11 @@
         ],
         "refit": "r2",
         "verbose": 2,
-        "pre_dispatch": "2*n_jobs",
+        "pre_dispatch": "n_jobs",
         "n_jobs": 4
       },
       "cross_validation": {
-        "n_splits": 5,
+        "n_splits": 3,
         "shuffle": true,
         "random_state": 42
       },

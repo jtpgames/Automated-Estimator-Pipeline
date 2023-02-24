@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.4">
+	<Header>
+		<Application name="SkLearn2PMML package" version="0.90.2"/>
+		<Timestamp>2023-01-29T16:52:54Z</Timestamp>
+	</Header>
+	<MiningBuildTask>
+		<Extension name="repr">PMMLPipeline(steps=[('estimator', DecisionTreeRegressor(max_depth=8, min_samples_split=12))])</Extension>
+	</MiningBuildTask>
+	<DataDictionary>
+		<DataField name="y" optype="continuous" dataType="double"/>
+		<DataField name="x1" optype="continuous" dataType="float"/>
+		<DataField name="x2" optype="continuous" dataType="float"/>
+		<DataField name="x3" optype="continuous" dataType="float"/>
+	</DataDictionary>
+	<TreeModel functionName="regression" algorithmName="sklearn.tree._classes.DecisionTreeRegressor" missingValueStrategy="nullPrediction" noTrueChildStrategy="returnLastPrediction">
+		<MiningSchema>
+			<MiningField name="y" usageType="target"/>
+			<MiningField name="x3"/>
+			<MiningField name="x1"/>
+			<MiningField name="x2"/>
+		</MiningSchema>
+		<LocalTransformations>
+			<DerivedField name="double(x3)" optype="continuous" dataType="double">
+				<FieldRef field="x3"/>
+			</DerivedField>
+			<DerivedField name="double(x1)" optype="continuous" dataType="double">
+				<FieldRef field="x1"/>
+			</DerivedField>
+			<DerivedField name="double(x2)" optype="continuous" dataType="double">
+				<FieldRef field="x2"/>
+			</DerivedField>
+		</LocalTransformations>
+		<Node score="0.09505999999999999">
+			<True/>
+			<Node score="0.028489863636363633">
+				<SimplePredicate field="double(x3)" operator="lessOrEqual" value="11.5"/>
+				<Node score="0.022790499999999998">
+					<SimplePredicate field="double(x1)" operator="lessOrEqual" value="2.5"/>
+					<Node score="0.016516708333333335">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="5.5"/>
+						<Node score="0.015350749999999996">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="3.5"/>
+							<Node score="0.012558166666666676">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+								<Node score="0.012888696969696967">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="2.5"/>
+									<Node score="0.01980675">
+										<SimplePredicate field="double(x2)" operator="lessOrEqual" value="1.5"/>
+										<Node score="0.012668027272727277">
+											<SimplePredicate field="double(x3)" operator="lessOrEqual" value="1.5"/>
+										</Node>
+									</Node>
+									<Node score="0.011788409090909092">
+										<SimplePredicate field="double(x2)" operator="lessOrEqual" value="6.5"/>
+									</Node>
+								</Node>
+								<Node score="0.01993618181818182">
+									<SimplePredicate field="double(x2)" operator="lessOrEqual" value="2.5"/>
+								</Node>
+								<Node score="0.014319130434782614">
+									<SimplePredicate field="double(x2)" operator="lessOrEqual" value="3.5"/>
+								</Node>
+							</Node>
+							<Node score="0.014366600000000002">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="1.5"/>
+								<Node score="0.013775222222222223">
+									<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+									<Node score="0.0145728">
+										<SimplePredicate field="double(x1)" operator="lessOrEqual" value="1.5"/>
+									</Node>
+								</Node>
+								<Node score="0.016714687500000002">
+									<SimplePredicate field="double(x2)" operator="lessOrEqual" value="10.5"/>
+								</Node>
+							</Node>
+							<Node score="0.012320900000000001">
+								<SimplePredicate field="double(x1)" operator="lessOrEqual" value="1.5"/>
+								<Node score="0.013397826086956523">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="2.5"/>
+								</Node>
+							</Node>
+							<Node score="0.013354743589743588">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="9.5"/>
+							</Node>
+						</Node>
+						<Node score="0.022598999999999998">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="3.5"/>
+						</Node>
+						<Node score="0.014263038759689919">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="12.5"/>
+							<Node score="0.020833666666666667">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="4.5"/>
+								<Node score="0.014238733333333333">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="4.5"/>
+								</Node>
+							</Node>
+							<Node score="0.013179488505747135">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+							</Node>
+						</Node>
+						<Node score="0.01592675">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="1.5"/>
+							<Node score="0.014411150000000001">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="17.5"/>
+							</Node>
+						</Node>
+						<Node score="0.014755299999999999">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="13.5"/>
+						</Node>
+					</Node>
+					<Node score="0.016425333333333333">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="5.5"/>
+						<Node score="0.02855563636363636">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="1.5"/>
+							<Node score="0.03195975">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="0.5"/>
+							</Node>
+						</Node>
+					</Node>
+					<Node score="0.021639">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="7.5"/>
+						<Node score="0.020609000000000002">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="6.5"/>
+						</Node>
+						<Node score="0.015042978723404253">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="12.5"/>
+							<Node score="0.014317691358024687">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="10.5"/>
+							</Node>
+						</Node>
+						<Node score="0.016226792207792207">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="24.0"/>
+						</Node>
+					</Node>
+					<Node score="0.019673333333333334">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="9.5"/>
+						<Node score="0.020077142857142856">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="1.5"/>
+							<Node score="0.028397545454545457">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+							</Node>
+						</Node>
+						<Node score="0.015883666666666667">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+						</Node>
+					</Node>
+					<Node score="0.014581571428571432">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="12.5"/>
+						<Node score="0.0167245">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="9.5"/>
+						</Node>
+					</Node>
+					<Node score="0.018226973451327434">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="27.0"/>
+					</Node>
+				</Node>
+				<Node score="0.039366774193548386">
+					<SimplePredicate field="double(x1)" operator="lessOrEqual" value="6.5"/>
+					<Node score="0.02912941818181818">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="4.5"/>
+						<Node score="0.028972">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="5.5"/>
+							<Node score="0.022216812995245642">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+								<Node score="0.02595927472527473">
+									<SimplePredicate field="double(x1)" operator="lessOrEqual" value="3.5"/>
+									<Node score="0.024204050000000005">
+										<SimplePredicate field="double(x3)" operator="lessOrEqual" value="3.5"/>
+									</Node>
+								</Node>
+								<Node score="0.01969710714285714">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="0.5"/>
+								</Node>
+							</Node>
+							<Node score="0.03116045">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="4.5"/>
+								<Node score="0.0269915">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="3.5"/>
+								</Node>
+							</Node>
+							<Node score="0.025493390243902438">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="15.0"/>
+							</Node>
+						</Node>
+						<Node score="0.02608767088607601">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="9.5"/>
+							<Node score="0.029597591836734688">
+								<SimplePredicate field="double(x1)" operator="lessOrEqual" value="3.5"/>
+								<Node score="0.027484696296296303">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="7.5"/>
+								</Node>
+							</Node>
+							<Node score="0.03496475">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="3.5"/>
+							</Node>
+						</Node>
+						<Node score="0.03176386458333332">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="3.5"/>
+							<Node score="0.03518804761904762">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+							</Node>
+						</Node>
+						<Node score="0.041764">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="4.5"/>
+						</Node>
+					</Node>
+					<Node score="0.03779229411764706">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="7.5"/>
+						<Node score="0.0337511304347826">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="5.5"/>
+							<Node score="0.027263604651162784">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="4.5"/>
+								<Node score="0.0260183114186851">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="4.5"/>
+								</Node>
+							</Node>
+							<Node score="0.029160759002770074">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+							</Node>
+						</Node>
+						<Node score="0.085474">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="4.5"/>
+							<Node score="0.031069345454545434">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="6.5"/>
+							</Node>
+						</Node>
+						<Node score="0.03412070000000003">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="6.5"/>
+						</Node>
+					</Node>
+					<Node score="0.033373692307692306">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="5.5"/>
+						<Node score="0.03363088571428572">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="9.5"/>
+							<Node score="0.031801058091286305">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+							</Node>
+						</Node>
+						<Node score="0.03582516438356165">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="10.5"/>
+						</Node>
+					</Node>
+					<Node score="0.061752">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="2.5"/>
+					</Node>
+					<Node score="0.03674477319587628">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="10.5"/>
+					</Node>
+				</Node>
+				<Node score="0.021744816216216212">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="6.5"/>
+					<Node score="0.023239974576271194">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="7.5"/>
+						<Node score="0.017798200000000004">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="1.5"/>
+							<Node score="0.02409759999999999">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="1.5"/>
+								<Node score="0.025091357142857148">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="0.5"/>
+								</Node>
+							</Node>
+						</Node>
+						<Node score="0.01991206530612246">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="4.5"/>
+							<Node score="0.016783434782608696">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="1.5"/>
+							</Node>
+						</Node>
+						<Node score="0.021557325581395347">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="5.5"/>
+						</Node>
+					</Node>
+					<Node score="0.01800258474576272">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="8.5"/>
+						<Node score="0.015074331753554502">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="3.5"/>
+							<Node score="0.014110775700934582">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="1.5"/>
+							</Node>
+						</Node>
+						<Node score="0.01632109027777778">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+						</Node>
+					</Node>
+					<Node score="0.02110720512820513">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="3.5"/>
+						<Node score="0.01983412781954887">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="3.5"/>
+						</Node>
+					</Node>
+					<Node score="0.02370464935064935">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="4.5"/>
+					</Node>
+				</Node>
+				<Node score="0.02538127358490566">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="9.5"/>
+					<Node score="0.02751006250000001">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="6.5"/>
+						<Node score="0.053337">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="7.5"/>
+							<Node score="0.0263357">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="7.5"/>
+							</Node>
+						</Node>
+						<Node score="0.020257285714285717">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="8.5"/>
+						</Node>
+					</Node>
+					<Node score="0.020305653846153852">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="8.5"/>
+						<Node score="0.023569087837837833">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="7.5"/>
+						</Node>
+					</Node>
+					<Node score="0.023476954545454544">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="7.5"/>
+					</Node>
+				</Node>
+				<Node score="0.031160470588235293">
+					<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+					<Node score="0.04297628571428571">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="7.5"/>
+					</Node>
+					<Node score="0.022905500000000002">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="8.5"/>
+					</Node>
+				</Node>
+				<Node score="0.02465983928571428">
+					<SimplePredicate field="double(x1)" operator="lessOrEqual" value="8.5"/>
+					<Node score="0.0354874">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="9.5"/>
+					</Node>
+				</Node>
+				<Node score="0.026958203703703713">
+					<SimplePredicate field="double(x2)" operator="lessOrEqual" value="13.5"/>
+				</Node>
+			</Node>
+			<Node score="0.038151125">
+				<SimplePredicate field="double(x3)" operator="lessOrEqual" value="22.5"/>
+				<Node score="0.034183081632653045">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="17.5"/>
+					<Node score="0.038362">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="2.5"/>
+						<Node score="0.0294325">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="10.0"/>
+							<Node score="0.03701">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="0.5"/>
+							</Node>
+							<Node score="0.03130325">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.0"/>
+								<Node score="0.03240027272727273">
+									<SimplePredicate field="double(x2)" operator="lessOrEqual" value="4.5"/>
+								</Node>
+							</Node>
+						</Node>
+						<Node score="0.019786699999999997">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="24.5"/>
+							<Node score="0.016578818181818177">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="14.5"/>
+							</Node>
+							<Node score="0.029585333333333335">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="15.5"/>
+							</Node>
+						</Node>
+						<Node score="0.025145636363636367">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="45.0"/>
+						</Node>
+					</Node>
+					<Node score="0.044438303030303015">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="6.5"/>
+						<Node score="0.03988812903225807">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="5.5"/>
+							<Node score="0.036604793969849225">
+								<SimplePredicate field="double(x1)" operator="lessOrEqual" value="4.5"/>
+								<Node score="0.03321794857142857">
+									<SimplePredicate field="double(x3)" operator="lessOrEqual" value="14.5"/>
+								</Node>
+							</Node>
+							<Node score="0.03681028813559323">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="13.5"/>
+							</Node>
+						</Node>
+						<Node score="0.040019367741935465">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="14.5"/>
+							<Node score="0.04298513548387099">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="9.5"/>
+							</Node>
+						</Node>
+						<Node score="0.0509811875">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+						</Node>
+					</Node>
+					<Node score="0.04886342857142857">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="8.5"/>
+					</Node>
+					<Node score="0.026398180327868854">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="8.5"/>
+						<Node score="0.029223056818181815">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="7.5"/>
+						</Node>
+					</Node>
+					<Node score="0.029991540540540543">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="13.5"/>
+					</Node>
+				</Node>
+				<Node score="0.053909">
+					<SimplePredicate field="double(x1)" operator="lessOrEqual" value="4.5"/>
+					<Node score="0.027666875000000004">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="2.5"/>
+						<Node score="0.03151400000000001">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="9.5"/>
+						</Node>
+						<Node score="0.020100999999999997">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="18.0"/>
+						</Node>
+					</Node>
+					<Node score="0.050808428571428574">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="16.5"/>
+						<Node score="0.04513188888888889">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="20.5"/>
+							<Node score="0.04192904545454546">
+								<SimplePredicate field="double(x1)" operator="lessOrEqual" value="3.5"/>
+							</Node>
+						</Node>
+						<Node score="0.04472871428571428">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="15.5"/>
+						</Node>
+					</Node>
+					<Node score="0.03983266153846151">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="25.5"/>
+						<Node score="0.036439312499999994">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="3.5"/>
+						</Node>
+					</Node>
+				</Node>
+				<Node score="0.04974788">
+					<SimplePredicate field="double(x1)" operator="lessOrEqual" value="6.5"/>
+					<Node score="0.05804988235294117">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="12.5"/>
+						<Node score="0.053333849999999995">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="20.5"/>
+							<Node score="0.04942540000000001">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="18.5"/>
+							</Node>
+						</Node>
+						<Node score="0.0721785">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="7.5"/>
+						</Node>
+					</Node>
+					<Node score="0.04863940151515152">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="21.5"/>
+						<Node score="0.045137984848484844">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="5.5"/>
+						</Node>
+					</Node>
+					<Node score="0.05351333333333333">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="16.5"/>
+					</Node>
+				</Node>
+				<Node score="0.042381">
+					<SimplePredicate field="double(x2)" operator="lessOrEqual" value="16.5"/>
+				</Node>
+				<Node score="0.03539600000000001">
+					<SimplePredicate field="double(x2)" operator="lessOrEqual" value="24.5"/>
+					<Node score="0.02895227272727273">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="18.5"/>
+					</Node>
+				</Node>
+			</Node>
+			<Node score="0.06736034285714287">
+				<SimplePredicate field="double(x3)" operator="lessOrEqual" value="36.5"/>
+				<Node score="0.05940733333333333">
+					<SimplePredicate field="double(x1)" operator="lessOrEqual" value="4.5"/>
+					<Node score="0.046921375">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="28.5"/>
+						<Node score="0.0279555">
+							<SimplePredicate field="double(x1)" operator="lessOrEqual" value="2.5"/>
+						</Node>
+						<Node score="0.05367136363636363">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="18.5"/>
+							<Node score="0.046514">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="23.5"/>
+							</Node>
+						</Node>
+						<Node score="0.041162000000000004">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="23.5"/>
+						</Node>
+					</Node>
+					<Node score="0.04900988888888889">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="45.0"/>
+						<Node score="0.057130384615384604">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="29.5"/>
+							<Node score="0.042436">
+								<SimplePredicate field="double(x3)" operator="lessOrEqual" value="29.5"/>
+							</Node>
+						</Node>
+					</Node>
+				</Node>
+				<Node score="0.042408">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="26.5"/>
+					<Node score="0.0700465">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="12.5"/>
+						<Node score="0.05798071428571428">
+							<SimplePredicate field="double(x3)" operator="lessOrEqual" value="24.5"/>
+							<Node score="0.06510855555555556">
+								<SimplePredicate field="double(x2)" operator="lessOrEqual" value="10.5"/>
+							</Node>
+						</Node>
+					</Node>
+					<Node score="0.051222416666666666">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="6.5"/>
+						<Node score="0.055499036764705904">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="23.5"/>
+						</Node>
+					</Node>
+				</Node>
+				<Node score="0.044924">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="30.5"/>
+					<Node score="0.060757556603773584">
+						<SimplePredicate field="double(x1)" operator="lessOrEqual" value="6.5"/>
+						<Node score="0.06567846666666667">
+							<SimplePredicate field="double(x2)" operator="lessOrEqual" value="14.5"/>
+						</Node>
+					</Node>
+				</Node>
+				<Node score="0.07724733333333332">
+					<SimplePredicate field="double(x2)" operator="lessOrEqual" value="16.5"/>
+				</Node>
+				<Node score="0.0638868">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="32.5"/>
+				</Node>
+			</Node>
+			<Node score="0.08359633333333333">
+				<SimplePredicate field="double(x1)" operator="lessOrEqual" value="4.5"/>
+				<Node score="0.05895066666666667">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="41.5"/>
+				</Node>
+				<Node score="0.07033655555555557">
+					<SimplePredicate field="double(x3)" operator="lessOrEqual" value="56.0"/>
+				</Node>
+			</Node>
+			<Node score="0.0632585">
+				<SimplePredicate field="double(x3)" operator="lessOrEqual" value="55.5"/>
+				<Node score="0.087913">
+					<SimplePredicate field="double(x2)" operator="lessOrEqual" value="35.5"/>
+					<Node score="0.0873437">
+						<SimplePredicate field="double(x2)" operator="lessOrEqual" value="21.5"/>
+					</Node>
+					<Node score="0.0768655">
+						<SimplePredicate field="double(x3)" operator="lessOrEqual" value="43.5"/>
+					</Node>
+				</Node>
+			</Node>
+		</Node>
+	</TreeModel>
+</PMML>
