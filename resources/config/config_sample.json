@@ -2,7 +2,7 @@
   "database": {
     "row_limit": -1,
     "name": "NEWEST",
-    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
+    "folder": ""
   },
   "outlier_detection": {
     "remove_outlier": true,
@@ -47,19 +47,17 @@
         "shuffle": true,
         "random_state": 42
       },
-      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
+      "export_folder": ""
     }
   },
   "logfile_etl_pipe": {
-    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
+    "unprocessed_logfiles_folder": "",
+    "processed_logfiles_folder": "",
     "extractors": [
       "cmd",
       "pr_1",
       "pr_2",
       "pr_3",
-      "first_pr_1",
-      "first_pr_3",
       "response_time",
       "list_pr_3",
       "list_pr_1",
@@ -74,6 +72,6 @@
     ]
   },
   "workload": {
-    "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/statistics"
+    "export_folder": ""
   }
 }

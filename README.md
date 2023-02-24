@@ -5,101 +5,39 @@ run ```export PYTHONPATH=${PYTHONPATH}:{logfile_analysis_root} ```
 
 Run the ```./src/setup.py``` in the src folder to setup the resource folder structure.
 
-# Structure
+To install all needed dependencies run ```pip install -r requirements.txt``` 
 
-The project contains two packages. One package to execute an etl process for logfiles and one package to create machine
-learning models based on the extracted features
+A configuration file for your environment is created under ```./resources/config/config.json```. This config file is used for the execution of all commands. Sample config files with different confiugrations are stored in the same folder.
 
-## logfile_etl
+# Pipeline
+Before you can run the pipeline you have to put the Logfiles of the production system in the folder /resources/logfiles/unprocessed. 
+Ask Juri Tomak for production logfiles of gs electronic.
 
-The configuration for the etl process is done via the json file ```resources/configuration/etl_config.json```. The
-following is an example for possible configurations.
+```python src/pipeline.py run```
 
-```
-{
-   "unprocessed_logfiles": "C:/Users/user/IdeaProjects/LogFileETL/resources/logfiles/unprocessed/",
-   "processed_logfiles": "C:/Users/user/IdeaProjects/LogFileETL/resources/logfiles/processed/",
-   "export_methods": ["db", "csv"],
-   "db": {
-      "folder": "C:/Users/user/IdeaProjects/LogFileETL/resources/export/db/"
-   },
-   "csv": {
-      "folder": "C:/Users/user/IdeaProjects/LogFileETL/resources/export/csv/"
-   },
-   "extractors": [
-      "Timestamp", "PR 1", "PR 2", "PR 3", "cmd", "response time", "First Command Start", "First Command Finished"
-   ],
-   "force": "True"
-}
-```
+To run only the logfile pipeline
+```python src/pipeline.py logfile```
 
-**unprocessed_logfiles**:
-Expects the folder of unprocessed logfiles. The function ```does_applies_for_file()``` of all registered
-LogfileConverter is called for each logfile. If a LogfileConverter does apply for a file, the
-method ```convert_logfile()``` is called and the converted files is stored in folder specified in processed_logfiles. A
-new LogfileConverter has to inherit from AbstractLogfileConverter and has to be registered in the
-class ```LogfileConverter```
+To run only the estimator pipeline
+```python src/pipeline.py estimator```
 
-**processed_logfiles**
-Defines where all processed logfiles should be stored. All logfiles in this folder should be in a format where each line
-is incoming request log or a responded requesat log.
-Example ```[03340] 2021-12-31 00:00:02.158	INFO {n.n.}: <CMD-START>:<SDATA 0x5|ID_REQ_LCMD_MONGETMASTERSTATUS 0x21>```
+more information via ```python src/pipeline.py --help```
 
-All logfiles not complying for a LogfileConverter are automatically copied to the unprocessed_logfiles folder. After
-that will all logfiles for the same day are merged into one file.
+# Extended Configurations
+All keys in the factory.py can be used to set specific estimators or preprocessing steps in the configuration file. 
+Possible constructor parameters for estimators or preprocessing steps have to be look up in the scikit-learn documentation.
 
-**export_methods**
-Expects a list of export methods. Possible values are ```db``` and ```csv```.
+eg. DecisionTreeRegressor -> https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html 
+possible parameter for gridsearch:
+- criterion
+- splitter
+- max_depth
+- min_samples_split
+- min_samples_leaf
+- min_weight_fraction_leaf
+- max_features
+- random_state
+- max_leaf_nodes
+- min_impurity_decrease
+- ccp_alpha
 
-**db**
-Expects the path where the exported database should be stored
-
-**csv**
-Expects the path where the exported csv files should be stored
-
-**extractors**
-Expects a list of feature extractors. A feature extractor has to inherit from AbstractFeatureExtractor and has to be
-registered in the class ```FeatureExtractor```. Possible values
-are ```"Timestamp", "PR 1", "PR 2", "PR 3", "cmd", "response time", "First Command Start", "First Command Finished"```
-
-**force**
-Expects a boolean value that specifies if each request, that does not have a start or an end line, should be waiting on
-a user input.
-
----
-To run the process call ```python logfile_etl.py``` or ```python logfile_etl.py --help```
-
-## analysis
-
-The configuration for the analysis is done via the json file ```resources/configuration/analysis_config.json```. The
-following is an example for possible configurations.
-
-```
-{
-  "db": "C:/Users/lierm/IdeaProjects/LogFileETL/resources/export/db/trainingdata_2022-05-15.db",
-  "features":  ["PR 1", "PR 3", "cmd", "First Command Start", "First Command Finished", "response time"],
-  "y": "response time",
-  "models": ["LR", "Ridge", "Lasso", "ElasticNet","SGD", "MLP", "KNN", "AdaLR", "AdaDT", "DT"]
-}
-```
-
-**db**
-Expects the path of a database with stored logfile information.
-
-**features**
-Expects a list of feature extractors. A feature extractor has to inherit from AbstractFeatureExtractor and has to be
-registered in the file ```feature_extractors.py```. It loads information from the database and creates a Dataframe that
-can be used to train models on. Possible values
-are ```"PR 1", "PR 3", "cmd", "First Command Start", "First Command Finished", "response time"```
-
-**y**
-Expects the name of the feature, that should be predicted
-
-**models**
-Expects a list of models, that should be trained on the extracted features. Possible values
-are ```"LR", "Ridge", "Lasso", "ElasticNet","SGD", "MLP", "KNN", "AdaLR", "AdaDT", "DT"```
-
-
-
----
-To run the process call ```python analysis.py```

@@ -1,8 +1,8 @@
 {
   "database": {
     "row_limit": -1,
-    "name": "trainingdata_2022-12-09.sqlite",
-    "folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/db"
+    "name": "NEWEST",
+    "folder": ""
   },
   "outlier_detection": {
     "remove_outlier": true,
@@ -72,12 +72,12 @@
         "shuffle": true,
         "random_state": 42
       },
-      "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/models"
+      "export_folder": ""
     }
   },
   "logfile_etl_pipe": {
-    "unprocessed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/unprocessed/",
-    "processed_logfiles_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/logfiles/processed/",
+    "unprocessed_logfiles_folder": "",
+    "processed_logfiles_folder": "",
     "extractors": [
       "arrive_timestamp",
       "pr_1",
@@ -97,6 +97,6 @@
     ]
   },
   "workload": {
-    "export_folder": "/Users/adrianliermann/Documents/repositories/Masterarbeit/logfile_analysis/resources/export/statistics"
+    "export_folder": ""
   }
 }
