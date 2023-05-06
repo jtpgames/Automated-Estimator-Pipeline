@@ -68,7 +68,8 @@
     "force": true,
     "converter": [
       "ARS",
-      "WS"
+      "WS",
+      "LOCUST"
     ]
   },
   "workload": {
