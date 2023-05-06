@@ -76,7 +76,7 @@ if __name__ == "__main__":
                     "shuffle": True,
                     "random_state": 42
                 },
-                "export_folder": export_folder.as_posix()
+                "export_folder": model_folder.as_posix()
             }
         },
         "logfile_etl_pipe": {
@@ -97,7 +97,8 @@ if __name__ == "__main__":
             "force": True,
             "converter": [
                 "ARS",
-                "WS"
+                "WS",
+                "LOCUST"
             ]
         },
         "workload": {

@@ -39,7 +39,8 @@ class LocustLogfileConverter(AbstractLogfileConverter):
     def convert_log_file(
             self, filename, file_path: Path, writing_directory: Path
     ) -> bool:
-        with open(filename) as file:
+
+        with open(file_path) as file:
             lines = file.readlines()
 
         data={}
