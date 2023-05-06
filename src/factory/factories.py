@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
 from src.logfile_etl.log_converter.ars_logfile_converter import ARSLogConverter
+from src.logfile_etl.log_converter.locust_logfile_converter import LocustLogfileConverter
 from src.logfile_etl.log_converter.ws_logfile_converter import WSLogConverter
 from src.feature_extractor.arrive_time_extractor import ArriveTimeAnalysisExtractor, \
     ArriveTimeETLExtractor
@@ -42,7 +43,8 @@ from src.feature_extractor.timestamp_extractor import TimestampETLExtractor
 class ConverterFactory:
     __converter = {
         "WS": WSLogConverter,
-        "ARS": ARSLogConverter
+        "ARS": ARSLogConverter,
+        "LOCUST": LocustLogfileConverter
     }
 
     def get(self, name):
